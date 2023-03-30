@@ -1,0 +1,80 @@
+:root {
+    --blue: #292482;
+    --white: #F4F4F4;
+}
+body {
+    font-family: 'Lexend', sans-serif !important;
+}
+.xui-dashboard .navigator {
+    background-color: var(--blue);
+    color: var(--white);
+}
+.psc-dashboard-profile {
+    border-bottom: 1px solid rgba(255, 255, 255, .15);
+    padding-bottom: 30px;
+}
+.xui-dashboard .navigator .links {
+    padding-bottom: 100px !important;
+}
+.psc-navbar-search input {
+    background-color: transparent;
+    padding: 0 10px;
+    border: none;
+    outline: none;
+}
+.psc-text {
+    color: var(--blue);
+}
+.psc-bg {
+    background-color: var(--blue);
+}
+.psc-section-header {
+    border-bottom: 1px solid #D2D1D1;
+}
+.xui-dashboard .navigator .links .link-box.active {
+    opacity: 1 !important;
+    background-color: transparent;
+    font-weight: 700;
+}
+.psc-btn-blue {
+    background-color: var(--blue);
+    color: var(--white);
+}
+.psc-select-rows-per-page {
+    outline: none;
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+}
+.es-tab-card {
+    opacity: .4;
+    margin: 0 10px;
+}
+.es-tab-card:first-child {
+    margin-left: 0;
+}
+.es-tab-card:last-child {
+    margin-right: 0;
+}
+.es-tab-card.active {
+    opacity: 1;
+    font-weight: 700;
+    color: var(--blue);
+    border-bottom: 2px solid var(--blue);
+}
+.psc-tabs-holder {
+    width: 100%;
+    white-space: nowrap;
+    position: relative;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+.psc-tabs-holder > div {
+    display: inline-block;
+}
+.psc-modal-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
