@@ -1,6 +1,7 @@
 // import Filter from '../icons/Filter';
 import Star from '../icons/Star';
 import Navbar from '../components/Navbar';
+import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
@@ -8,298 +9,300 @@ import Arrowleft from '../icons/Arrowleft';
 export default function APIHistory(){
     return(
         <>
-        <Navbar placeholder="Search something..." />
-        <Content>
-            <section className=''>
-            <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
-                <h1 className='xui-font-sz-110 xui-font-w-normal'>Recent Activities</h1>
-                <div className='xui-d-inline-flex'>
-                    {/* <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>01 - 28 February, 2023</h3>
-                        <Filter width="16" height="16" />
-                    </div>
-                    <div className='xui-d-inline-flex xui-flex-ai-center xui-ml-1-half'>
-                        <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>Filter by type</h3>
-                        <Filter width="16" height="16" />
-                    </div> */}
-                </div>
-            </div>
-            <div className='xui-table-responsive'>
-                <table className='xui-table xui-font-sz-90'>
-                <tr className='xui-text-left xui-opacity-6'>
-                    <th className='xui-min-w-300'>User</th>
-                    <th className='xui-min-w-150'>Type</th>
-                    <th className='xui-min-w-100'>Model</th>
-                    <th className='xui-min-w-100'>Amount</th>
-                    <th className='xui-min-w-200'>Status</th>
-                    <th className='xui-min-w-250'>Date</th>
-                    <th className='xui-min-w-150'>Actions</th>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
+        <Screen aside="false" navbar="false">
+            <Content>
+                <Navbar placeholder="Search something..." />
+                <section className=''>
+                <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
+                    <h1 className='xui-font-sz-110 xui-font-w-normal'>Recent Activities</h1>
+                    <div className='xui-d-inline-flex'>
+                        {/* <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>01 - 28 February, 2023</h3>
+                            <Filter width="16" height="16" />
                         </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Hugh ***76</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Government ID</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>CAC</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 35</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Hugh ***76</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Government ID</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>CAC</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 35</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                <tr className=''>
-                    <td className='xui-opacity-5'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <p>Skittles ***56</p>
-                        <div className='xui-ml-1'>
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        <Star width="18" height="18" />
-                        </div>
-                    </div>
-                    </td>
-                    <td className='xui-opacity-5'>Extended Bio</td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NIN</span>
-                    </td>
-                    <td className='xui-opacity-5 xui-font-w-bold'>
-                    <span>NGN 75</span>
-                    </td>
-                    <td className=''>
-                    <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                    </td>
-                    <td className='xui-opacity-5'>
-                    <span>01/01/2023 at 9:35pm</span>
-                    </td>
-                    <td className=''>
-                        <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                    </td>
-                </tr>
-                </table>
-            </div>
-            <div className='xui-d-flex xui-flex-jc-flex-end xui-py-1 xui-font-sz-85 xui-opacity-5 xui-mt-1'>
-                <div className='xui-d-inline-flex xui-flex-ai-center'>
-                    <span>Rows per page:</span>
-                    <select className='psc-select-rows-per-page xui-ml-half'>
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                    </select>
-                </div>
-                <div className='xui-mx-1 xui-lg-mx-2'>
-                    <span><span className='xui-font-w-bold'>11 - 20</span> of 194</span>
-                </div>
-                <div className='xui-d-inline-flex xui-flex-ai-center xui-mx-1'>
-                    <div className='xui-mr-half xui-cursor-pointer'>
-                        <Arrowleft width="18" height="18" />
-                    </div>
-                    <div className='xui-ml-half xui-cursor-pointer'>
-                        <Arrowright width="18" height="18" />
+                        <div className='xui-d-inline-flex xui-flex-ai-center xui-ml-1-half'>
+                            <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>Filter by type</h3>
+                            <Filter width="16" height="16" />
+                        </div> */}
                     </div>
                 </div>
-            </div>
-            </section>
-        </Content>
+                <div className='xui-table-responsive'>
+                    <table className='xui-table xui-font-sz-90'>
+                    <tr className='xui-text-left xui-opacity-6'>
+                        <th className='xui-min-w-300'>User</th>
+                        <th className='xui-min-w-150'>Type</th>
+                        <th className='xui-min-w-100'>Model</th>
+                        <th className='xui-min-w-100'>Amount</th>
+                        <th className='xui-min-w-200'>Status</th>
+                        <th className='xui-min-w-250'>Date</th>
+                        <th className='xui-min-w-150'>Actions</th>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Hugh ***76</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Government ID</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>CAC</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 35</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Hugh ***76</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Government ID</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>CAC</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 35</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    <tr className=''>
+                        <td className='xui-opacity-5'>
+                        <div className='xui-d-inline-flex xui-flex-ai-center'>
+                            <p>Skittles ***56</p>
+                            <div className='xui-ml-1'>
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            <Star width="18" height="18" />
+                            </div>
+                        </div>
+                        </td>
+                        <td className='xui-opacity-5'>Extended Bio</td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NIN</span>
+                        </td>
+                        <td className='xui-opacity-5 xui-font-w-bold'>
+                        <span>NGN 75</span>
+                        </td>
+                        <td className=''>
+                        <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
+                        </td>
+                        <td className='xui-opacity-5'>
+                        <span>01/01/2023 at 9:35pm</span>
+                        </td>
+                        <td className=''>
+                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
+                        </td>
+                    </tr>
+                    </table>
+                </div>
+                <div className='xui-d-flex xui-flex-jc-flex-end xui-py-1 xui-font-sz-85 xui-opacity-5 xui-mt-1'>
+                    <div className='xui-d-inline-flex xui-flex-ai-center'>
+                        <span>Rows per page:</span>
+                        <select className='psc-select-rows-per-page xui-ml-half'>
+                            <option value={10}>10</option>
+                            <option value={25}>25</option>
+                            <option value={50}>50</option>
+                        </select>
+                    </div>
+                    <div className='xui-mx-1 xui-lg-mx-2'>
+                        <span><span className='xui-font-w-bold'>11 - 20</span> of 194</span>
+                    </div>
+                    <div className='xui-d-inline-flex xui-flex-ai-center xui-mx-1'>
+                        <div className='xui-mr-half xui-cursor-pointer'>
+                            <Arrowleft width="18" height="18" />
+                        </div>
+                        <div className='xui-ml-half xui-cursor-pointer'>
+                            <Arrowright width="18" height="18" />
+                        </div>
+                    </div>
+                </div>
+                </section>
+            </Content>
+        </Screen>
         <section className='xui-modal' xui-modal="viewMore">
             <div className='xui-modal-content xui-max-h-500 xui-overflow-auto'>
                 <div className='xui-d-flex xui-flex-dir-column xui-lg-flex-dir-row'>
