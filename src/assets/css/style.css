@@ -1,6 +1,8 @@
 :root {
     --blue: #292482;
     --white: #F4F4F4;
+    --light-blue: #f7f7fd;
+    --light-blue-ii: #eaeafa;
 }
 body {
     font-family: 'Lexend', sans-serif !important;
@@ -28,6 +30,12 @@ body {
 .psc-bg {
     background-color: var(--blue);
 }
+.psc-bg-light-blue {
+    background-color: var(--light-blue);
+}
+.psc-bg-light-blue-ii {
+    background-color: var(--light-blue-ii);
+}
 .psc-section-header {
     border-bottom: 1px solid #D2D1D1;
 }
@@ -39,6 +47,11 @@ body {
 .psc-btn-blue {
     background-color: var(--blue);
     color: var(--white);
+}
+.psc-btn-blue-alt {
+    border: 1px solid var(--blue);
+    background-color: transparent;
+    color: var(--blue);
 }
 .psc-select-rows-per-page {
     outline: none;

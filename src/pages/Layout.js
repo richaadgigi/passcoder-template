@@ -82,10 +82,7 @@ export default function Layout(){
             </div>
         </div>
         </div>
-        <div className="screen" xui-aside="false" xui-navbar="true">
-            <Outlet />
-        </div>
-        <div className="aside xui-bg-red"></div>
+        <Outlet />
         </section>
         </>
     );
