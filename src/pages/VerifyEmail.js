@@ -1,8 +1,10 @@
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Arrowleft from "../icons/Arrowleft";
 import Arrowright from "../icons/Arrowright";
 
 export default function VerifyEmail(){
+    const [searchParams, setSearchParams] = useSearchParams();
+    const _email = searchParams.get("email");
     return(
         <>
         <div className="xui-max-w-500 xui-w-fluid-100 xui-mt-2 xui-md-mt-none">
@@ -11,7 +13,7 @@ export default function VerifyEmail(){
                     <Arrowleft width="18" height="18" />
                 </Link>
                 <h2 className="xui-font-sz-125 xui-w-fluid-80">Check your email</h2>
-                <p className="xui-font-sz-90 xui-mt-half"><span className="xui-opacity-5">We have sent an email with token reset information to </span><span className="psc-text">n****e@e***e.com</span></p>
+                <p className="xui-font-sz-90 xui-mt-half"><span className="xui-opacity-5">We have sent a verification email to </span><span className="psc-text">{_email}</span></p>
                 <p className="xui-font-sz-80 xui-my-4 xui-w-fluid-60"><span className="xui-opacity-7">Didn’t receive the email? Check spam or promotion folder</span></p>
                 <div className="xui-d-flex xui-flex-jc-flex-end">
                     <div>
