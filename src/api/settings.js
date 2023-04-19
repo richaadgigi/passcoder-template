@@ -3,8 +3,11 @@ import { config } from '../config';
 
 const getApiPricing = async function () {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/platform/api/pricing`,
+			{
+
+			},
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
@@ -14,7 +17,7 @@ const getApiPricing = async function () {
 
 const getPlatformProfilePhotoProof = async function (payload) {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/proofs/platform/profile/photo`,
 			{ ...payload }
 		);
@@ -26,7 +29,7 @@ const getPlatformProfilePhotoProof = async function (payload) {
 
 const getPlatformComplianceDocumentsProof = async function (payload) {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/proofs/platform/compliance/documents`,
 			{ ...payload }
 		);

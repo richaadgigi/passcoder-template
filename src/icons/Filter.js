@@ -1,7 +1,7 @@
 export default function Filter(props){
     return(
         <svg width={props.width}  height={props.height}  viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <title>Iconly/Light/Filter</title>
+            {/* <title>Iconly/Light/Filter</title> */}
             <g id="Iconly/Light/Filter" stroke="currentColor"  stroke-width="1.5"  fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
                 <g id="Filter" transform="translate(4.000000, 4.500000)" stroke="currentColor"  stroke-width="1.5" >
                     <line x1="6.33015655" y1="12.0929063" x2="0.0294393477" y2="12.0929063" id="Stroke-1"></line>

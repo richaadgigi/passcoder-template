@@ -3,8 +3,11 @@ import { config } from '../config';
 
 const getAppUsers = async function (token) {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/platform/app/users`,
+			{
+
+			},
 			{
 				headers: {
 					'passcoder-access-token': token

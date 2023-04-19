@@ -1,10 +1,14 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const getPlatformTokens = async function (token) {
+const getPlatformTokens = async function (token, page, size) {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/platform/tokens`,
+			{
+				page,
+				size
+			},
 			{
 				headers: {
 					'passcoder-access-token': token
@@ -19,7 +23,7 @@ const getPlatformTokens = async function (token) {
 
 const getPlatformToken = async function (token, unique_token) {
 	try {
-		const response = await axios.get(
+		const response = await axios.post(
 			`${config.baseAPIurl}/platform/token`,
 			{
 				token: unique_token
@@ -98,13 +102,16 @@ const deleteToken = async function (token, payload) {
 		const response = await axios.delete(
 			`${config.baseAPIurl}/platform/token`,
 			{
-				...payload
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
+				data: {
+					token,
+					...payload
 				}
-			}
+			},
+			// {
+			// 	headers: {
+			// 		'passcoder-access-token': token
+			// 	}
+			// }
 		);
 		return { err: false, data: response.data };
 	} catch (error) {

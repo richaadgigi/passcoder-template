@@ -1,5 +1,7 @@
 :root {
     --blue: #292482;
+    --red: #d60a0a;
+    --green: #1cb93e;
     --white: #F4F4F4;
     --light-blue: #f7f7fd;
     --light-blue-ii: #eaeafa;
@@ -52,6 +54,24 @@ body {
     border: 1px solid var(--blue);
     background-color: transparent;
     color: var(--blue);
+}
+.psc-btn-red {
+    background-color: var(--red);
+    color: var(--white);
+}
+.psc-btn-red-alt {
+    border: 1px solid var(--red);
+    background-color: transparent;
+    color: var(--red);
+}
+.psc-btn-green {
+    background-color: var(--green);
+    color: var(--white);
+}
+.psc-btn-green-alt {
+    border: 1px solid var(--green);
+    background-color: transparent;
+    color: var(--green);
 }
 .psc-select-rows-per-page {
     outline: none;

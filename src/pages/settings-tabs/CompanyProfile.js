@@ -2,7 +2,7 @@ import GalleryAdd from "../../assets/images/gallery-add.png";
 
 export default function MerchantProfile(){
     return(
-        <form className="xui-form xui-mt--1">
+        <form className="xui-form xui-mt-1">
             <div className="xui-form-box xui-w-fluid-100 xui-lg-w-fluid-60">
                 <label>Company Name</label>
                 <input type={"text"} />

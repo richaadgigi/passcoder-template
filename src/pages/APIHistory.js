@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 // import Filter from '../icons/Filter';
 import Star from '../icons/Star';
 import Navbar from '../components/Navbar';
@@ -5,305 +6,212 @@ import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
+import { getApiHistory } from "../api/history";
+import useCookie from "../hooks/useCookie";
+import { config } from "../config";
+import Loading from "../icons/Loading";
+import Close from "../icons/Close";
 
 export default function APIHistory(){
+    const [cookie] = useCookie(config.token, "");
+    const [allHistory, setAllHistory] = useState(null);
+    const [errorAllHistory, setErrorAllHistory] = useState(null);
+    const [loadingAllHistory, setLoadingAllHistory] = useState(false);
+
+    const [size, setSize] = useState(20);
+    const [page, setPage] = useState(1);
+
+    const handleSize = (e) => { e.preventDefault(); setSize(e.target.value); setPage(1); getAllHistory(page, e.target.value); };
+
+    async function previousHistory() {
+        if (page !== 1) setPage(page - 1);
+        if (page !== 1) getAllHistory(page - 1, size);
+    };
+
+    async function nextHistory() {
+        if (page < allHistory.data.pages) setPage(page + 1);
+        if (page < allHistory.data.pages) getAllHistory(page + 1, size);
+    };
+
+    async function getAllHistory(_page, _size) {
+        setLoadingAllHistory(true);
+        const response = await getApiHistory(cookie, (_page || page), (_size || size));
+        setAllHistory(response.data);
+        if (response.error) setErrorAllHistory(response.error.response.data.message);
+        setLoadingAllHistory(false);
+    };
+
+    useEffect(() => {
+        if (allHistory === null) {
+            getAllHistory();
+        }
+    }, [allHistory]);
     return(
         <>
         <Screen aside="false" navbar="false">
             <Content>
-                <Navbar placeholder="Search something..." />
-                <section className=''>
-                <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
-                    <h1 className='xui-font-sz-110 xui-font-w-normal'>Recent Activities</h1>
-                    <div className='xui-d-inline-flex'>
-                        {/* <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>01 - 28 February, 2023</h3>
-                            <Filter width="16" height="16" />
-                        </div>
-                        <div className='xui-d-inline-flex xui-flex-ai-center xui-ml-1-half'>
-                            <h3 className='xui-font-w-normal xui-font-sz-80 xui-mr-half'>Filter by type</h3>
-                            <Filter width="16" height="16" />
-                        </div> */}
-                    </div>
-                </div>
-                <div className='xui-table-responsive'>
-                    <table className='xui-table xui-font-sz-90'>
-                    <tr className='xui-text-left xui-opacity-6'>
-                        <th className='xui-min-w-300'>User</th>
-                        <th className='xui-min-w-150'>Type</th>
-                        <th className='xui-min-w-100'>Model</th>
-                        <th className='xui-min-w-100'>Amount</th>
-                        <th className='xui-min-w-200'>Status</th>
-                        <th className='xui-min-w-250'>Date</th>
-                        <th className='xui-min-w-150'>Actions</th>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
+                    <Navbar placeholder="Search something..." makeHidden={true} />
+                    <section className=''>
+                        <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
+                            <div className="xui-mb-1">
+                                <h1 className='xui-font-sz-110 xui-font-w-normal'>All API calls</h1>
+                                <p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">View your API usage history</p>
+                            </div>
+                            <div className='xui-d-inline-flex'>
                             </div>
                         </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Hugh ***76</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Government ID</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>CAC</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 35</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Authenticated</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Hugh ***76</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Government ID</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>CAC</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 35</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Cancelled</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    <tr className=''>
-                        <td className='xui-opacity-5'>
-                        <div className='xui-d-inline-flex xui-flex-ai-center'>
-                            <p>Skittles ***56</p>
-                            <div className='xui-ml-1'>
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            <Star width="18" height="18" />
-                            </div>
-                        </div>
-                        </td>
-                        <td className='xui-opacity-5'>Extended Bio</td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NIN</span>
-                        </td>
-                        <td className='xui-opacity-5 xui-font-w-bold'>
-                        <span>NGN 75</span>
-                        </td>
-                        <td className=''>
-                        <span className='xui-badge xui-badge-info xui-font-sz-80 xui-bdr-rad-half'>Pending</span>
-                        </td>
-                        <td className='xui-opacity-5'>
-                        <span>01/01/2023 at 9:35pm</span>
-                        </td>
-                        <td className=''>
-                            <span xui-modal-open="viewMore" className='xui-cursor-pointer xui-font-sz-90 psc-text'>View more</span>
-                        </td>
-                    </tr>
-                    </table>
-                </div>
-                <div className='xui-d-flex xui-flex-jc-flex-end xui-py-1 xui-font-sz-85 xui-opacity-5 xui-mt-1'>
-                    <div className='xui-d-inline-flex xui-flex-ai-center'>
-                        <span>Rows per page:</span>
-                        <select className='psc-select-rows-per-page xui-ml-half'>
-                            <option value={10}>10</option>
-                            <option value={25}>25</option>
-                            <option value={50}>50</option>
-                        </select>
-                    </div>
-                    <div className='xui-mx-1 xui-lg-mx-2'>
-                        <span><span className='xui-font-w-bold'>11 - 20</span> of 194</span>
-                    </div>
-                    <div className='xui-d-inline-flex xui-flex-ai-center xui-mx-1'>
-                        <div className='xui-mr-half xui-cursor-pointer'>
-                            <Arrowleft width="18" height="18" />
-                        </div>
-                        <div className='xui-ml-half xui-cursor-pointer'>
-                            <Arrowright width="18" height="18" />
-                        </div>
-                    </div>
-                </div>
-                </section>
+                        {
+                            loadingAllHistory ?
+                                <center className='xui-font-sz-110 xui-py-3'><Loading width="12" height="12" /></center> :
+                                (
+                                    allHistory && allHistory.success ?
+                                        <div className='xui-table-responsive'>
+                                            <table className='xui-table xui-font-sz-90'>
+                                                <thead>
+                                                    <tr className='xui-text-left xui-opacity-6'>
+                                                        <th className='xui-min-w-250'>User</th>
+                                                        <th className='xui-min-w-150'>Stars</th>
+                                                        <th className='xui-min-w-150'>Model</th>
+                                                        <th className='xui-min-w-150'>Type</th>
+                                                        <th className='xui-min-w-100'>Amount</th>
+                                                        <th className='xui-min-w-100'>Status</th>
+                                                        <th className='xui-min-w-300'>Date</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {allHistory.data.rows.sort((a, b) => new Date(a.updatedAt.date + " " + a.updatedAt.time).getTime() < new Date(b.updatedAt.date + " " + b.updatedAt.time).getTime() ? 1 : -1).map((data, i) => (
+                                                        <tr className='' key={i}>
+                                                            <td className='xui-opacity-5'>
+                                                                <div className='xui-d-inline-flex xui-flex-ai-center'>
+                                                                    <p>{data.user_data.firstname} {data.user_data.lastname} ({data.user_data.pid})</p>
+                                                                </div>
+                                                            </td>
+                                                            <td className='xui-opacity-5'>
+                                                                {
+                                                                    data.user_data.star === 0 ?
+                                                                        <div className=''>
+                                                                            <p>No star</p>
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                                {
+                                                                    data.user_data.star === 1 ?
+                                                                        <div className=''>
+                                                                            <Star width="18" height="18" />
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                                {
+                                                                    data.user_data.star === 2 ?
+                                                                        <div className=''>
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                                {
+                                                                    data.user_data.star === 3 ?
+                                                                        <div className=''>
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                                {
+                                                                    data.user_data.star === 4 ?
+                                                                        <div className=''>
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                                {
+                                                                    data.user_data.star === 5 ?
+                                                                        <div className=''>
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                            <Star width="18" height="18" />
+                                                                        </div>
+                                                                        : ""
+                                                                }
+                                                            </td>
+                                                            <td className='xui-opacity-5'>{data.model}</td>
+                                                            <td className='xui-opacity-5 xui-font-w-bold'>
+                                                                <span>{data.type}</span>
+                                                            </td>
+                                                            <td className='xui-opacity-5 xui-font-w-bold'>
+                                                                <span>{data.amount === 0 ? "Free" : "NGN " + data.amount}</span>
+                                                            </td>
+                                                            <td className=''>
+                                                                {
+                                                                    data.status === "Authenticated" || data.status === "Completed" ?
+                                                                        <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>{data.status}</span> : ""
+                                                                }
+                                                                {
+                                                                    data.status === "Pending" || data.status === "Ineligible" ?
+                                                                        <span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>{data.status}</span> : ""
+                                                                }
+                                                                {
+                                                                    data.status === "Unauthenticated" || data.status === "Timeout" ?
+                                                                        <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>{data.status}</span> : ""
+                                                                }
+                                                            </td>
+                                                            <td className='xui-opacity-5'>
+                                                                <span>{data.updatedAt.date} at {data.updatedAt.time}</span>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div> :
+                                        <div className="xui-d-grid xui-lg-grid-col-1 xui-grid-gap-2 xui-mt-2">
+                                            <div className="xui-bdr-w-1 xui-bdr-s-solid xui-bdr-fade xui-py-2 xui-px-1">
+                                                <center className="xui-text-red">
+                                                    <Close width="100" height="100" />
+                                                    <h3 className="xui-font-sz-120 xui-font-w-normal xui-mt-half">{errorAllHistory}</h3>
+                                                </center>
+                                            </div>
+                                        </div>
+                                )
+                        }
+                        {
+                            loadingAllHistory ?
+                                <Loading width="12" height="12" /> :
+                                (
+                                    allHistory && allHistory.success ?
+                                        <div className='xui-d-flex xui-flex-jc-flex-end xui-py-1 xui-font-sz-85 xui-opacity-5 xui-mt-1'>
+                                            <div className='xui-d-inline-flex xui-flex-ai-center'>
+                                                <span>Rows per page:</span>
+                                                <select value={size} onChange={handleSize} className='psc-select-rows-per-page xui-ml-half'>
+                                                    <option value={20}>20</option>
+                                                    <option value={50}>50</option>
+                                                    <option value={100}>100</option>
+                                                </select>
+                                            </div>
+                                            <div className='xui-mx-1 xui-lg-mx-2'>
+                                                <span><span className='xui-font-w-bold'>{page}</span> of {allHistory ? allHistory.data.pages : "..."}</span>
+                                            </div>
+                                            <div className='xui-d-inline-flex xui-flex-ai-center xui-mx-1'>
+                                                <div className='xui-mr-half xui-cursor-pointer' title="Previous" onClick={previousHistory}>
+                                                    <Arrowleft width="18" height="18" />
+                                                </div>
+                                                <div className='xui-ml-half xui-cursor-pointer' title="Next" onClick={nextHistory}>
+                                                    <Arrowright width="18" height="18" />
+                                                </div>
+                                            </div>
+                                        </div> :
+                                        ""
+                                )
+                        }
+                    </section>
             </Content>
         </Screen>
-        <section className='xui-modal' xui-modal="viewMore">
+        {/* <section className='xui-modal' xui-modal="viewMore">
             <div className='xui-modal-content xui-max-h-500 xui-overflow-auto'>
                 <div className='xui-d-flex xui-flex-dir-column xui-lg-flex-dir-row'>
                     <div className='xui-w-200 xui-h-200 xui-bg-sz-cover xui-bg-pos-center' style={{backgroundImage:"url('https://images.unsplash.com/photo-1531475925016-6d33cb7c8344?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTF8fG5pZ2VyaWElMjBwb3J0cmFpdHxlbnwwfHwwfHw%3D&auto=format&fit=crop&w=500&q=60')"}}></div>
@@ -324,7 +232,7 @@ export default function APIHistory(){
                 </div>
                 <img className='xui-img-300 xui-mt-1' src='https://infomediang.com/wp-content/uploads/2021/01/Old-National-Identity-Card-nin-number.jpg' alt='' />
             </div>
-        </section>
+        </section> */}
         </>
     );
 }

@@ -4,7 +4,7 @@ import Reset from "../../icons/Reset";
 export default function ApiKeys(){
     return(
         <>
-        <form className="xui-form xui-mt--1">
+        <form className="xui-form xui-mt-1">
             <div className="xui-form-box xui-w-fluid-100 xui-lg-w-fluid-60">
                 <label>Live API Key</label>
                 <div className="xui-d-flex xui-flex-ai-center">
