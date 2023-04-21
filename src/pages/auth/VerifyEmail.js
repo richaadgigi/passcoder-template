@@ -7,7 +7,7 @@ import { useVerifyEmail } from "../../hooks/useAuth";
 
 export default function VerifyEmail(){
     const {
-        errorVerifyEmail, loading, successVerifyEmail, accessDetails, handleVerification
+        errorVerifyEmail, successVerifyEmail, accessDetails, handleVerification
     } = useVerifyEmail();
     const [params, setParams] = useSearchParams();
     const _email = params.get('email');

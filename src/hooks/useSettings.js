@@ -6,8 +6,8 @@ import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { 
 	updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateDescription, 
-	updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey, getPlatformProfilePhotoProof, 
-	getPlatformComplianceDocumentsProof
+	updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey, 
+	getPlatformProfilePhotoProof, getPlatformComplianceDocumentsProof
 } from "../api/settings";
 
 const useUpdateName = () => {

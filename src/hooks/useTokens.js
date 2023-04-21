@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
-import { addPlatformToken, deleteToken, getPlatformToken, getPlatformTokens, updateToken, updateTokenDetails } from "../api/tokens";
+import { addPlatformToken, deleteToken, updateToken, updateTokenDetails } from "../api/tokens";
 
 const useAddToken = () => {
 

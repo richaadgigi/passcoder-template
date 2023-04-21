@@ -4,7 +4,7 @@ import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
-import { getPlatformToken, getPlatformTokens } from "../api/tokens";
+import {  getPlatformTokens } from "../api/tokens";
 import { useAddToken, useDeleteToken, useEditToken, useResetToken } from "../hooks/useTokens";
 import Loading from "../icons/Loading";
 import Close from "../icons/Close";

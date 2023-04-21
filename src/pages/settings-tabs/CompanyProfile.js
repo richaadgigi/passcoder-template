@@ -1,7 +1,5 @@
 import { useState } from "react";
-import Close from "../../icons/Close";
 import GalleryAdd from "../../assets/images/gallery-add.png";
-import Check from "../../icons/Check";
 import Loading from "../../icons/Loading";
 import { useUpdateComplianceDetails, useUploadPlatformComplianceCertificate, useUploadPlatformComplianceDocument } from "../../hooks/useSettings";
 import { useGetPlatform } from "../../hooks/usePlatform";

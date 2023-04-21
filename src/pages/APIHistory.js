@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import Filter from '../icons/Filter';
 import Star from '../icons/Star';
 import Navbar from '../components/Navbar';
 import Screen from '../components/Screen';
