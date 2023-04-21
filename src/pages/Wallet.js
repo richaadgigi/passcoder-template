@@ -133,8 +133,9 @@ export default function Wallet(){
                                         <div className="xui-mt-2">
                                             <h4 className="xui-font-sz-85 xui-mb-1 xui-font-w-normal xui-opacity-8">Steps to top up your wallet</h4>
                                             <ol className="xui-font-sz-80 xui-opacity-5 xui-my-half">
-                                                <li>Click on "Fund Wallet" above, input amount and select payment method to "Transfer</li><br></br>
-                                                <li>Copy the account number & Transfer amount to top up</li>
+                                                <li>Click on "Fund Wallet" above, input amount and select payment method to "Transfer".</li><br></br>
+                                                <li>Copy the account number & Transfer amount to top up.</li><br></br>
+                                                <li>Send an email to <a href="mailto:support@passcoder.io">support@passcoder.io</a> with your receipt of payment and await confirmation.</li>
                                             </ol>
                                         </div>
                                     </div> :
