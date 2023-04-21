@@ -3,13 +3,11 @@ import Close from "../../icons/Close";
 import GalleryAdd from "../../assets/images/gallery-add.png";
 import Check from "../../icons/Check";
 import Loading from "../../icons/Loading";
-import { useUpdateComplianceDetails } from "../../hooks/useSettings";
+import { useUpdateComplianceDetails, useUploadPlatformComplianceCertificate, useUploadPlatformComplianceDocument } from "../../hooks/useSettings";
 import { useGetPlatform } from "../../hooks/usePlatform";
 
 export default function MerchantProfile(){
     const [canCallPlatformDetails, setCanCallPlatformDetails] = useState(false);
-    const [selectedRegistrationDocument, setSelectedRegistrationDocument] = useState("");
-    const [selectedRegistrationCertificate, setSelectedRegistrationCertificate] = useState("");
 
     const {
         companyAddress, companyEmail, companyName, companyRcNumber, companyType, companyWebsiteUrl, errorUpdateComplianceDetails,
@@ -20,9 +18,19 @@ export default function MerchantProfile(){
 
     const { getPlatformDetails, platformDetails } = useGetPlatform();
 
+    const {
+        errorComplianceDocument, handleUploadComplianceDocument, loadingComplianceDocument, setPlatformUniqueId: DocumentSetPlatformUniqueId, setSelectedComplianceDocument, successComplianceDocument,
+        uploadingComplianceDocumentPercentage, selectedComplianceDocument
+    } = useUploadPlatformComplianceDocument();
+
+    const {
+        errorComplianceCertificate, handleUploadComplianceCertificate, loadingComplianceCertificate, setPlatformUniqueId: CertificateSetPlatformUniqueId, setSelectedComplianceCertificate, successComplianceCertificate,
+        uploadingComplianceCertificatePercentage, selectedComplianceCertificate
+    } = useUploadPlatformComplianceCertificate();
+
     const callGetPlatformDetails = getPlatformDetails;
 
-    if (successUpdateComplianceDetails) callGetPlatformDetails();
+    if (successUpdateComplianceDetails || successComplianceDocument || successComplianceCertificate) callGetPlatformDetails();
 
     if (canCallPlatformDetails) {
         setTimeout(function () {
@@ -31,16 +39,16 @@ export default function MerchantProfile(){
         }, 2000)
     }
 
-    const handleSelectRegistrationDocument = (e) =>{
+    const handleSelectComplianceDocument = (e) =>{
         const el = e.target.files[0];
-        setSelectedRegistrationDocument("");
-        setSelectedRegistrationDocument(el.name);
+        selectedComplianceDocument("");
+        selectedComplianceDocument(el);
     }
 
-    const handleSelectRegistrationCertificate = (e) => {
+    const handleSelectComplianceCertificate = (e) => {
         const el = e.target.files[0];
-        setSelectedRegistrationCertificate("");
-        setSelectedRegistrationCertificate(el.name);
+        selectedComplianceCertificate("");
+        selectedComplianceCertificate(el);
     }
 
     return(
@@ -114,8 +122,8 @@ export default function MerchantProfile(){
                         <label for="registrationDocument">
                             <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                 {
-                                    selectedRegistrationDocument ? 
-                                    <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{wordBreak: "break-word"}}>{selectedRegistrationDocument}</span> :
+                                    selectedComplianceDocument ? 
+                                    <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{wordBreak: "break-word"}}>{selectedComplianceDocument}</span> :
                                     <>
                                         <img className="xui-img-40" src={GalleryAdd} alt="" />
                                         <span className="xui-font-sz-100 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
@@ -123,7 +131,7 @@ export default function MerchantProfile(){
                                 }
                             </div>
                         </label>
-                        <input onChange={handleSelectRegistrationDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
+                        <input onChange={handleSelectComplianceDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
                         {/* <p className="xui-text-center xui-font-sz-80 xui-opacity-5 xui-mt-half">Click to change picture</p> */}
                         <div className="xui-mt-1 xui-d-flex">
                             <button className="xui-btn psc-btn-blue xui-font-sz-80">Save Changes</button>
@@ -136,8 +144,8 @@ export default function MerchantProfile(){
                         <label for="registrationCertificate">
                             <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                 {
-                                    selectedRegistrationCertificate ?
-                                        <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedRegistrationCertificate}</span> :
+                                    selectedComplianceCertificate ?
+                                        <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceCertificate}</span> :
                                         <>
                                             <img className="xui-img-40" src={GalleryAdd} alt="" />
                                             <span className="xui-font-sz-100 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
@@ -145,7 +153,7 @@ export default function MerchantProfile(){
                                 }
                             </div>
                         </label>
-                        <input onChange={handleSelectRegistrationCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
+                        <input onChange={handleSelectComplianceCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
                         {/* <p className="xui-text-center xui-font-sz-80 xui-opacity-5 xui-mt-half">Click to change picture</p> */}
                         <div className="xui-mt-1 xui-d-flex">
                             <button className="xui-btn psc-btn-blue xui-font-sz-80">Save Changes</button>

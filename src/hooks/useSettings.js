@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from "firebase/storage";
+import { app } from "../firebase";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { 
-	updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateComplianceDocuments, updateDescription, 
-	updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey
+	updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateDescription, 
+	updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey, getPlatformProfilePhotoProof, 
+	getPlatformComplianceDocumentsProof
 } from "../api/settings";
 
 const useUpdateName = () => {
@@ -631,4 +634,409 @@ const useResetTestApiKey = () => {
 	};
 };
 
-export { useUpdateName, useUpdateEmail, useUpdateDescription, useUpdateComplianceDetails, useResetMasterToken, useResetLiveApiKey, useResetTestApiKey };
+const useUploadPlatformProfilePhoto = () => {
+
+	const storage = getStorage(app);
+
+	const [cookie, removeCookie] = useCookie(config.token, "");
+
+	const [loadingProfilePhoto, setLoadingProfilePhoto] = useState(false);
+	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [selectedProfilePhoto, setSelectedProfilePhoto] = useState("");
+	const [uploadingProfilePhotoPercentage, setUploadingProfilePhotoPercentage] = useState(0);
+
+	const [errorProfilePhoto, setErrorProfilePhoto] = useState(null);
+	const [successProfilePhoto, setSuccessProfilePhoto] = useState(null);
+
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/webp", "image/WEBP"];
+	const maximum_file_size = 5 * 1024 * 1024;
+
+	const handleUploadProfilePhoto = (e) => {
+		e.preventDefault();
+
+		if (!loadingProfilePhoto) {
+			if (platformUniqueId.length === 0) {
+				setErrorProfilePhoto(null);
+				setSuccessProfilePhoto(null);
+				setErrorProfilePhoto("Platform ID is required");
+				setTimeout(function () {
+					setErrorProfilePhoto(null);
+				}, 2000)
+			} else if (!allowed_extensions.includes(selectedProfilePhoto.type)) {
+				setErrorProfilePhoto("Invalid image format (.png, .jpg, .jpeg & .webp)");
+				setTimeout(function () {
+					setErrorProfilePhoto(null);
+				}, 2000)
+			} else if (selectedProfilePhoto.size > maximum_file_size) {
+				setErrorProfilePhoto("File too large (max 5mb)");
+				setTimeout(function () {
+					setErrorProfilePhoto(null);
+				}, 2000)
+			} else {
+				setLoadingProfilePhoto(true);
+	
+				const profilePhotoProofRes = getPlatformProfilePhotoProof({ platform_unique_id: platformUniqueId })
+	
+				profilePhotoProofRes.then(res => {
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setErrorProfilePhoto(error);
+							setTimeout(function () {
+								setErrorProfilePhoto(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setErrorProfilePhoto(error);
+							setTimeout(function () {
+								setErrorProfilePhoto(null);
+							}, 2000)
+						}
+					} else {
+						const profile_image_rename = res.data.data[0].photo;
+						let lastDot = selectedProfilePhoto.name.lastIndexOf('.');
+						let ext = selectedProfilePhoto.name.substring(lastDot + 1);
+
+						const imagePath = "/platforms/" + profile_image_rename + "." + ext;
+
+						const storageRef = ref(storage, imagePath);
+						const uploadTask = uploadBytesResumable(storageRef, selectedProfilePhoto);
+
+						uploadTask.on('state_changed',
+							(snapshot) => {
+								const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+								setUploadingProfilePhotoPercentage(progress);
+							},
+							(error) => {
+								setErrorProfilePhoto("An error occured while uploading");
+								setTimeout(function () {
+									setErrorProfilePhoto(null);
+								}, 3000)
+							},
+							() => {
+								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+									
+									const updatePlatformProfileImageRes = updateProfilePhoto(cookie, {
+										photo: downloadURL,
+										photo_file_ext: imagePath
+									})
+
+									updatePlatformProfileImageRes.then(res => {
+										if (res.err) {
+											if (!res.error.response.data.success) {
+												const error = `${res.error.response.data.message}`;
+												setErrorProfilePhoto(error);
+												setTimeout(function () {
+													setErrorProfilePhoto(null);
+												}, 2000)
+											} else {
+												const error = `${res.error.code} - ${res.error.message}`;
+												setErrorProfilePhoto(error);
+												setTimeout(function () {
+													setErrorProfilePhoto(null);
+												}, 2000)
+											}
+										} else {
+											setErrorProfilePhoto(null);
+											setUploadingProfilePhotoPercentage(0);
+											setSuccessProfilePhoto(`Profile image uploaded successfully!`);
+											
+											setTimeout(function () {
+												setLoadingProfilePhoto(false);
+												setSuccessProfilePhoto(null);
+												window.location.reload(true);
+											}, 3000)
+										}
+									}).catch(err => {
+										setLoadingProfilePhoto(false);
+									})
+								});
+
+							}
+						)
+					}
+				}).catch(err => {
+					setLoadingProfilePhoto(false);
+				})
+			}
+		}
+	};
+
+	return {
+		cookie, loadingProfilePhoto, errorProfilePhoto, successProfilePhoto, handleUploadProfilePhoto, platformUniqueId, setSelectedProfilePhoto, 
+		setPlatformUniqueId, uploadingProfilePhotoPercentage, selectedProfilePhoto,
+	};
+};
+
+const useUploadPlatformComplianceDocument = () => {
+
+	const storage = getStorage(app);
+
+	const [cookie, removeCookie] = useCookie(config.token, "");
+
+	const [loadingComplianceDocument, setLoadingComplianceDocument] = useState(false);
+	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [selectedComplianceDocument, setSelectedComplianceDocument] = useState("");
+	const [uploadingComplianceDocumentPercentage, setUploadingComplianceDocumentPercentage] = useState(0);
+
+	const [errorComplianceDocument, setErrorComplianceDocument] = useState(null);
+	const [successComplianceDocument, setSuccessComplianceDocument] = useState(null);
+
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/pdf", "image/PDF"];
+	const maximum_file_size = 5 * 1024 * 1024;
+
+	const handleUploadComplianceDocument = (e) => {
+		e.preventDefault();
+
+		if (!loadingComplianceDocument) {
+			if (platformUniqueId.length === 0) {
+				setErrorComplianceDocument(null);
+				setSuccessComplianceDocument(null);
+				setErrorComplianceDocument("Platform ID is required");
+				setTimeout(function () {
+					setErrorComplianceDocument(null);
+				}, 2000)
+			} else if (!allowed_extensions.includes(selectedComplianceDocument.type)) {
+				setErrorComplianceDocument("Invalid image format (.png, .jpg, .jpeg & .pdf)");
+				setTimeout(function () {
+					setErrorComplianceDocument(null);
+				}, 2000)
+			} else if (selectedComplianceDocument.size > maximum_file_size) {
+				setErrorComplianceDocument("File too large (max 5mb)");
+				setTimeout(function () {
+					setErrorComplianceDocument(null);
+				}, 2000)
+			} else {
+				setLoadingComplianceDocument(true);
+
+				const complianceDocumentProofRes = getPlatformComplianceDocumentsProof({ platform_unique_id: platformUniqueId })
+
+				complianceDocumentProofRes.then(res => {
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setErrorComplianceDocument(error);
+							setTimeout(function () {
+								setErrorComplianceDocument(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setErrorComplianceDocument(error);
+							setTimeout(function () {
+								setErrorComplianceDocument(null);
+							}, 2000)
+						}
+					} else {
+						const platform_file_rename = res.data.data[1].registration_document;
+						let lastDot = selectedComplianceDocument.name.lastIndexOf('.');
+						let ext = selectedComplianceDocument.name.substring(lastDot + 1);
+
+						const filePath = "/platforms/" + platform_file_rename + "." + ext;
+
+						const storageRef = ref(storage, filePath);
+						const uploadTask = uploadBytesResumable(storageRef, selectedComplianceDocument);
+
+						uploadTask.on('state_changed',
+							(snapshot) => {
+								const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+								setUploadingComplianceDocumentPercentage(progress);
+							},
+							(error) => {
+								setErrorComplianceDocument("An error occured while uploading");
+								setTimeout(function () {
+									setErrorComplianceDocument(null);
+								}, 3000)
+							},
+							() => {
+								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+
+									const updatePlatformRegistrationDocumentRes = updateComplianceDocument(cookie, {
+										registration_document: downloadURL,
+										registration_document_file_ext: filePath
+									})
+
+									updatePlatformRegistrationDocumentRes.then(res => {
+										if (res.err) {
+											if (!res.error.response.data.success) {
+												const error = `${res.error.response.data.message}`;
+												setErrorComplianceDocument(error);
+												setTimeout(function () {
+													setErrorComplianceDocument(null);
+												}, 2000)
+											} else {
+												const error = `${res.error.code} - ${res.error.message}`;
+												setErrorComplianceDocument(error);
+												setTimeout(function () {
+													setErrorComplianceDocument(null);
+												}, 2000)
+											}
+										} else {
+											setErrorComplianceDocument(null);
+											setUploadingComplianceDocumentPercentage(0);
+											setSuccessComplianceDocument(`Registration Document uploaded successfully!`);
+
+											setTimeout(function () {
+												setLoadingComplianceDocument(false);
+												setSuccessComplianceDocument(null);
+												window.location.reload(true);
+											}, 3000)
+										}
+									}).catch(err => {
+										setLoadingComplianceDocument(false);
+									})
+								});
+
+							}
+						)
+					}
+				}).catch(err => {
+					setLoadingComplianceDocument(false);
+				})
+			}
+		}
+	};
+
+	return {
+		cookie, loadingComplianceDocument, errorComplianceDocument, successComplianceDocument, handleUploadComplianceDocument, platformUniqueId, setSelectedComplianceDocument,
+		setPlatformUniqueId, uploadingComplianceDocumentPercentage, selectedComplianceDocument,
+	};
+};
+
+const useUploadPlatformComplianceCertificate = () => {
+
+	const storage = getStorage(app);
+
+	const [cookie, removeCookie] = useCookie(config.token, "");
+
+	const [loadingComplianceCertificate, setLoadingComplianceCertificate] = useState(false);
+	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [selectedComplianceCertificate, setSelectedComplianceCertificate] = useState("");
+	const [uploadingComplianceCertificatePercentage, setUploadingComplianceCertificatePercentage] = useState(0);
+
+	const [errorComplianceCertificate, setErrorComplianceCertificate] = useState(null);
+	const [successComplianceCertificate, setSuccessComplianceCertificate] = useState(null);
+
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/pdf", "image/PDF"];
+	const maximum_file_size = 5 * 1024 * 1024;
+
+	const handleUploadComplianceCertificate = (e) => {
+		e.preventDefault();
+
+		if (!loadingComplianceCertificate) {
+			if (platformUniqueId.length === 0) {
+				setErrorComplianceCertificate(null);
+				setSuccessComplianceCertificate(null);
+				setErrorComplianceCertificate("Platform ID is required");
+				setTimeout(function () {
+					setErrorComplianceCertificate(null);
+				}, 2000)
+			} else if (!allowed_extensions.includes(selectedComplianceCertificate.type)) {
+				setErrorComplianceCertificate("Invalid image format (.png, .jpg, .jpeg & .pdf)");
+				setTimeout(function () {
+					setErrorComplianceCertificate(null);
+				}, 2000)
+			} else if (selectedComplianceCertificate.size > maximum_file_size) {
+				setErrorComplianceCertificate("File too large (max 5mb)");
+				setTimeout(function () {
+					setErrorComplianceCertificate(null);
+				}, 2000)
+			} else {
+				setLoadingComplianceCertificate(true);
+
+				const complianceCertificateProofRes = getPlatformComplianceDocumentsProof({ platform_unique_id: platformUniqueId })
+
+				complianceCertificateProofRes.then(res => {
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setErrorComplianceCertificate(error);
+							setTimeout(function () {
+								setErrorComplianceCertificate(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setErrorComplianceCertificate(error);
+							setTimeout(function () {
+								setErrorComplianceCertificate(null);
+							}, 2000)
+						}
+					} else {
+						const platform_file_rename = res.data.data[1].registration_certificate;
+						let lastDot = selectedComplianceCertificate.name.lastIndexOf('.');
+						let ext = selectedComplianceCertificate.name.substring(lastDot + 1);
+
+						const filePath = "/platforms/" + platform_file_rename + "." + ext;
+
+						const storageRef = ref(storage, filePath);
+						const uploadTask = uploadBytesResumable(storageRef, selectedComplianceCertificate);
+
+						uploadTask.on('state_changed',
+							(snapshot) => {
+								const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+								setUploadingComplianceCertificatePercentage(progress);
+							},
+							(error) => {
+								setErrorComplianceCertificate("An error occured while uploading");
+								setTimeout(function () {
+									setErrorComplianceCertificate(null);
+								}, 3000)
+							},
+							() => {
+								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+
+									const updatePlatformRegistrationCertificateRes = updateComplianceCertificate(cookie, {
+										registration_certificate: downloadURL,
+										registration_certificate_file_ext: filePath
+									})
+
+									updatePlatformRegistrationCertificateRes.then(res => {
+										if (res.err) {
+											if (!res.error.response.data.success) {
+												const error = `${res.error.response.data.message}`;
+												setErrorComplianceCertificate(error);
+												setTimeout(function () {
+													setErrorComplianceCertificate(null);
+												}, 2000)
+											} else {
+												const error = `${res.error.code} - ${res.error.message}`;
+												setErrorComplianceCertificate(error);
+												setTimeout(function () {
+													setErrorComplianceCertificate(null);
+												}, 2000)
+											}
+										} else {
+											setErrorComplianceCertificate(null);
+											setUploadingComplianceCertificatePercentage(0);
+											setSuccessComplianceCertificate(`Registration Certificate uploaded successfully!`);
+
+											setTimeout(function () {
+												setLoadingComplianceCertificate(false);
+												setSuccessComplianceCertificate(null);
+												window.location.reload(true);
+											}, 3000)
+										}
+									}).catch(err => {
+										setLoadingComplianceCertificate(false);
+									})
+								});
+
+							}
+						)
+					}
+				}).catch(err => {
+					setLoadingComplianceCertificate(false);
+				})
+			}
+		}
+	};
+
+	return {
+		cookie, loadingComplianceCertificate, errorComplianceCertificate, successComplianceCertificate, handleUploadComplianceCertificate, platformUniqueId, setSelectedComplianceCertificate,
+		setPlatformUniqueId, uploadingComplianceCertificatePercentage, selectedComplianceCertificate,
+	};
+};
+
+export { 
+	useUpdateName, useUpdateEmail, useUpdateDescription, useUpdateComplianceDetails, useResetMasterToken, useResetLiveApiKey, useResetTestApiKey, 
+	useUploadPlatformProfilePhoto, useUploadPlatformComplianceDocument, useUploadPlatformComplianceCertificate
+};

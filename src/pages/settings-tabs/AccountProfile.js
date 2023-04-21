@@ -3,12 +3,11 @@ import Close from "../../icons/Close";
 import GalleryAdd from "../../assets/images/gallery-add.png";
 import Check from "../../icons/Check";
 import Loading from "../../icons/Loading";
-import { useUpdateDescription, useUpdateEmail, useUpdateName } from "../../hooks/useSettings";
+import { useUpdateDescription, useUpdateEmail, useUpdateName, useUploadPlatformProfilePhoto } from "../../hooks/useSettings";
 import { useGetPlatform } from "../../hooks/usePlatform";
 
 export default function AccountProfile(){
     const [canCallPlatformDetails, setCanCallPlatformDetails] = useState(false);
-    const [selectedProfilePhoto, setSelectedProfilePhoto] = useState("");
 
     const {
         businessName, errorUpdateName, handleBusinessName, handleUpdateName, loadingUpdateName, setBusinessName, successUpdateName, 
@@ -29,9 +28,14 @@ export default function AccountProfile(){
         getPlatformDetails, platformDetails
     } = useGetPlatform();
 
+    const {
+        errorProfilePhoto, handleUploadProfilePhoto, loadingProfilePhoto, setPlatformUniqueId, setSelectedProfilePhoto, successProfilePhoto, 
+        uploadingProfilePhotoPercentage, selectedProfilePhoto
+    } = useUploadPlatformProfilePhoto();
+
     const callGetPlatformDetails = getPlatformDetails;
 
-    if (successUpdateName || successUpdateEmail || successUpdateDescription) callGetPlatformDetails();
+    if (successUpdateName || successUpdateEmail || successUpdateDescription || successProfilePhoto) callGetPlatformDetails();
 
     if (canCallPlatformDetails) { 
         setTimeout(function () {
@@ -56,31 +60,49 @@ export default function AccountProfile(){
     const handleSelectProfilePhoto = (e) => {
         const el = e.target.files[0];
         setSelectedProfilePhoto("");
-        setSelectedProfilePhoto(el.name);
+        setSelectedProfilePhoto(el);
     }
     return(
         <>
             <div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-1 xui-grid-gap-1">
-                <form className="xui-form">
+                <form className="xui-form" onSubmit={handleUploadProfilePhoto}>
                     <div className="xui-form-box">
                         <center>
                             <span className="xui-d-inline-block">Your Profile Picture</span>
-                            <label for="imageFile">
+                            <label htmlFor="imageFile">
                                 <div className="xui-opacity-6 xui-w-250 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                     {
                                         selectedProfilePhoto ?
-                                            <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedProfilePhoto}</span> :
+                                            <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedProfilePhoto.name}</span> :
                                             <>
-                                                <img className="xui-img-40" src={GalleryAdd} alt="" />
+                                                <img className="xui-img-40" src={platformDetails ? platformDetails.data.photo : GalleryAdd} alt="" />
                                                 <span className="xui-font-sz-90 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
                                             </>
                                     }
                                 </div>
                             </label>
-                            <input onChange={handleSelectProfilePhoto} type={"file"} id="imageFile" style={{display:"none"}} required />
+                            <input onClick={() => { if (platformDetails) setPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectProfilePhoto} type={"file"} id="imageFile" style={{display:"none"}} required />
                             <div className="xui-mt-1">
-                                <button className="xui-btn psc-btn-blue xui-font-sz-80">Save Changes</button>
+                                {
+                                    uploadingProfilePhotoPercentage > 0 ? 
+                                    <>
+                                        <label htmlFor="uploader">Uploading</label>
+                                        <progress className="xui-h-30" value={uploadingProfilePhotoPercentage} id="uploader" max="100">{uploadingProfilePhotoPercentage + "%"}</progress><br/><br></br>
+                                    </> :
+                                    ""
+                                }
+                                {
+                                    loadingProfilePhoto ? 
+                                    <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                        <Loading width="16" height="16" />
+                                    </button> :
+                                    <button type="submit" className="xui-btn psc-btn-blue xui-font-sz-80">
+                                        Save Changes
+                                    </button>
+                                }
                             </div>
+                            <p className="xui-font-sz-80 xui-my-1 xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorProfilePhoto}</span></p>
+                            <p className="xui-font-sz-80 xui-my-1 xui-text-green"><span className="xui-font-w-bold psc-text-red">{successProfilePhoto}</span></p>
                         </center>
                     </div>
                 </form>
