@@ -681,12 +681,16 @@ const useUploadPlatformProfilePhoto = () => {
 					if (res.err) {
 						if (!res.error.response.data.success) {
 							const error = `${res.error.response.data.message}`;
+							setUploadingProfilePhotoPercentage(0);
+							setLoadingProfilePhoto(false);
 							setErrorProfilePhoto(error);
 							setTimeout(function () {
 								setErrorProfilePhoto(null);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
+							setUploadingProfilePhotoPercentage(0);
+							setLoadingProfilePhoto(false);
 							setErrorProfilePhoto(error);
 							setTimeout(function () {
 								setErrorProfilePhoto(null);
@@ -708,6 +712,8 @@ const useUploadPlatformProfilePhoto = () => {
 								setUploadingProfilePhotoPercentage(progress);
 							},
 							(error) => {
+								setUploadingProfilePhotoPercentage(0);
+								setLoadingProfilePhoto(false);
 								setErrorProfilePhoto("An error occured while uploading");
 								setTimeout(function () {
 									setErrorProfilePhoto(null);
@@ -725,12 +731,16 @@ const useUploadPlatformProfilePhoto = () => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
+												setUploadingProfilePhotoPercentage(0);
+												setLoadingProfilePhoto(false);
 												setErrorProfilePhoto(error);
 												setTimeout(function () {
 													setErrorProfilePhoto(null);
 												}, 2000)
 											} else {
 												const error = `${res.error.code} - ${res.error.message}`;
+												setUploadingProfilePhotoPercentage(0);
+												setLoadingProfilePhoto(false);
 												setErrorProfilePhoto(error);
 												setTimeout(function () {
 													setErrorProfilePhoto(null);
@@ -748,6 +758,7 @@ const useUploadPlatformProfilePhoto = () => {
 											}, 3000)
 										}
 									}).catch(err => {
+										setUploadingProfilePhotoPercentage(0);
 										setLoadingProfilePhoto(false);
 									})
 								});
@@ -756,6 +767,7 @@ const useUploadPlatformProfilePhoto = () => {
 						)
 					}
 				}).catch(err => {
+					setUploadingProfilePhotoPercentage(0);
 					setLoadingProfilePhoto(false);
 				})
 			}
@@ -782,7 +794,7 @@ const useUploadPlatformComplianceDocument = () => {
 	const [errorComplianceDocument, setErrorComplianceDocument] = useState(null);
 	const [successComplianceDocument, setSuccessComplianceDocument] = useState(null);
 
-	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/pdf", "image/PDF"];
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "application/pdf", "application/PDF"];
 	const maximum_file_size = 5 * 1024 * 1024;
 
 	const handleUploadComplianceDocument = (e) => {
@@ -815,12 +827,16 @@ const useUploadPlatformComplianceDocument = () => {
 					if (res.err) {
 						if (!res.error.response.data.success) {
 							const error = `${res.error.response.data.message}`;
+							setUploadingComplianceDocumentPercentage(0);
+							setLoadingComplianceDocument(false);
 							setErrorComplianceDocument(error);
 							setTimeout(function () {
 								setErrorComplianceDocument(null);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
+							setUploadingComplianceDocumentPercentage(0);
+							setLoadingComplianceDocument(false);
 							setErrorComplianceDocument(error);
 							setTimeout(function () {
 								setErrorComplianceDocument(null);
@@ -842,6 +858,8 @@ const useUploadPlatformComplianceDocument = () => {
 								setUploadingComplianceDocumentPercentage(progress);
 							},
 							(error) => {
+								setUploadingComplianceDocumentPercentage(0);
+								setLoadingComplianceDocument(false);
 								setErrorComplianceDocument("An error occured while uploading");
 								setTimeout(function () {
 									setErrorComplianceDocument(null);
@@ -859,12 +877,16 @@ const useUploadPlatformComplianceDocument = () => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
+												setUploadingComplianceDocumentPercentage(0);
+												setLoadingComplianceDocument(false);
 												setErrorComplianceDocument(error);
 												setTimeout(function () {
 													setErrorComplianceDocument(null);
 												}, 2000)
 											} else {
 												const error = `${res.error.code} - ${res.error.message}`;
+												setUploadingComplianceDocumentPercentage(0);
+												setLoadingComplianceDocument(false);
 												setErrorComplianceDocument(error);
 												setTimeout(function () {
 													setErrorComplianceDocument(null);
@@ -882,6 +904,7 @@ const useUploadPlatformComplianceDocument = () => {
 											}, 3000)
 										}
 									}).catch(err => {
+										setUploadingComplianceDocumentPercentage(0);
 										setLoadingComplianceDocument(false);
 									})
 								});
@@ -890,6 +913,7 @@ const useUploadPlatformComplianceDocument = () => {
 						)
 					}
 				}).catch(err => {
+					setUploadingComplianceDocumentPercentage(0);
 					setLoadingComplianceDocument(false);
 				})
 			}
@@ -916,7 +940,7 @@ const useUploadPlatformComplianceCertificate = () => {
 	const [errorComplianceCertificate, setErrorComplianceCertificate] = useState(null);
 	const [successComplianceCertificate, setSuccessComplianceCertificate] = useState(null);
 
-	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/pdf", "image/PDF"];
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "application/pdf", "application/PDF"];
 	const maximum_file_size = 5 * 1024 * 1024;
 
 	const handleUploadComplianceCertificate = (e) => {
@@ -949,19 +973,23 @@ const useUploadPlatformComplianceCertificate = () => {
 					if (res.err) {
 						if (!res.error.response.data.success) {
 							const error = `${res.error.response.data.message}`;
+							setUploadingComplianceCertificatePercentage(0);
+							setLoadingComplianceCertificate(false);
 							setErrorComplianceCertificate(error);
 							setTimeout(function () {
 								setErrorComplianceCertificate(null);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
+							setUploadingComplianceCertificatePercentage(0);
+							setLoadingComplianceCertificate(false);
 							setErrorComplianceCertificate(error);
 							setTimeout(function () {
 								setErrorComplianceCertificate(null);
 							}, 2000)
 						}
 					} else {
-						const platform_file_rename = res.data.data[1].registration_certificate;
+						const platform_file_rename = res.data.data[0].registration_certificate;
 						let lastDot = selectedComplianceCertificate.name.lastIndexOf('.');
 						let ext = selectedComplianceCertificate.name.substring(lastDot + 1);
 
@@ -976,6 +1004,8 @@ const useUploadPlatformComplianceCertificate = () => {
 								setUploadingComplianceCertificatePercentage(progress);
 							},
 							(error) => {
+								setUploadingComplianceCertificatePercentage(0);
+								setLoadingComplianceCertificate(false);
 								setErrorComplianceCertificate("An error occured while uploading");
 								setTimeout(function () {
 									setErrorComplianceCertificate(null);
@@ -993,12 +1023,16 @@ const useUploadPlatformComplianceCertificate = () => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
+												setUploadingComplianceCertificatePercentage(0);
+												setLoadingComplianceCertificate(false);
 												setErrorComplianceCertificate(error);
 												setTimeout(function () {
 													setErrorComplianceCertificate(null);
 												}, 2000)
 											} else {
 												const error = `${res.error.code} - ${res.error.message}`;
+												setUploadingComplianceCertificatePercentage(0);
+												setLoadingComplianceCertificate(false);
 												setErrorComplianceCertificate(error);
 												setTimeout(function () {
 													setErrorComplianceCertificate(null);
@@ -1016,6 +1050,7 @@ const useUploadPlatformComplianceCertificate = () => {
 											}, 3000)
 										}
 									}).catch(err => {
+										setUploadingComplianceCertificatePercentage(0);
 										setLoadingComplianceCertificate(false);
 									})
 								});
@@ -1024,6 +1059,7 @@ const useUploadPlatformComplianceCertificate = () => {
 						)
 					}
 				}).catch(err => {
+					setUploadingComplianceCertificatePercentage(0);
 					setLoadingComplianceCertificate(false);
 				})
 			}

@@ -41,14 +41,25 @@ export default function MerchantProfile(){
 
     const handleSelectComplianceDocument = (e) =>{
         const el = e.target.files[0];
-        selectedComplianceDocument("");
-        selectedComplianceDocument(el);
+        setSelectedComplianceDocument("");
+        setSelectedComplianceDocument(el);
     }
 
     const handleSelectComplianceCertificate = (e) => {
         const el = e.target.files[0];
-        selectedComplianceCertificate("");
-        selectedComplianceCertificate(el);
+        setSelectedComplianceCertificate("");
+        setSelectedComplianceCertificate(el);
+    }
+
+    const getFileExtension = (filename) => {
+        let lastDot = filename.lastIndexOf('.');
+        let ext = filename.substring(lastDot + 1);
+        return ext;
+    }
+
+    const getFileNameAlone = (filename) => {
+        let _filename = filename.split("/");
+        return _filename[_filename.length - 1];
     }
 
     return(
@@ -116,48 +127,134 @@ export default function MerchantProfile(){
                 <p className="xui-font-sz-80 xui-my-1 xui-text-green"><span className="xui-font-w-bold psc-text-red">{successUpdateComplianceDetails}</span></p>
             </form>
             <div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-1 xui-grid-gap-2 xui-mt-2 xui-mb-2">
-                <form className="xui-form">
+                <form className="xui-form" onSubmit={handleUploadComplianceDocument}>
                     <div className="xui-form-box xui-w-fluid-100 xui-mt-3">
                         <label>Registration Document</label>
-                        <label for="registrationDocument">
+                        <label htmlFor="registrationDocument">
                             <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                 {
-                                    selectedComplianceDocument ? 
-                                    <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{wordBreak: "break-word"}}>{selectedComplianceDocument}</span> :
-                                    <>
-                                        <img className="xui-img-40" src={GalleryAdd} alt="" />
-                                        <span className="xui-font-sz-100 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
-                                    </>
-                                }
-                            </div>
-                        </label>
-                        <input onChange={handleSelectComplianceDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
-                        {/* <p className="xui-text-center xui-font-sz-80 xui-opacity-5 xui-mt-half">Click to change picture</p> */}
-                        <div className="xui-mt-1 xui-d-flex">
-                            <button className="xui-btn psc-btn-blue xui-font-sz-80">Save Changes</button>
-                        </div>
-                    </div>
-                </form>
-                <form className="xui-form">
-                    <div className="xui-form-box xui-w-fluid-100 xui-mt-3">
-                        <label>Registration Certificate</label>
-                        <label for="registrationCertificate">
-                            <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
-                                {
-                                    selectedComplianceCertificate ?
-                                        <span className="xui-font-sz-130 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceCertificate}</span> :
+                                    selectedComplianceDocument ?
+                                        <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceDocument.name}</span> :
                                         <>
-                                            <img className="xui-img-40" src={GalleryAdd} alt="" />
-                                            <span className="xui-font-sz-100 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
+                                            {
+                                                platformDetails ?
+                                                    (
+                                                        platformDetails.data.registration_document === null ?
+                                                            <img className="xui-img-50" src={GalleryAdd} alt="" /> :
+                                                            (
+                                                                getFileExtension(platformDetails.data.registration_document) === "pdf" || getFileExtension(platformDetails.data.registration_document) === "PDF" ?
+                                                                    <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{getFileNameAlone(platformDetails.data.registration_document)}</span> :
+                                                                    <img className="xui-img-300" src={platformDetails.data.registration_document} alt="Registration Document" />
+                                                            )
+                                                    ) :
+                                                    <img className="xui-img-50" src={GalleryAdd} alt="" />
+                                            }
+                                            <span className="xui-font-sz-90 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
                                         </>
                                 }
                             </div>
                         </label>
-                        <input onChange={handleSelectComplianceCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
-                        {/* <p className="xui-text-center xui-font-sz-80 xui-opacity-5 xui-mt-half">Click to change picture</p> */}
-                        <div className="xui-mt-1 xui-d-flex">
-                            <button className="xui-btn psc-btn-blue xui-font-sz-80">Save Changes</button>
+                        <input onClick={() => { if (platformDetails) DocumentSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
+                        <div className="xui-mt-1">
+                            {
+                                uploadingComplianceDocumentPercentage > 0 ?
+                                    <>
+                                        <label htmlFor="uploader">Uploading</label>
+                                        <progress className="xui-h-30" value={uploadingComplianceDocumentPercentage} id="uploader" max="100">{uploadingComplianceDocumentPercentage + "%"}</progress><br /><br></br>
+                                    </> :
+                                    ""
+                            }
+                            {
+                                loadingComplianceDocument ?
+                                    <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                        <Loading width="16" height="16" />
+                                    </button> : 
+                                        platformDetails ? 
+                                        (
+                                            <>
+                                                {
+                                                    platformDetails.data.verified ? 
+                                                    <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                                        Verified
+                                                    </button> : 
+                                                    <button type="submit" className="xui-btn psc-btn-blue xui-font-sz-80">
+                                                        Save Changes
+                                                    </button>
+                                                }
+                                            </>
+                                        ) :
+                                        <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                            Loading ...
+                                        </button>
+                            }
                         </div>
+                        <p className="xui-font-sz-80 xui-my-1 xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorComplianceDocument}</span></p>
+                        <p className="xui-font-sz-80 xui-my-1 xui-text-green"><span className="xui-font-w-bold psc-text-red">{successComplianceDocument}</span></p>
+                    </div>
+                </form>
+                <form className="xui-form" onSubmit={handleUploadComplianceCertificate}>
+                    <div className="xui-form-box xui-w-fluid-100 xui-mt-3">
+                        <label>Registration Certificate</label>
+                        <label htmlFor="registrationCertificate">
+                            <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
+                                {
+                                    selectedComplianceCertificate ?
+                                        <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceCertificate.name}</span> :
+                                        <>
+                                            {
+                                                platformDetails ?
+                                                (
+                                                    platformDetails.data.registration_certificate === null ?
+                                                    <img className="xui-img-50" src={GalleryAdd} alt="" /> :
+                                                    (
+                                                        getFileExtension(platformDetails.data.registration_certificate) === "pdf" || getFileExtension(platformDetails.data.registration_certificate) === "PDF" ? 
+                                                        <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{getFileNameAlone(platformDetails.data.registration_certificate)}</span> :
+                                                        <img className="xui-img-300" src={platformDetails.data.registration_certificate} alt="Registration Document" />
+                                                    )
+                                                ) :
+                                                <img className="xui-img-50" src={GalleryAdd} alt="" />
+                                            }
+                                            <span className="xui-font-sz-90 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
+                                        </>
+                                }
+                            </div>
+                        </label>
+                        <input onClick={() => { if (platformDetails) CertificateSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
+                        <div className="xui-mt-1">
+                            {
+                                uploadingComplianceCertificatePercentage > 0 ?
+                                    <>
+                                        <label htmlFor="uploader">Uploading</label>
+                                        <progress className="xui-h-30" value={uploadingComplianceCertificatePercentage} id="uploader" max="100">{uploadingComplianceCertificatePercentage + "%"}</progress><br /><br></br>
+                                    </> :
+                                    ""
+                            }
+                            {
+                                loadingComplianceCertificate ?
+                                    <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                        <Loading width="16" height="16" />
+                                    </button> : 
+                                    platformDetails ?
+                                        (
+                                            <>
+                                                {
+                                                    platformDetails.data.verified ?
+                                                        <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                                            Verified
+                                                        </button> :
+                                                        <button type="submit" className="xui-btn psc-btn-blue xui-font-sz-80">
+                                                            Save Changes
+                                                        </button>
+                                                }
+                                            </>
+                                        ) :
+                                        <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                            Loading ...
+                                        </button>
+                            }
+                        </div>
+                        <p className="xui-font-sz-80 xui-my-1 xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorComplianceCertificate}</span></p>
+                        <p className="xui-font-sz-80 xui-my-1 xui-text-green"><span className="xui-font-w-bold psc-text-red">{successComplianceCertificate}</span></p>
                     </div>
                 </form>
             </div>
