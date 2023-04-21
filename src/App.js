@@ -48,6 +48,7 @@ export default function App(){
           <Route path="*" element={<Navigate replace to={"dashboard"} />} />
         </Route>
         <Route path='/' element={<Access />}>
+          <Route index element={<SignUp />} />
           <Route path="signup" element={<SignUp />} />
           <Route path="access/:stripped" element={<SignIn />} />
           <Route path="reset-master-token" element={<ResetToken />} />

@@ -120,6 +120,9 @@ const updateMasterToken = async function (token) {
 		const response = await axios.put(
 			`${config.baseAPIurl}/platform/update/token`,
 			{
+
+			},
+			{
 				headers: {
 					'passcoder-access-token': token
 				}
@@ -136,6 +139,9 @@ const updateLiveApiKey = async function (token) {
 		const response = await axios.put(
 			`${config.baseAPIurl}/platform/update/live/api/key`,
 			{
+
+			},
+			{
 				headers: {
 					'passcoder-access-token': token
 				}
@@ -151,6 +157,9 @@ const updateTestApiKey = async function (token) {
 	try {
 		const response = await axios.put(
 			`${config.baseAPIurl}/platform/update/test/api/key`,
+			{
+
+			},
 			{
 				headers: {
 					'passcoder-access-token': token
@@ -176,7 +185,7 @@ const updateComplianceDetails = async function (token, payload) {
 				}
 			}
 		);
-		return { err: false, data: response.data };
+		return { err: false, data: response.data, response_code: response.status };
 	} catch (error) {
 		return { err: true, error };
 	}

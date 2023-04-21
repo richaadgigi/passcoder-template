@@ -15,7 +15,7 @@ const useBusinessSignUp = () => {
 	const [email, setEmail] = useState("");
 	const [description, setDescription] = useState("");
 	const [hospitality, setHospitality] = useState(false);
-	const [country, setCountry] = useState("");
+	const [country, setCountry] = useState(null);
 	const [terms_and_conditions, setTermsAndConditions] = useState(false);
 
 	// error & success prompts

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { 
@@ -8,21 +9,36 @@ import {
 
 const useUpdateName = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const [cookie, removeCookie] = useCookie(config.token, "");
 
 	const [loadingUpdateName, setLoadingUpdateName] = useState(false);
-	const [businessName, setBusinessName] = useState(null);
+	const [removeUpdateNameModal, setRemoveUpdateNameModal] = useState(null);
+	const [businessName, setBusinessName] = useState("");
 
 	const [errorUpdateName, setErrorUpdateName] = useState(null);
 	const [successUpdateName, setSuccessUpdateName] = useState(null);
 
 	const handleBusinessName = (e) => { e.preventDefault(); setBusinessName(e.target.value); };
 
+	const navigate = useNavigate();
+	
+	const strip_text = (text) => {
+		// Lower case everything
+		let string = text.toLowerCase();
+		// Make alphanumeric (removes all other characters)
+		string = string.replace(/[^a-z0-9_\s-]/g, "");
+		// Clean up multiple dashes or whitespaces
+		string = string.replace(/[\s-]+/g, " ");
+		// Convert whitespaces and underscore to dash
+		string = string.replace(/[\s_]/g, "-");
+		return string;
+	};
+
 	const handleUpdateName = (e) => {
 		e.preventDefault();
 
 		if (!loadingUpdateName) {
-			if (!businessName) {
+			if (businessName.length === 0) {
 				setErrorUpdateName(null);
 				setSuccessUpdateName(null);
 				setErrorUpdateName("Name is required");
@@ -68,6 +84,11 @@ const useUpdateName = () => {
 
 						setTimeout(function () {
 							setSuccessUpdateName(null);
+							setRemoveUpdateNameModal(true);
+							removeCookie();
+							navigate(`/access/${strip_text(businessName)}`);
+							window.location.reload(true);
+							setBusinessName("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -79,17 +100,19 @@ const useUpdateName = () => {
 	};
 
 	return {
-		cookie, businessName, loadingUpdateName, errorUpdateName, successUpdateName, handleUpdateName, handleBusinessName, setBusinessName,
+		cookie, businessName, loadingUpdateName, errorUpdateName, successUpdateName, handleUpdateName, handleBusinessName, setBusinessName, 
+		removeUpdateNameModal, setRemoveUpdateNameModal
 	};
 };
 
 const useUpdateEmail = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const [cookie, removeCookie] = useCookie(config.token, "");
 
 	const [loadingUpdateEmail, setLoadingUpdateEmail] = useState(false);
+	const [stripped, setStripped] = useState("");
 	const [removeUpdateEmailModal, setRemoveUpdateEmailModal] = useState(null);
-	const [businessEmail, setBusinessEmail] = useState(null);
+	const [businessEmail, setBusinessEmail] = useState("");
 
 	const [errorUpdateEmail, setErrorUpdateEmail] = useState(null);
 	const [successUpdateEmail, setSuccessUpdateEmail] = useState(null);
@@ -98,12 +121,15 @@ const useUpdateEmail = () => {
 	const validEmail = new RegExp(config.EMAIL_REGEX);
 
 	const handleBusinessEmail = (e) => { e.preventDefault(); setBusinessEmail(e.target.value); };
+	const handleStripped = (stripped) => { setStripped(stripped); };
+
+	const navigate = useNavigate();
 
 	const handleUpdateEmail = (e) => {
 		e.preventDefault();
 
 		if (!loadingUpdateEmail) {
-			if (!businessEmail) {
+			if (businessEmail.length === 0) {
 				setErrorUpdateEmail(null);
 				setSuccessUpdateEmail(null);
 				setErrorUpdateEmail("Email is required");
@@ -112,6 +138,11 @@ const useUpdateEmail = () => {
 				}, 2500)
 			} else if (!validEmail.test(businessEmail)) {
 				setErrorUpdateEmail("Invalid email");
+				setTimeout(function () {
+					setErrorUpdateEmail(null);
+				}, 2500)
+			} else if (stripped.length === 0) {
+				setErrorUpdateEmail("Unable to get platform details");
 				setTimeout(function () {
 					setErrorUpdateEmail(null);
 				}, 2500)
@@ -144,6 +175,11 @@ const useUpdateEmail = () => {
 
 						setTimeout(function () {
 							setSuccessUpdateEmail(null);
+							setRemoveUpdateEmailModal(true);
+							removeCookie();
+							navigate(`/access/${stripped}`);
+							window.location.reload(true);
+							setBusinessEmail("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -156,7 +192,7 @@ const useUpdateEmail = () => {
 
 	return {
 		cookie, businessEmail, loadingUpdateEmail, errorUpdateEmail, successUpdateEmail, handleUpdateEmail, handleBusinessEmail, setBusinessEmail, 
-		removeUpdateEmailModal, setRemoveUpdateEmailModal
+		removeUpdateEmailModal, setRemoveUpdateEmailModal, handleStripped
 	};
 };
 
@@ -165,7 +201,7 @@ const useUpdateDescription = () => {
 	const [cookie] = useCookie(config.token, "");
 
 	const [loadingUpdateDescription, setLoadingUpdateDescription] = useState(false);
-	const [businessDescription, setBusinessDescription] = useState(null);
+	const [businessDescription, setBusinessDescription] = useState("");
 
 	const [errorUpdateDescription, setErrorUpdateDescription] = useState(null);
 	const [successUpdateDescription, setSuccessUpdateDescription] = useState(null);
@@ -176,7 +212,7 @@ const useUpdateDescription = () => {
 		e.preventDefault();
 
 		if (!loadingUpdateDescription) {
-			if (businessDescription.length < 3) {
+			if (businessDescription.length === 0) {
 				setErrorUpdateDescription(null);
 				setSuccessUpdateDescription(null);
 				setErrorUpdateDescription("Description is required");
@@ -222,6 +258,7 @@ const useUpdateDescription = () => {
 
 						setTimeout(function () {
 							setSuccessUpdateDescription(null);
+							setBusinessDescription("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -357,7 +394,12 @@ const useUpdateComplianceDetails = () => {
 				setTimeout(function () {
 					setErrorUpdateComplianceDetails(null);
 				}, 2500)
-			} else if (companyWebsiteUrl && !validate_url(companyWebsiteUrl)) {
+			} else if (!companyWebsiteUrl) {
+				setErrorUpdateComplianceDetails("Website Url is required");
+				setTimeout(function () {
+					setErrorUpdateComplianceDetails(null);
+				}, 2500)
+			} else if (!validate_url(companyWebsiteUrl)) {
 				setErrorUpdateComplianceDetails("Invalid Website Url");
 				setTimeout(function () {
 					setErrorUpdateComplianceDetails(null);
@@ -393,8 +435,11 @@ const useUpdateComplianceDetails = () => {
 					} else {
 						setErrorUpdateComplianceDetails(null);
 						setSuccessUpdateComplianceDetails(`Compliance details edited successfully!`);
-						// setSuccessUpdateComplianceDetails(`${res.data.data.message}`);
-						console.log(res.data);
+						if (res.response_code === 200) {
+							setSuccessUpdateComplianceDetails(`Compliance details verified successfully!`);
+						} else {
+							setSuccessUpdateComplianceDetails(`Compliance details edited successfully!`);
+						}
 
 						setTimeout(function () {
 							setSuccessUpdateComplianceDetails(null);
@@ -418,13 +463,18 @@ const useUpdateComplianceDetails = () => {
 
 const useResetMasterToken = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const [cookie, removeCookie] = useCookie(config.token, "");
 
 	const [loadingResetMasterToken, setLoadingResetMasterToken] = useState(false);
+	const [stripped, setStripped] = useState("");
 	const [removeResetMasterTokenModal, setRemoveResetMasterTokenModal] = useState(null);
 
 	const [errorResetMasterToken, setErrorResetMasterToken] = useState(null);
 	const [successResetMasterToken, setSuccessResetMasterToken] = useState(null);
+
+	const handleStripped = (stripped) => { setStripped(stripped); };
+
+	const navigate = useNavigate();
 
 	const handleResetMasterToken = () => {
 
@@ -456,6 +506,9 @@ const useResetMasterToken = () => {
 					setTimeout(function () {
 						setSuccessResetMasterToken(null);
 						setRemoveResetMasterTokenModal(true);
+						removeCookie();
+						navigate(`/access/${stripped}`);
+						window.location.reload(true);
 					}, 2500)
 				}
 			}).catch(err => {
@@ -466,7 +519,7 @@ const useResetMasterToken = () => {
 
 	return {
 		cookie, loadingResetMasterToken, removeResetMasterTokenModal, errorResetMasterToken, successResetMasterToken,
-		handleResetMasterToken, setRemoveResetMasterTokenModal,
+		handleResetMasterToken, setRemoveResetMasterTokenModal, handleStripped
 	};
 };
 

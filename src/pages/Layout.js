@@ -1,5 +1,4 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
 import Logo from '../assets/images/logo-white.png';
 import Category from '../icons/Category';
 import Swap from '../icons/Swap';
@@ -8,14 +7,14 @@ import Wallet from '../icons/Wallet';
 import Setting from '../icons/Setting';
 import Logout from '../icons/Logout';
 import { config } from "../config";
-import { getPlatform } from "../api/platform";
 import useCookie from "../hooks/useCookie";
+import { useGetPlatform } from "../hooks/usePlatform";
 import Loading from "../icons/Loading";
 import '../assets/css/style.css';
 
-function Truncate(string, len){
-    return string.substring(0, len) + '...';
-}
+// function Truncate(string, len){
+//     return string.substring(0, len) + '...';
+// }
 
 export default function Layout(){
     const loc = useLocation();
@@ -23,18 +22,8 @@ export default function Layout(){
     const _stripped = pathname.replace("/", "");
     const stripped = _stripped.split("/")[0];
     
-    const [cookie, removeCookie] = useCookie(config.token, "");
-    const [platformDetails, setPlatformDetails] = useState(null);
-
-    useEffect(() => {
-        async function getPlatformDetails() {
-            const response = await getPlatform(cookie);
-            setPlatformDetails(response.data);
-        }
-        if (platformDetails === null) {
-            getPlatformDetails();
-        }
-    }, [platformDetails]);
+    const [removeCookie] = useCookie(config.token, "");
+    const { platformDetails } = useGetPlatform();
 
     return(
         <>
@@ -108,7 +97,7 @@ export default function Layout(){
                     <span>Settings</span>
                 </div>
             </Link> 
-            <div onClick={removeCookie} className="bottom-fixed xui-mt--5">
+            <div onClick={() => removeCookie} className="bottom-fixed xui-mt--5">
                 <Link to={`/access/${stripped}`} className="xui-text-inherit link-box xui-font-sz-90 xui-opacity-6">
                     <div className="icon">
                         <Logout width="20" height="20" />

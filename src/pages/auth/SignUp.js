@@ -80,8 +80,8 @@ export default function SignUp(){
 								}
 							</button>
 						</div>
-						<p className="xui-font-sz-80 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorVerificationEmail}</span></p>
-						<p className="xui-font-sz-80 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successVerificationEmail}</span></p>
+						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorVerificationEmail}</span></p>
+						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successVerificationEmail}</span></p>
 					</div>
 				}
 			</div>

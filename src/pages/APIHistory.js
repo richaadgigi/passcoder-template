@@ -83,61 +83,72 @@ export default function APIHistory(){
                                                         <tr className='' key={i}>
                                                             <td className='xui-opacity-5'>
                                                                 <div className='xui-d-inline-flex xui-flex-ai-center'>
-                                                                    <p>{data.user_data.firstname} {data.user_data.lastname} ({data.user_data.pid})</p>
+                                                                    <p>{data.user_data ? data.user_data.firstname : "Null"} {data.user_data ? data.user_data.lastname : "Null"} ({data.user_data ? data.user_data.pid : ""})</p>
                                                                 </div>
                                                             </td>
                                                             <td className='xui-opacity-5'>
                                                                 {
-                                                                    data.user_data.star === 0 ?
+                                                                    data.user_data ?
+                                                                        (
+                                                                            <span>
+
+                                                                                {
+                                                                                    data.user_data.star === 0 ?
+                                                                                        <div className=''>
+                                                                                            <p>No star</p>
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                                {
+                                                                                    data.user_data.star === 1 ?
+                                                                                        <div className=''>
+                                                                                            <Star width="18" height="18" />
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                                {
+                                                                                    data.user_data.star === 2 ?
+                                                                                        <div className=''>
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                                {
+                                                                                    data.user_data.star === 3 ?
+                                                                                        <div className=''>
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                                {
+                                                                                    data.user_data.star === 4 ?
+                                                                                        <div className=''>
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                                {
+                                                                                    data.user_data.star === 5 ?
+                                                                                        <div className=''>
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                            <Star width="18" height="18" />
+                                                                                        </div>
+                                                                                        : ""
+                                                                                }
+                                                                            </span>
+                                                                        ) :
                                                                         <div className=''>
                                                                             <p>No star</p>
                                                                         </div>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    data.user_data.star === 1 ?
-                                                                        <div className=''>
-                                                                            <Star width="18" height="18" />
-                                                                        </div>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    data.user_data.star === 2 ?
-                                                                        <div className=''>
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                        </div>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    data.user_data.star === 3 ?
-                                                                        <div className=''>
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                        </div>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    data.user_data.star === 4 ?
-                                                                        <div className=''>
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                        </div>
-                                                                        : ""
-                                                                }
-                                                                {
-                                                                    data.user_data.star === 5 ?
-                                                                        <div className=''>
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                            <Star width="18" height="18" />
-                                                                        </div>
-                                                                        : ""
                                                                 }
                                                             </td>
                                                             <td className='xui-opacity-5'>{data.model}</td>
