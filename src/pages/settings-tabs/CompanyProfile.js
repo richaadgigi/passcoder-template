@@ -104,17 +104,22 @@ export default function MerchantProfile(){
                     {
                         platformDetails ? 
                         (
-                            platformDetails.data.verified ? 
+                            platformDetails.data.registration_document === null || platformDetails.data.registration_certificate === null ? 
                             <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
-                                Verified
-                            </button> :
-                            <button className="xui-btn psc-btn-blue xui-font-sz-80">
-                                {
-                                    loadingUpdateComplianceDetails ?
-                                        <Loading width="16" height="16" />
-                                        : "Save Changes"
-                                }
-                            </button>
+                                Upload Documents
+                            </button> : (
+                                platformDetails.data.verified ? 
+                                <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
+                                    Verified
+                                </button> :
+                                <button className="xui-btn psc-btn-blue xui-font-sz-80">
+                                    {
+                                        loadingUpdateComplianceDetails ?
+                                            <Loading width="16" height="16" />
+                                            : "Save Changes"
+                                    }
+                                </button>
+                            )
                         ) :
                         <button disabled className="xui-btn psc-btn-blue xui-font-sz-80">
                             Loading ...
@@ -176,7 +181,7 @@ export default function MerchantProfile(){
                                                         Verified
                                                     </button> : 
                                                     <button type="submit" className="xui-btn psc-btn-blue xui-font-sz-80">
-                                                        Save Changes
+                                                        Upload
                                                     </button>
                                                 }
                                             </>
@@ -241,7 +246,7 @@ export default function MerchantProfile(){
                                                             Verified
                                                         </button> :
                                                         <button type="submit" className="xui-btn psc-btn-blue xui-font-sz-80">
-                                                            Save Changes
+                                                            Upload
                                                         </button>
                                                 }
                                             </>
