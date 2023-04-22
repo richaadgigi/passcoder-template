@@ -6,7 +6,7 @@ import Loading from "../../icons/Loading";
 import Close from "../../icons/Close";
 
 export default function ApiPricing(){
-    const [cookie] = useCookie(config.token, "");
+    const {cookie} = useCookie(config.token, "");
     const [apiPricing, setApiPricing] = useState(null);
     const [errorApiPricing, setErrorApiPricing] = useState(null);
     const [loadingApiPricing, setLoadingApiPricing] = useState(false);

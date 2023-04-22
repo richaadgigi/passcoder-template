@@ -12,7 +12,7 @@ import Loading from "../icons/Loading";
 import Close from "../icons/Close";
 
 export default function APIHistory(){
-    const [cookie] = useCookie(config.token, "");
+    const {cookie} = useCookie(config.token, "");
     const [allHistory, setAllHistory] = useState(null);
     const [errorAllHistory, setErrorAllHistory] = useState(null);
     const [loadingAllHistory, setLoadingAllHistory] = useState(false);

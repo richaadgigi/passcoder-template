@@ -12,8 +12,11 @@ import { getPlatformBalance, getCompanyBankAccount } from "../api/platform";
 import Loading from "../icons/Loading";
 import { useAddDeposit, useCancelDeposit } from "../hooks/useTransactions";
 import Cancel from "../icons/Cancel";
+import Copy from "../icons/Copy";
 
 export default function Wallet(){
+    const [copiedAccountNumber, setCopiedAccountNumber] = useState(false);
+
     const {
         cookie, errorAddDeposit, fundingAmount, fundingPaymentMethod, handleFundingAmount, handleFundingPaymentMethod, 
         handleSubmit, loading, removeFundingModal, successAddDeposit, setRemoveFundingModal
@@ -94,6 +97,18 @@ export default function Wallet(){
         getAllTransactions();
         setRemoveCancelDepositModal(null);
     }
+
+    const copyText = (text) => {
+        navigator.clipboard.writeText(text);
+    };
+
+    const copyAccountNumber = (accountNumber) => {
+        copyText(accountNumber);
+        setCopiedAccountNumber(true);
+        setTimeout(function () {
+            setCopiedAccountNumber(false);
+        }, 2000)
+    };
     return(
         <>
             <Screen aside="false" navbar="false">
@@ -127,7 +142,16 @@ export default function Wallet(){
                                             </div>
                                             <div>
                                                 <span className="xui-font-sz-75 xui-opacity-5">Account Number</span>
-                                                <h3 className="xui-font-sz-90 xui-font-w-normal xui-mt-half">{companyBankDetails.data.acc_number}</h3>
+                                                <h3 className="xui-font-sz-90 xui-font-w-normal xui-mt-half">
+                                                    {companyBankDetails.data.acc_number}
+                                                    {
+                                                        companyBankDetails ?
+                                                            <span className="xui-cursor-pointer xui-ml-1" onClick={() => { if (companyBankDetails) copyAccountNumber(companyBankDetails.data.acc_number); }}>
+                                                                {copiedAccountNumber ? <Check width="16" height="16" /> : <Copy width="16" height="16" />}
+                                                            </span> :
+                                                            ""
+                                                    }
+                                                </h3>
                                             </div>
                                         </div>
                                         <div className="xui-mt-2">

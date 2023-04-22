@@ -29,20 +29,19 @@ const resetItem = () => {
  * @param {String} defaultValue The default value to return in case the cookie doesn't exist
  */
 const useCookie = (key, defaultValue) => {
-    const getCookie = () => getItem(key) || defaultValue;
+    const getCookie = () => getItem(key) || null;
     const [cookie, setCookie] = useState(getCookie());
 
-    const updateCookie = (value, numberOfDays) => {
+    async function updateCookie (value, numberOfDays)  {
         setCookie(value);
         setItem(key, value, numberOfDays);
     };
 
-    const removeCookie = () => {
+    async function removeCookie() {
         resetItem(); 
-        window.location.reload(true);
     };
 
-    return [cookie, updateCookie, removeCookie];
+    return { cookie, updateCookie, removeCookie };
 };
 
 export default useCookie;

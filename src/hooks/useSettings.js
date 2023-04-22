@@ -12,7 +12,7 @@ import {
 
 const useUpdateName = () => {
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingUpdateName, setLoadingUpdateName] = useState(false);
 	const [removeUpdateNameModal, setRemoveUpdateNameModal] = useState(null);
@@ -110,7 +110,7 @@ const useUpdateName = () => {
 
 const useUpdateEmail = () => {
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingUpdateEmail, setLoadingUpdateEmail] = useState(false);
 	const [stripped, setStripped] = useState("");
@@ -201,7 +201,7 @@ const useUpdateEmail = () => {
 
 const useUpdateDescription = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingUpdateDescription, setLoadingUpdateDescription] = useState(false);
 	const [businessDescription, setBusinessDescription] = useState("");
@@ -279,7 +279,7 @@ const useUpdateDescription = () => {
 
 const useUpdateComplianceDetails = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingUpdateComplianceDetails, setLoadingUpdateComplianceDetails] = useState(false);
 	const [companyName, setCompanyName] = useState(null);
@@ -466,7 +466,7 @@ const useUpdateComplianceDetails = () => {
 
 const useResetMasterToken = () => {
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingResetMasterToken, setLoadingResetMasterToken] = useState(false);
 	const [stripped, setStripped] = useState("");
@@ -528,7 +528,7 @@ const useResetMasterToken = () => {
 
 const useResetLiveApiKey = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingResetLiveApiKey, setLoadingResetLiveApiKey] = useState(false);
 	const [removeResetLiveApiKeyModal, setRemoveResetLiveApiKeyModal] = useState(null);
@@ -582,7 +582,7 @@ const useResetLiveApiKey = () => {
 
 const useResetTestApiKey = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingResetTestApiKey, setLoadingResetTestApiKey] = useState(false);
 	const [removeResetTestApiKeyModal, setRemoveResetTestApiKeyModal] = useState(null);
@@ -638,7 +638,7 @@ const useUploadPlatformProfilePhoto = () => {
 
 	const storage = getStorage(app);
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingProfilePhoto, setLoadingProfilePhoto] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");
@@ -784,7 +784,7 @@ const useUploadPlatformComplianceDocument = () => {
 
 	const storage = getStorage(app);
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingComplianceDocument, setLoadingComplianceDocument] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");
@@ -930,7 +930,7 @@ const useUploadPlatformComplianceCertificate = () => {
 
 	const storage = getStorage(app);
 
-	const [cookie, removeCookie] = useCookie(config.token, "");
+	const {cookie, removeCookie} = useCookie(config.token, "");
 
 	const [loadingComplianceCertificate, setLoadingComplianceCertificate] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");

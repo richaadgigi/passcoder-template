@@ -15,7 +15,7 @@ import Copy from "../icons/Copy";
 import Check from "../icons/Check";
 
 export default function Dashboard(){
-    const [cookie] = useCookie(config.token, "");
+    const {cookie} = useCookie(config.token, "");
     const [copiedAccessUrl, setCopiedAccessURL] = useState(false);
     const [recentHistory, setRecentHistory] = useState(null);
     const [errorRecentHistory, setErrorRecentHistory] = useState(null);
@@ -90,7 +90,7 @@ export default function Dashboard(){
                             <a href={platformDetails ? platformDetails.data.access_url : ""} className='xui-cursor-pointer psc-text'>{platformDetails ? platformDetails.data.access_url : "..."}</a> 
                             {
                                 platformDetails ? 
-                                <span className="xui-cursor-pointer" onClick={() => { if (platformDetails) copyAccessURL(platformDetails.data.access_url); }}>
+                                <span className="xui-cursor-pointer xui-ml-1" onClick={() => { if (platformDetails) copyAccessURL(platformDetails.data.access_url); }}>
                                     {copiedAccessUrl ? <Check width="16" height="16" /> : <Copy width="16" height="16" />}
                                 </span> : 
                                 ""

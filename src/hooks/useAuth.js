@@ -183,7 +183,7 @@ const useLoginViaEmail = () => {
     const [errorLogin, setErrorLogin] = useState(null);
     const [successLogin, setSuccessLogin] = useState(null);
 
-    const [cookie, updateCookie] = useCookie(config.token, "");
+    const {cookie, updateCookie} = useCookie(config.token, "");
 
     const navigate = useNavigate();
 
@@ -327,7 +327,7 @@ const useLoginViaToken = () => {
 	const [errorTokenLogin, setErrorTokenLogin] = useState(null);
 	const [successTokenLogin, setSuccessTokenLogin] = useState(null);
 
-	const [cookie, updateCookie] = useCookie(config.token, "");
+	const {cookie, updateCookie} = useCookie(config.token, "");
 
 	const navigate = useNavigate();
 

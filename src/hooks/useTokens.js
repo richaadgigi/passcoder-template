@@ -5,7 +5,7 @@ import { addPlatformToken, deleteToken, updateToken, updateTokenDetails } from "
 
 const useAddToken = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loading, setLoading] = useState(false);
 	const [removeAddTokenModal, setRemoveAddTokenModal] = useState(null);
@@ -109,7 +109,7 @@ const useAddToken = () => {
 
 const useResetToken = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingResetToken, setLoadingResetToken] = useState(false);
 	const [removeResetTokenModal, setRemoveResetTokenModal] = useState(null);
@@ -177,7 +177,7 @@ const useResetToken = () => {
 
 const useEditToken = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingEditToken, setLoadingEditToken] = useState(false);
 	const [removeEditTokenModal, setRemoveEditTokenModal] = useState(null);
@@ -285,7 +285,7 @@ const useEditToken = () => {
 
 const useDeleteToken = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingDeleteToken, setLoadingDeleteToken] = useState(false);
 	const [removeDeleteTokenModal, setRemoveDeleteTokenModal] = useState(null);

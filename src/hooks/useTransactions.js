@@ -5,7 +5,7 @@ import { addPlatformDeposit, cancelPlatformDeposit, completePlatformDeposit, del
 
 const useAddDeposit = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const general_min_amount = 1000;
 	const credit_card_max_amount = 20000;
@@ -106,7 +106,7 @@ const useAddDeposit = () => {
 
 const useCancelDeposit = () => {
 
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingCancelDeposit, setLoadingCancelDeposit] = useState(false);
 	const [removeCancelDepositModal, setRemoveCancelDepositModal] = useState(null);

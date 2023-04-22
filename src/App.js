@@ -14,7 +14,7 @@ import ResetToken from "./pages/auth/ResetToken";
 import VerifyEmail from "./pages/auth/VerifyEmail";
 
 export default function App(){
-  const [cookie] = useCookie(config.token, "");
+  const {cookie} = useCookie(config.token, "");
   
   return(
     <BrowserRouter>

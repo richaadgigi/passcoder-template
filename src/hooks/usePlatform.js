@@ -4,7 +4,7 @@ import { config } from "../config";
 import { getPlatform, getPlatformMetrics } from "../api/platform";
 
 const useGetPlatform = () => {
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [platformDetails, setPlatformDetails] = useState(null);
 
@@ -23,7 +23,7 @@ const useGetPlatform = () => {
 };
 
 const useGetPlatformMetrics = () => {
-	const [cookie] = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [platformMetrics, setPlatformMetricsDetails] = useState(null);
 
