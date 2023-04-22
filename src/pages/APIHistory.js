@@ -12,7 +12,7 @@ import Loading from "../icons/Loading";
 import Close from "../icons/Close";
 
 export default function APIHistory(){
-    const {cookie} = useCookie(config.token, "");
+    const { cookie, forceLogout } = useCookie(config.token, "");
     const [allHistory, setAllHistory] = useState(null);
     const [errorAllHistory, setErrorAllHistory] = useState(null);
     const [loadingAllHistory, setLoadingAllHistory] = useState(false);
@@ -36,6 +36,7 @@ export default function APIHistory(){
         setLoadingAllHistory(true);
         const response = await getApiHistory(cookie, (_page || page), (_size || size));
         setAllHistory(response.data);
+        if (response.response_code >= 400 && response.response_code < 500) forceLogout();
         if (response.error) setErrorAllHistory(response.error.response.data.message);
         setLoadingAllHistory(false);
     };

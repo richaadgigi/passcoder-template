@@ -16,7 +16,7 @@ const getAppUsers = async function (token) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 

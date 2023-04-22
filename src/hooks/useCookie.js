@@ -6,7 +6,6 @@ const getItem = key =>
         const item = currentCookie.split("=");
         const storedKey = item[0];
         const storedValue = item[1];
-
         return key === storedKey ? decodeURIComponent(storedValue) : total;
     }, "");
 
@@ -19,8 +18,8 @@ const setItem = (key, value, numberOfDays) => {
     document.cookie = `${key}=${value}; expires=${now.toUTCString()}; path=/`;
 };
 
-const resetItem = () => {
-    document.cookie = `${config.token}=; expires=Thu, 01 Jan 1970 00:00:00 UTC`;
+async function resetItem() {
+    document.cookie = `${config.token}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
 };
 
 /**
@@ -38,10 +37,15 @@ const useCookie = (key, defaultValue) => {
     };
 
     async function removeCookie() {
-        resetItem(); 
+        resetItem();
     };
 
-    return { cookie, updateCookie, removeCookie };
+    async function forceLogout() {
+        resetItem();
+        window.location.reload(true);
+    };
+
+    return { cookie, updateCookie, removeCookie, forceLogout };
 };
 
 export default useCookie;

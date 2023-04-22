@@ -17,7 +17,7 @@ const getApiHistory = async function (token, page, size) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 

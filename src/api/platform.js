@@ -30,7 +30,7 @@ const getPlatform = async function (token) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 
@@ -49,7 +49,7 @@ const getPlatformMetrics = async function (token) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 
@@ -68,7 +68,7 @@ const getPlatformBalance = async function (token) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 

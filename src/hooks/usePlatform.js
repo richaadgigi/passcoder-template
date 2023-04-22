@@ -4,13 +4,14 @@ import { config } from "../config";
 import { getPlatform, getPlatformMetrics } from "../api/platform";
 
 const useGetPlatform = () => {
-	const {cookie} = useCookie(config.token, "");
+	const {cookie, forceLogout} = useCookie(config.token, "");
 
 	const [platformDetails, setPlatformDetails] = useState(null);
 
 	async function getPlatformDetails() {
 		const response = await getPlatform(cookie);
 		setPlatformDetails(response.data);
+		if (response.response_code >= 400 && response.response_code < 500) forceLogout();
 	}
 
 	useEffect(() => {

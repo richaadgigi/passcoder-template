@@ -47,13 +47,13 @@ export default function AccountProfile(){
     if (removeUpdateEmailModal) {
         const modalResponse = document.querySelector("#confirmEmailUpdate");
         modalResponse.setAttribute("display", false);
-        getPlatformDetails();
+        callGetPlatformDetails(); 
         setRemoveUpdateEmailModal(null);
     }
     if (removeUpdateNameModal) {
         const modalResponse = document.querySelector("#confirmNameUpdate");
         modalResponse.setAttribute("display", false);
-        getPlatformDetails();
+        callGetPlatformDetails(); 
         setRemoveUpdateNameModal(null);
     }
 

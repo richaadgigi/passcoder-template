@@ -17,7 +17,7 @@ const getPlatformTransactions = async function (token, page, size) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 
@@ -38,7 +38,7 @@ const getPlatformTransactionsViaType = async function (token, page, size, payloa
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 
@@ -59,7 +59,7 @@ const getPlatformTransactionsViaStatus = async function (token, page, size, payl
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 
@@ -78,7 +78,7 @@ const getPlatformTransaction = async function (token, payload) {
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
-		return { err: true, error };
+		return { err: true, error, response_code: error.response.status };
 	}
 };
 

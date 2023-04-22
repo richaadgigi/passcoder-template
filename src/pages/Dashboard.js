@@ -15,14 +15,14 @@ import Copy from "../icons/Copy";
 import Check from "../icons/Check";
 
 export default function Dashboard(){
-    const {cookie} = useCookie(config.token, "");
+    const { cookie } = useCookie(config.token, "");
     const [copiedAccessUrl, setCopiedAccessURL] = useState(false);
     const [recentHistory, setRecentHistory] = useState(null);
     const [errorRecentHistory, setErrorRecentHistory] = useState(null);
     const [loadingRecentHistory, setLoadingRecentHistory] = useState(false);
 
-    const { getPlatformDetails, platformDetails } = useGetPlatform();
-    const { getPlatformMetricsDetails, platformMetrics } = useGetPlatformMetrics();
+    const { platformDetails } = useGetPlatform();
+    const { platformMetrics } = useGetPlatformMetrics();
 
     const [size, setSize] = useState(20);
     const [page, setPage] = useState(1);

@@ -11,7 +11,7 @@ export default function MerchantProfile(){
         companyAddress, companyEmail, companyName, companyRcNumber, companyType, companyWebsiteUrl, errorUpdateComplianceDetails,
         handleCompanyAddress, handleCompanyEmail, handleCompanyName, handleCompanyRcNumber, handleCompanyType, handleCompanyWebsiteUrl, 
         handleUpdateComplianceDetails, loadingUpdateComplianceDetails, successUpdateComplianceDetails, 
-        setCompanyAddress, setCompanyEmail, setCompanyName, setCompanyRcNumber, setCompanyType, setCompanyWebsiteUrl
+        setCompanyAddress, setCompanyEmail, setCompanyName, setCompanyRcNumber, setCompanyWebsiteUrl
     } = useUpdateComplianceDetails();
 
     const { getPlatformDetails, platformDetails } = useGetPlatform();

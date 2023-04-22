@@ -75,19 +75,19 @@ export default function ApiKeys(){
     if (removeResetLiveApiKeyModal) {
         const modalResponse = document.querySelector("#resetLiveApiKey");
         modalResponse.setAttribute("display", false);
-        getPlatformDetails();
+        callGetPlatformDetails(); 
         setRemoveResetLiveApiKeyModal(null);
     }
     if (removeResetTestApiKeyModal) {
         const modalResponse = document.querySelector("#resetTestApiKey");
         modalResponse.setAttribute("display", false);
-        getPlatformDetails();
+        callGetPlatformDetails(); 
         setRemoveResetTestApiKeyModal(null);
     }
     if (removeResetMasterTokenModal) {
         const modalResponse = document.querySelector("#resetMasterToken");
         modalResponse.setAttribute("display", false);
-        getPlatformDetails();
+        callGetPlatformDetails(); 
         setRemoveResetMasterTokenModal(null);
     }
 

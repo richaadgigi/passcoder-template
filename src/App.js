@@ -21,27 +21,27 @@ export default function App(){
       <Routes>
         <Route path='/:stripped' element={<Layout />}>
           <Route path="dashboard" element={
-            !cookie || cookie === '[object Object]' ?
+            !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<Dashboard />)
           } />
           <Route path="api-history" element={
-            !cookie || cookie === '[object Object]' ?
+            !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<APIHistory />)
           } />
           <Route path="wallet" element={
-            !cookie || cookie === '[object Object]' ?
+            !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<Wallet />)
           } />
           <Route path="teams" element={
-            !cookie || cookie === '[object Object]' ?
+            !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<Teams />)
           } />
           <Route path="settings" element={
-            !cookie || cookie === '[object Object]' ?
+            !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<Settings />)
           } />

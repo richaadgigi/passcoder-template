@@ -7,6 +7,8 @@ import Arrowleft from '../icons/Arrowleft';
 import Close from "../icons/Close";
 import Check from "../icons/Check";
 import Filter from "../icons/Filter";
+import useCookie from "../hooks/useCookie";
+import { config } from "../config";
 import { getPlatformTransactions, getPlatformTransaction, getPlatformTransactionsViaStatus, getPlatformTransactionsViaType } from "../api/transactions";
 import { getPlatformBalance, getCompanyBankAccount } from "../api/platform";
 import Loading from "../icons/Loading";
@@ -15,10 +17,11 @@ import Cancel from "../icons/Cancel";
 import Copy from "../icons/Copy";
 
 export default function Wallet(){
+    const { cookie, forceLogout } = useCookie(config.token, "");
     const [copiedAccountNumber, setCopiedAccountNumber] = useState(false);
 
     const {
-        cookie, errorAddDeposit, fundingAmount, fundingPaymentMethod, handleFundingAmount, handleFundingPaymentMethod, 
+        errorAddDeposit, fundingAmount, fundingPaymentMethod, handleFundingAmount, handleFundingPaymentMethod, 
         handleSubmit, loading, removeFundingModal, successAddDeposit, setRemoveFundingModal
     } = useAddDeposit();
 
@@ -57,6 +60,7 @@ export default function Wallet(){
     async function getPlatformBalanceAlt() {
         const response = await getPlatformBalance(cookie);
         setPlatformBalance(response.data);
+        if (response.response_code >= 400 && response.response_code < 500) forceLogout();
     };
     async function getAllTransactions(_page, _size) {
         setLoadingAllTransactions(true);

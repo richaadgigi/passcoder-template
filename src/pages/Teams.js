@@ -5,6 +5,8 @@ import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
 import {  getPlatformTokens } from "../api/tokens";
+import useCookie from "../hooks/useCookie";
+import { config } from "../config";
 import { useAddToken, useDeleteToken, useEditToken, useResetToken } from "../hooks/useTokens";
 import Loading from "../icons/Loading";
 import Close from "../icons/Close";
@@ -14,8 +16,9 @@ import Reset from "../icons/Reset";
 import Check from "../icons/Check";
 
 export default function Teams() {
+	const { cookie, forceLogout } = useCookie(config.token, "");
 	const {
-		cookie, alias, errorAddToken, expiration, handleAlias, handleExpiration, handleSubmit, handleValid, loading,
+		alias, errorAddToken, expiration, handleAlias, handleExpiration, handleSubmit, handleValid, loading,
 		removeAddTokenModal, setRemoveAddTokenModal, successAddToken, valid
 	} = useAddToken();
 
@@ -63,6 +66,7 @@ export default function Teams() {
 		setLoadingAllTokens(true);
 		const response = await getPlatformTokens(cookie, (_page || page), (_size || size));
 		setAllTokens(response.data);
+		if (response.response_code >= 400 && response.response_code < 500) forceLogout();
 		if (response.error) setErrorAllTokens(response.error.response.data.message);
 		setLoadingAllTokens(false);
 	};

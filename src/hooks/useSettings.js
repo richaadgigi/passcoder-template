@@ -638,7 +638,7 @@ const useUploadPlatformProfilePhoto = () => {
 
 	const storage = getStorage(app);
 
-	const {cookie, removeCookie} = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingProfilePhoto, setLoadingProfilePhoto] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");
@@ -784,7 +784,7 @@ const useUploadPlatformComplianceDocument = () => {
 
 	const storage = getStorage(app);
 
-	const {cookie, removeCookie} = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingComplianceDocument, setLoadingComplianceDocument] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");
@@ -930,7 +930,7 @@ const useUploadPlatformComplianceCertificate = () => {
 
 	const storage = getStorage(app);
 
-	const {cookie, removeCookie} = useCookie(config.token, "");
+	const {cookie} = useCookie(config.token, "");
 
 	const [loadingComplianceCertificate, setLoadingComplianceCertificate] = useState(false);
 	const [platformUniqueId, setPlatformUniqueId] = useState("");

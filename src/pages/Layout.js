@@ -25,7 +25,7 @@ export default function Layout(){
     const _stripped = pathname.replace("/", "");
     const stripped = _stripped.split("/")[0];
     
-    const {removeCookie} = useCookie(config.token, "");
+    const { removeCookie } = useCookie(config.token, "");
     const { platformDetails } = useGetPlatform();
 
     const navigate = useNavigate();
@@ -34,9 +34,8 @@ export default function Layout(){
 
     const handleLogout = () => {
         setLoadingLogout(true);
+        removeCookie();
         setTimeout(function () {
-            removeCookie();
-            window.location.reload(true);
             navigate(`/access/${stripped}`);
         }, 1500)
     }
@@ -114,11 +113,11 @@ export default function Layout(){
                             </div>
                         </Link> 
                         <div xui-modal-open="logoutModal" className="bottom-fixed xui-mt--5 xui-cursor-pointer">
-                            <div className="xui-text-inherit link-box xui-font-sz-90 xui-opacity-6">
-                                <div className="icon">
+                            <div xui-modal-open="logoutModal" className="xui-text-inherit link-box xui-font-sz-90 xui-opacity-6">
+                                <div xui-modal-open="logoutModal" className="icon">
                                     <Logout width="20" height="20" />
                                 </div>
-                                <div className="name xui-ml-half">
+                                <div xui-modal-open="logoutModal" className="name xui-ml-half">
                                     <span>Logout</span>
                                 </div>
                             </div>
