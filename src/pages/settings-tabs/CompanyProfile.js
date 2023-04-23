@@ -157,7 +157,7 @@ export default function MerchantProfile(){
                                 }
                             </div>
                         </label>
-                        <input onClick={() => { if (platformDetails) DocumentSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
+                        <input disabled={platformDetails ? platformDetails.data.verified : false} onClick={() => { if (platformDetails) DocumentSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceDocument} type={"file"} id="registrationDocument" style={{ display: "none" }} required />
                         <div className="xui-mt-1">
                             {
                                 uploadingComplianceDocumentPercentage > 0 ?
@@ -222,7 +222,7 @@ export default function MerchantProfile(){
                                 }
                             </div>
                         </label>
-                        <input onClick={() => { if (platformDetails) CertificateSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
+                        <input disabled={platformDetails ? platformDetails.data.verified : false} onClick={() => { if (platformDetails) CertificateSetPlatformUniqueId(platformDetails.data.platform_unique_id) }} onChange={handleSelectComplianceCertificate} type={"file"} id="registrationCertificate" style={{ display: "none" }} required />
                         <div className="xui-mt-1">
                             {
                                 uploadingComplianceCertificatePercentage > 0 ?
