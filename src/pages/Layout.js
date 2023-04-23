@@ -62,14 +62,13 @@ export default function Layout(){
                         <div className='xui-w-50 xui-h-50 xui-bdr-rad-half xui-bg-pos-center xui-bg-sz-cover' style={{ backgroundImage: `url(${platformDetails ? platformDetails.data.photo : <Loading width="12" height="12" />})`}}></div>
                         <div className='xui-pl-half' style={{width: "calc(100% - 50px)"}}>
                             <h3 className='xui-font-sz-90 xui-font-w-normal'>{platformDetails ? platformDetails.data.name : <Loading width="12" height="12" />}</h3>
-                            <span className='xui-d-inline-block xui-font-sz-70 xui-opacity-5'>
+                            <span className='xui-d-inline-block xui-font-sz-70'>
                                 {platformDetails ? (
                                     platformDetails.data.verified ? 
                                     <span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Verified</span> :
                                     <span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Not verified</span>
                                 ) : ""}
                             </span>
-                            {/* <span className='xui-d-inline-block xui-font-sz-70 xui-opacity-5'>{Truncate('gigirichardofficial@gmail.com', 18)}</span> */}
                         </div>
                         </div>
                         <Link to={`/${stripped}/dashboard`} className={"xui-text-inherit link-box xui-font-sz-90 xui-opacity-6 " + (loc.pathname === `/${stripped}/dashboard` ? 'active' : '')}>
