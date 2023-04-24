@@ -236,16 +236,14 @@ export default function Teams() {
 							<label>Alias</label>
 							<input className="xui-font-sz-90" type="text" value={alias} onChange={handleAlias} required placeholder="Enter member's name"></input>
 						</div>
-						<div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
-							<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end xui-mt-1">
-								<div className="xui-d-inline-flex xui-flex-ai-center">
-									<input type="checkbox" onChange={handleValid} checked={valid} id="valid" />
-									<label for="valid" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
-								</div>
-							</div>
-							<div className="xui-form-box xui-mt-1">
-								<label>Expiration</label>
-								<input className="xui-font-sz-90" type={"datetime-local"} value={expiration} onChange={handleExpiration}></input>
+						<div className="xui-form-box xui-mt-2">
+							<label>Expiration</label>
+							<input className="xui-font-sz-90" type={"datetime-local"} value={expiration} onChange={handleExpiration}></input>
+						</div>
+						<div className="xui-form-box xui-d-flex xui-mt-half">
+							<div className="xui-d-inline-flex xui-flex-ai-center">
+								<input type="checkbox" onChange={handleValid} checked={valid} id="valid" />
+								<label for="valid" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
@@ -274,16 +272,14 @@ export default function Teams() {
 							<label>Alias</label>
 							<input className="xui-font-sz-90" type="text" value={aliasEdit} onChange={handleAliasEdit} required placeholder="Enter member's name"></input>
 						</div>
-						<div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
-							<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end xui-mt-1">
-								<div className="xui-d-inline-flex xui-flex-ai-center">
-									<input type="checkbox" onChange={handleValidEdit} checked={validEdit} id="validEdit" />
-									<label for="validEdit" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
-								</div>
-							</div>
-							<div className="xui-form-box xui-mt-1">
-								<label>Expiration</label>
-								<input className="xui-font-sz-90" type={"datetime-local"} value={expirationEdit} onChange={handleExpirationEdit}></input>
+						<div className="xui-form-box xui-mt-2">
+							<label>Expiration</label>
+							<input className="xui-font-sz-90" type={"datetime-local"} value={expirationEdit} onChange={handleExpirationEdit}></input>
+						</div>
+						<div className="xui-form-box xui-d-flex xui-mt-half">
+							<div className="xui-d-inline-flex xui-flex-ai-center">
+								<input type="checkbox" onChange={handleValidEdit} checked={validEdit} id="validEdit" />
+								<label for="validEdit" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
