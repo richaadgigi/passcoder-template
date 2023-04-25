@@ -147,7 +147,7 @@ export default function MerchantProfile(){
                                                             (
                                                                 getFileExtension(platformDetails.data.registration_document) === "pdf" || getFileExtension(platformDetails.data.registration_document) === "PDF" ?
                                                                     <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{getFileNameAlone(platformDetails.data.registration_document)}</span> :
-                                                                    <img className="xui-img-300" src={platformDetails.data.registration_document} alt="Registration Document" />
+                                                                    <img className="xui-img-200" src={platformDetails.data.registration_document} alt="Registration Document" />
                                                             )
                                                     ) :
                                                     <img className="xui-img-50" src={GalleryAdd} alt="" />
@@ -212,7 +212,7 @@ export default function MerchantProfile(){
                                                     (
                                                         getFileExtension(platformDetails.data.registration_certificate) === "pdf" || getFileExtension(platformDetails.data.registration_certificate) === "PDF" ? 
                                                         <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{getFileNameAlone(platformDetails.data.registration_certificate)}</span> :
-                                                        <img className="xui-img-300" src={platformDetails.data.registration_certificate} alt="Registration Document" />
+                                                        <img className="xui-img-200" src={platformDetails.data.registration_certificate} alt="Registration Document" />
                                                     )
                                                 ) :
                                                 <img className="xui-img-50" src={GalleryAdd} alt="" />

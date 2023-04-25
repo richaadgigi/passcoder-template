@@ -77,7 +77,7 @@ export default function AccountProfile(){
                                             <>
                                                 {
                                                     platformDetails ? 
-                                                        <img className="xui-img-200" src={platformDetails.data.photo} alt="" /> : 
+                                                        <img className="xui-img-100" src={platformDetails.data.photo} alt="" /> : 
                                                         <img className="xui-img-40" src={GalleryAdd} alt="" />
                                                 }
                                                 <span className="xui-font-sz-90 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80">Click to select file</span>
