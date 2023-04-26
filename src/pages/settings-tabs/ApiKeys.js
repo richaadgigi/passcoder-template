@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Check from "../../icons/Check";
 import Copy from "../../icons/Copy";
 import Reset from "../../icons/Reset";
@@ -9,6 +9,7 @@ import Close from "../../icons/Close";
 
 export default function ApiKeys(){
     const [canCallPlatformDetails, setCanCallPlatformDetails] = useState(false);
+    const [callUseEffect, setCallUseEffect] = useState(true);
     const [liveApiKey, setLiveApiKey] = useState("");
     const [testApiKey, setTestApiKey] = useState("");
     const [masterToken, setMasterToken] = useState("");
@@ -91,6 +92,15 @@ export default function ApiKeys(){
         setRemoveResetMasterTokenModal(null);
     }
 
+    // useEffect(() => {
+    //     if (callUseEffect) {
+    //         if (platformDetails !== null) {
+    //             setLiveApiKey(platformDetails.data.live_api_key);
+    //             setTestApiKey(platformDetails.data.test_api_key);
+    //             setMasterToken(platformDetails.data.token);
+    //         }
+    //     }
+    // }, [platformDetails, callUseEffect]);
     return(
         <>
             <form className="xui-form xui-mt-1">

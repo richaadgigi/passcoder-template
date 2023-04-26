@@ -60,7 +60,7 @@ export default function Wallet(){
     async function getPlatformBalanceAlt() {
         const response = await getPlatformBalance(cookie);
         setPlatformBalance(response.data);
-        if (response.response_code >= 400 && response.response_code < 500) forceLogout();
+        if (response.response_code === 403) forceLogout();
     };
     async function getAllTransactions(_page, _size) {
         setLoadingAllTransactions(true);

@@ -66,7 +66,7 @@ export default function Teams() {
 		setLoadingAllTokens(true);
 		const response = await getPlatformTokens(cookie, (_page || page), (_size || size));
 		setAllTokens(response.data);
-		if (response.response_code >= 400 && response.response_code < 500) forceLogout();
+		if (response.response_code === 403) forceLogout();
 		if (response.error) setErrorAllTokens(response.error.response.data.message);
 		setLoadingAllTokens(false);
 	};

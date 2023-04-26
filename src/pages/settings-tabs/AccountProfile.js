@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Close from "../../icons/Close";
 import GalleryAdd from "../../assets/images/gallery-add.png";
 import Check from "../../icons/Check";
@@ -8,6 +8,7 @@ import { useGetPlatform } from "../../hooks/usePlatform";
 
 export default function AccountProfile(){
     const [canCallPlatformDetails, setCanCallPlatformDetails] = useState(false);
+    const [callUseEffect, setCallUseEffect] = useState(true);
 
     const {
         businessName, errorUpdateName, handleBusinessName, handleUpdateName, loadingUpdateName, setBusinessName, successUpdateName, 
@@ -62,6 +63,16 @@ export default function AccountProfile(){
         setSelectedProfilePhoto("");
         setSelectedProfilePhoto(el);
     }
+
+    // useEffect(() => {
+    //     if (callUseEffect) {
+    //         if (platformDetails !== null) {
+    //             setBusinessName(platformDetails.data.name);
+    //             setBusinessEmail(platformDetails.data.email);
+    //             setBusinessDescription(platformDetails.data.description);
+    //         }
+    //     }
+    // }, [platformDetails, callUseEffect]);
     return(
         <>
             <div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-1 xui-grid-gap-1">

@@ -11,7 +11,7 @@ const useGetPlatform = () => {
 	async function getPlatformDetails() {
 		const response = await getPlatform(cookie);
 		setPlatformDetails(response.data);
-		if (response.response_code >= 400 && response.response_code < 500) forceLogout();
+		if (response.response_code === 403) forceLogout();
 	}
 
 	useEffect(() => {

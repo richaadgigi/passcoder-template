@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GalleryAdd from "../../assets/images/gallery-add.png";
 import Loading from "../../icons/Loading";
 import { useUpdateComplianceDetails, useUploadPlatformComplianceCertificate, useUploadPlatformComplianceDocument } from "../../hooks/useSettings";
@@ -6,12 +6,13 @@ import { useGetPlatform } from "../../hooks/usePlatform";
 
 export default function MerchantProfile(){
     const [canCallPlatformDetails, setCanCallPlatformDetails] = useState(false);
+    const [callUseEffect, setCallUseEffect] = useState(true);
 
     const {
         companyAddress, companyEmail, companyName, companyRcNumber, companyType, companyWebsiteUrl, errorUpdateComplianceDetails,
         handleCompanyAddress, handleCompanyEmail, handleCompanyName, handleCompanyRcNumber, handleCompanyType, handleCompanyWebsiteUrl, 
         handleUpdateComplianceDetails, loadingUpdateComplianceDetails, successUpdateComplianceDetails, 
-        setCompanyAddress, setCompanyEmail, setCompanyName, setCompanyRcNumber, setCompanyWebsiteUrl
+        setCompanyAddress, setCompanyEmail, setCompanyName, setCompanyRcNumber, setCompanyWebsiteUrl, setCompanyType
     } = useUpdateComplianceDetails();
 
     const { getPlatformDetails, platformDetails } = useGetPlatform();
@@ -59,6 +60,19 @@ export default function MerchantProfile(){
         let _filename = filename.split("/");
         return _filename[_filename.length - 1];
     }
+
+    useEffect(() => {
+        if (callUseEffect) {
+            if (platformDetails !== null) {
+                setCompanyAddress(platformDetails.data.company_address);
+                setCompanyEmail(platformDetails.data.company_email);
+                setCompanyName(platformDetails.data.company_name);
+                setCompanyRcNumber(platformDetails.data.company_rc_number);
+                setCompanyWebsiteUrl(platformDetails.data.website_url);
+                setCompanyType(platformDetails.data.company_type);
+            }
+        }
+    }, [platformDetails, callUseEffect]);
 
     return(
         <>

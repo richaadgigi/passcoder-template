@@ -36,7 +36,7 @@ export default function APIHistory(){
         setLoadingAllHistory(true);
         const response = await getApiHistory(cookie, (_page || page), (_size || size));
         setAllHistory(response.data);
-        if (response.response_code >= 400 && response.response_code < 500) forceLogout();
+        if (response.response_code === 403) forceLogout();
         if (response.error) setErrorAllHistory(response.error.response.data.message);
         setLoadingAllHistory(false);
     };
