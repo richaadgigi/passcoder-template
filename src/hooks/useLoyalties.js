@@ -88,7 +88,7 @@ const useIssueLoyaltyPoint = () => {
 
 	return {
 		cookie, loadingIssueLoyaltyPoint, removeIssueLoyaltyPointModal, pid, points, errorIssueLoyaltyPoint, successIssueLoyaltyPoint,
-		handlePID, handlePoints, handleSubmitIssueLoyaltyPoint, setRemoveIssueLoyaltyPointModal
+		handlePID, handlePoints, handleSubmitIssueLoyaltyPoint, setRemoveIssueLoyaltyPointModal, setPID
 	};
 };
 
@@ -177,7 +177,7 @@ const useCheckoutLoyaltyPoint = () => {
 
 	return {
 		cookie, loadingCheckoutLoyaltyPoint, removeCheckoutLoyaltyPointModal, pid, points, errorCheckoutLoyaltyPoint, successCheckoutLoyaltyPoint,
-		handlePID, handlePoints, handleSubmitCheckoutLoyaltyPoint, setRemoveCheckoutLoyaltyPointModal
+		handlePID, handlePoints, handleSubmitCheckoutLoyaltyPoint, setRemoveCheckoutLoyaltyPointModal, setPID
 	};
 };
 

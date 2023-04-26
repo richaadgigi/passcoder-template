@@ -4,6 +4,8 @@ import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
+import Boxes from '../assets/images/boxes.png';
+import FlowerPlant from '../assets/images/flower-plant.png';
 import { getPartnerOffers, getPartnerOffer } from "../api/offers";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
@@ -31,7 +33,8 @@ export default function Teams() {
 		handleEditOfferCriteria, handleEditOfferDetails, handleEditOfferLimit, handleEndEdit, handleNameEdit, handleOfferLimitEdit, 
 		handlePointsEdit, handleSingleEdit, handleStarEdit, handleStartEdit, loadingEditOffer, nameEdit, offerLimitEdit, pointsEdit, 
 		removeEditOfferModal, setDescriptionEdit, setDiscountEdit, setEditOfferUniqueId, setEndEdit, setNameEdit, setOfferLimitEdit, 
-		setPointsEdit, setRemoveEditOfferModal, setSingleEdit, setStarEdit, setStartEdit, singleEdit, starEdit, startEdit, successEditOffer
+		setPointsEdit, setRemoveEditOfferModal, setSingleEdit, setStarEdit, setStartEdit, singleEdit, starEdit, startEdit, successEditOffer, 
+		editOfferDetails, getPartnerOfferDetails, showEditOfferCriteriaStatus, showEditOfferDetailsStatus, showEditOfferLimitStatus
 	} = useEditOffer();
 
 	const return_date_reverse = (date) => {
@@ -102,7 +105,7 @@ export default function Teams() {
 	}
 	return (
 		<>
-			<Screen aside="false" navbar="false">
+			<Screen aside="true" navbar="false">
 				<Content>
 					<Navbar placeholder="Search something..." makeHidden={true} />
 					<section className=''>
@@ -179,7 +182,7 @@ export default function Teams() {
 																	<button title="Edit Offer" 
 																		onClick={() => { 
 																			setEditOfferUniqueId(data.unique_id); 
-																			setDescriptionEdit(data.description); 
+																			setDescriptionEdit(""); 
 																			setDiscountEdit(data.discount);
 																			setEndEdit(data.end === null ? "" : return_date_reverse(data.end)); 
 																			setNameEdit(data.name); 
@@ -188,6 +191,7 @@ export default function Teams() {
 																			setSingleEdit(data.single); 
 																			setStarEdit(data.star); 
 																			setStartEdit(data.start === null ? "" : return_date_reverse(data.start));
+																			getPartnerOfferDetails(data.unique_id);
 																		}} 
 																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-50" xui-modal-open="editOffer">
 																		<Edit width="20" height="20" />
@@ -243,6 +247,28 @@ export default function Teams() {
 						}
 					</section>
 				</Content>
+				<div className="aside psc-bg-light-blue xui-py-2 xui-px-1-half">
+					<p className='xui-opacity-5 xui-font-sz-90 xui-line-height-1-half xui-w-fluid-80'>Issue loyalty points directly to your new and existing Passcoder users.</p>
+					<div className='xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-grid-gap-1 xui-mt-1-half'>
+						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Loyalty</button>
+						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Check out</button>
+					</div>
+					<div className='xui-mt-5'>
+						<div className='xui-d-flex xui-flex-ai-baseline xui-flex-jc-space-between'>
+							<div className='xui-pl-1'>
+								<img className='xui-img-100' src={Boxes} alt='boxes' />
+							</div>
+							<div className='xui-pr-1'>
+								<img className='xui-img-100' src={FlowerPlant} alt='flower plant' />
+							</div>
+						</div>
+						<div className='psc-bg-light-blue-ii xui-px-1 xui-pt-5 xui-pb-1 xui-mt--4'>
+							<h4 className='xui-font-sz-90 xui-mt-half'>Earn more with offers</h4>
+							<p className='xui-opacity-4 xui-font-sz-85 xui-line-height-1-half xui-mt-half xui-w-fluid-90'>Premium partners can earn more and attract more customers with amazing offers. Create yours now.</p>
+							<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85 xui-mt-2'>Create an offer</button>
+						</div>
+					</div>
+				</div>
 			</Screen>
 			<section className='xui-modal' xui-modal="addOffer" id="addOffer">
 				<div className='xui-modal-content xui-max-h-600 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
@@ -258,7 +284,7 @@ export default function Teams() {
 						<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-3 xui-md-grid-col-3 xui-grid-gap-1">
 							<div className="xui-mt-1">
 								<label>Discount</label>
-								<input type={"number"} value={discount} onChange={handleDiscount} placeholder="Enter discount" required ></input>
+								<input type={"number"} min={1} max={100} value={discount} onChange={handleDiscount} placeholder="Enter discount" required ></input>
 							</div>
 							<div className="xui-mt-1">
 								<label>Points</label>
@@ -311,42 +337,119 @@ export default function Teams() {
 					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successAddOffer}</span></p>
 				</div>
 			</section>
-			{/* <section className='xui-modal' xui-modal="editOffer" id="editOffer">
-				<div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
+			<section className='xui-modal' xui-modal="editOffer" id="editOffer">
+				<div className='xui-modal-content xui-max-h-600 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
 					<div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="editOffer">
 						<Close width="24" height="24" />
 					</div>
-					<h1>Edit member details</h1>
-					<form className="xui-form" layout="2" onSubmit={handleEditOffer}>
+					<h1>Edit offer</h1>
+					<form className="xui-form" layout="2" onSubmit={(e) => e.preventDefault()}>
 						<div className="xui-form-box xui-mt-2">
-							<label>Alias</label>
-							<input className="xui-font-sz-90" type="text" value={aliasEdit} onChange={handleAliasEdit} required placeholder="Enter member's name"></input>
+							<label>Name</label>
+							<input type="text" value={nameEdit} onChange={handleNameEdit} placeholder="Enter offer name" required ></input>
 						</div>
-						<div className="xui-form-box xui-mt-2">
-							<label>Expiration</label>
-							<input className="xui-font-sz-90" type={"datetime-local"} value={expirationEdit} onChange={handleExpirationEdit}></input>
-						</div>
-						<div className="xui-form-box xui-d-flex xui-mt-half">
-							<div className="xui-d-inline-flex xui-flex-ai-center">
-								<input type="checkbox" onChange={handleValidEdit} checked={validEdit} id="validEdit" />
-								<label for="validEdit" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
+						<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-3 xui-md-grid-col-3 xui-grid-gap-1">
+							<div className="xui-mt-1">
+								<label>Discount</label>
+								<input type={"number"} min={1} max={100} value={discountEdit} onChange={handleDiscountEdit} placeholder="Enter discount" required ></input>
+							</div>
+							<div className="xui-mt-1">
+								<label>Start</label>
+								<input className="xui-font-sz-90" type={"datetime-local"} value={startEdit} onChange={handleStartEdit}></input>
+							</div>
+							<div className="xui-mt-1">
+								<label>End</label>
+								<input className="xui-font-sz-90" type={"datetime-local"} value={endEdit} onChange={handleEndEdit}></input>
 							</div>
 						</div>
+						<div className="xui-form-box xui-d-flex xui-mt-2">
+							<div className="xui-d-inline-flex xui-flex-ai-center">
+								<input type="checkbox" onChange={handleSingleEdit} checked={singleEdit} id="single" />
+								<label for="single" className="xui-ml-half" style={{ marginBottom: '0' }}>Single</label>
+							</div>
+						</div>
+						<div className="xui-form-box xui-mt-2">
+							<label>Description</label>
+							<textarea type={"text"} value={descriptionEdit} onChange={handleDescriptionEdit} required></textarea>
+						</div>
+						{
+							showEditOfferDetailsStatus ? 
+							<>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+							</> : ""
+						}
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
-							<button className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
-								<span className="xui-mr-half">Save changes</span>
+							<button disabled={showEditOfferCriteriaStatus || showEditOfferLimitStatus} onClick={handleEditOfferDetails} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+								<span className="xui-mr-half">Update details</span>
 								{
-									loadingEditOffer ?
+									showEditOfferDetailsStatus && loadingEditOffer ?
 										<Loading width="12" height="12" />
 										: <Arrowright width="12" height="12" />
 								}
 							</button>
 						</div>
 					</form>
-					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
-					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+					<form className="xui-form" layout="2" onSubmit={(e) => e.preventDefault()}>
+						<div className="psc-broken-line-text xui-opacity-4">
+							<span className="xui-font-sz-80 xui-font-w-700">Limit</span>
+						</div>
+						<div className="xui-form-box xui-mt-2">
+							<label>Offer Limit</label>
+							<input type={"number"} value={offerLimitEdit} onChange={handleOfferLimitEdit} placeholder="Enter limit" ></input>
+						</div>
+						{
+							showEditOfferLimitStatus ? 
+							<>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+							</> : ""
+						}
+						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+							<button disabled={showEditOfferCriteriaStatus || showEditOfferDetailsStatus} onClick={handleEditOfferLimit} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+								<span className="xui-mr-half">Update limit</span>
+								{
+									showEditOfferLimitStatus && loadingEditOffer ?
+										<Loading width="12" height="12" />
+										: <Arrowright width="12" height="12" />
+								}
+							</button>
+						</div>
+					</form>
+					<form className="xui-form" layout="2" onSubmit={(e) => e.preventDefault()}>
+						<div className="psc-broken-line-text xui-opacity-4">
+							<span className="xui-font-sz-80 xui-font-w-700">Criteria</span>
+						</div>
+						<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-2 xui-grid-gap-1 xui-mt-1">
+							<div className="xui-form-box">
+								<label>Points</label>
+								<input type={"number"} value={pointsEdit} onChange={handlePointsEdit} placeholder="Minimum points" required ></input>
+							</div>
+							<div className="xui-form-box">
+								<label>Star</label>
+								<input type={"number"} value={starEdit} onChange={handleStarEdit} placeholder="Minimum star" required ></input>
+							</div>
+						</div>
+						{
+							showEditOfferCriteriaStatus ? 
+							<>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+							</> : ""
+						}
+						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+							<button disabled={showEditOfferDetailsStatus || showEditOfferLimitStatus} onClick={handleEditOfferCriteria} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+								<span className="xui-mr-half">Update criteria</span>
+								{
+									showEditOfferCriteriaStatus && loadingEditOffer ?
+										<Loading width="12" height="12" />
+										: <Arrowright width="12" height="12" />
+								}
+							</button>
+						</div>
+					</form>
 				</div>
-			</section> */}
+			</section>
 			<section className='xui-modal' xui-modal="deleteOffer" id="deleteOffer">
 				<div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
 					<center>

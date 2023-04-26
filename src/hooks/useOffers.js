@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
-import { addPartnerOffer, deleteOffer, updateOfferCriteria, updateOfferDetails, updateOfferLimit } from "../api/offers";
+import { addPartnerOffer, deleteOffer, updateOfferCriteria, updateOfferDetails, updateOfferLimit, getPartnerOffer } from "../api/offers";
 
 const useAddOffer = () => {
 
@@ -210,6 +210,17 @@ const useEditOffer = () => {
 	const [starEdit, setStarEdit] = useState(null);
 
 	const [editOfferUniqueId, setEditOfferUniqueId] = useState(null);
+	const [editOfferDetails, setEditOfferDetails] = useState(null);
+
+	async function getPartnerOfferDetails(unique_id) {
+		const response = await getPartnerOffer(cookie, unique_id);
+		setEditOfferDetails(response.data);
+		setDescriptionEdit(response.data.data.description);
+	}
+
+	const [showEditOfferDetailsStatus, setShowEditOfferDetailsStatus] = useState(false);
+	const [showEditOfferLimitStatus, setShowEditOfferLimitStatus] = useState(false);
+	const [showEditOfferCriteriaStatus, setShowEditOfferCriteriaStatus] = useState(false);
 
 	const [errorEditOffer, setErrorEditOffer] = useState(null);
 	const [successEditOffer, setSuccessEditOffer] = useState(null);
@@ -260,6 +271,7 @@ const useEditOffer = () => {
 
 	const handleEditOfferDetails = (e) => {
 		e.preventDefault();
+		setShowEditOfferDetailsStatus(true);
 
 		if (!loadingEditOffer) {
 			if (nameEdit.length < 3) {
@@ -268,41 +280,49 @@ const useEditOffer = () => {
 				setErrorEditOffer("Name is required | Min character - 3");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (nameEdit.length > 50) {
 				setErrorEditOffer("Invalid Name | Max character - 50");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (!discountEdit) {
 				setErrorEditOffer("Discount is required");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (discountEdit < 1 || discountEdit > 100) {
 				setErrorEditOffer("Invalid discount (1 - 100%)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (descriptionEdit.length < 3) {
 				setErrorEditOffer("Description is required | Min character - 3");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (descriptionEdit.length > 1500) {
 				setErrorEditOffer("Invalid Description | Max length reached");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (startEdit && !validateStart(startEdit)) {
 				setErrorEditOffer("Invalid Start datetime (note: Timezone +01:00)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else if (endEdit && !validateEnd(startEdit, endEdit)) {
 				setErrorEditOffer("Invalid End datetime (note: Timezone +01:00)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferDetailsStatus(false);
 				}, 2500)
 			} else {
 				setLoadingEditOffer(true);
@@ -325,12 +345,14 @@ const useEditOffer = () => {
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferDetailsStatus(false);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferDetailsStatus(false);
 							}, 2000)
 						}
 					} else {
@@ -339,6 +361,7 @@ const useEditOffer = () => {
 
 						setTimeout(function () {
 							setSuccessEditOffer(null);
+							setShowEditOfferDetailsStatus(false);
 							setRemoveEditOfferModal(true);
 							setEditOfferUniqueId(null);
 							setNameEdit(""); setSingleEdit(false); setDiscountEdit(null); setStartEdit(""); setEndEdit(""); setDescriptionEdit("");
@@ -354,6 +377,7 @@ const useEditOffer = () => {
 
 	const handleEditOfferLimit = (e) => {
 		e.preventDefault();
+		setShowEditOfferLimitStatus(true);
 
 		if (!loadingEditOffer) {
 			if (offerLimitEdit && offerLimitEdit < 1) {
@@ -362,6 +386,7 @@ const useEditOffer = () => {
 				setErrorEditOffer("Invalid offer limit (minimum - 1)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferLimitStatus(false);
 				}, 2500)
 			} else {
 				setLoadingEditOffer(true);
@@ -379,12 +404,14 @@ const useEditOffer = () => {
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferLimitStatus(false);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferLimitStatus(false);
 							}, 2000)
 						}
 					} else {
@@ -393,6 +420,7 @@ const useEditOffer = () => {
 
 						setTimeout(function () {
 							setSuccessEditOffer(null);
+							setShowEditOfferLimitStatus(false);
 							setRemoveEditOfferModal(true);
 							setEditOfferUniqueId(null);
 							setOfferLimitEdit(null);
@@ -408,6 +436,7 @@ const useEditOffer = () => {
 
 	const handleEditOfferCriteria = (e) => {
 		e.preventDefault();
+		setShowEditOfferCriteriaStatus(true);
 
 		if (!loadingEditOffer) {
 			if (!pointsEdit) {
@@ -416,21 +445,25 @@ const useEditOffer = () => {
 				setErrorEditOffer("Points is required");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferCriteriaStatus(false);
 				}, 2500)
 			} else if (pointsEdit < 1) {
 				setErrorEditOffer("Invalid points (minimum - 1)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferCriteriaStatus(false);
 				}, 2500)
 			} else if (!starEdit) {
 				setErrorEditOffer("Star is required");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferCriteriaStatus(false);
 				}, 2500)
 			} else if (starEdit < 1 || starEdit > 5) {
 				setErrorEditOffer("Invalid star (1 - 5)");
 				setTimeout(function () {
 					setErrorEditOffer(null);
+					setShowEditOfferCriteriaStatus(false);
 				}, 2500)
 			} else {
 				setLoadingEditOffer(true);
@@ -449,20 +482,23 @@ const useEditOffer = () => {
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferCriteriaStatus(false);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorEditOffer(error);
 							setTimeout(function () {
 								setErrorEditOffer(null);
+								setShowEditOfferCriteriaStatus(false);
 							}, 2000)
 						}
 					} else {
 						setErrorEditOffer(null);
 						setSuccessEditOffer(`Offer criteria edited successfully!`);
-
+						
 						setTimeout(function () {
 							setSuccessEditOffer(null);
+							setShowEditOfferCriteriaStatus(false);
 							setRemoveEditOfferModal(true);
 							setEditOfferUniqueId(null);
 							setOfferLimitEdit(null);
@@ -477,11 +513,11 @@ const useEditOffer = () => {
 	};
 
 	return {
-		cookie, nameEdit, discountEdit, singleEdit, descriptionEdit, startEdit, endEdit, offerLimitEdit, pointsEdit, starEdit, 
+		cookie, nameEdit, discountEdit, singleEdit, descriptionEdit, startEdit, endEdit, offerLimitEdit, pointsEdit, starEdit, editOfferDetails, 
 		loadingEditOffer, removeEditOfferModal, errorEditOffer, successEditOffer, setRemoveEditOfferModal, setEditOfferUniqueId, editOfferUniqueId, 
 		handleNameEdit, handleSingleEdit, handleDiscountEdit, handleDescriptionEdit, handleStartEdit, handleEndEdit, handleOfferLimitEdit, handlePointsEdit, handleStarEdit, 
 		setNameEdit, setDiscountEdit, setSingleEdit, setDescriptionEdit, setStartEdit, setEndEdit, setOfferLimitEdit, setPointsEdit, setStarEdit, 
-		handleEditOfferDetails, handleEditOfferLimit, handleEditOfferCriteria, 
+		handleEditOfferDetails, handleEditOfferLimit, handleEditOfferCriteria, getPartnerOfferDetails, showEditOfferDetailsStatus, showEditOfferLimitStatus, showEditOfferCriteriaStatus
 	};
 };
 

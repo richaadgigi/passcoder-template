@@ -4,8 +4,8 @@ import useCookie from "./hooks/useCookie";
 import Layout from "./pages/Layout";
 import Access from "./pages/Access";
 import Dashboard from "./pages/Dashboard";
-// import APIHistory from "./pages/APIHistory";
 import Offers from "./pages/Offers";
+import Loyalties from "./pages/Loyalties";
 import Transactions from "./pages/Transactions";
 import Teams from "./pages/Teams";
 import Settings from "./pages/Settings";
@@ -31,11 +31,11 @@ export default function App(){
               (<Navigate replace to={"/signup"} />) :
               (<Offers />)
           } />
-          {/* <Route path="api-history" element={
+          <Route path="loyalties" element={
             !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
-              (<APIHistory />)
-          } /> */}
+              (<Loyalties />)
+          } />
           <Route path="transactions" element={
             !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :

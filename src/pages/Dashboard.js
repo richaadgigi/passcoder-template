@@ -8,7 +8,7 @@ import FlowerPlant from '../assets/images/flower-plant.png';
 import Arrowright from '../icons/Arrowright';
 import Tag from '../icons/Tag';
 import Team from '../icons/Team';
-import Token from '../icons/Token';
+import Users from '../icons/Users';
 import Arrowleft from '../icons/Arrowleft';
 import Star from '../icons/Star';
 import { useGetPartner, useGetPartnerMetrics } from "../hooks/usePartner";
@@ -131,7 +131,7 @@ export default function Dashboard(){
                                 </p>
                                 <p className="xui-font-sz-80 xui-my-1r">
                                     <div className="xui-d-inline-flex xui-flex-ai-center">
-                                        <span><Token width="20" height="20" /></span>
+                                        <span><Users width="20" height="20" /></span>
                                         <p className='xui-font-sz-150 xui-ml-1'>Teams</p>
                                     </div>
                                 </p>

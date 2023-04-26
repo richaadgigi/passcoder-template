@@ -9,7 +9,7 @@ export default function Access(){
                 <div className="xui-w-100 xui-h-100 xui-bdr-rad-half psc-bg xui-d-inline-flex xui-flex-ai-center xui-flex-jc-center xui-text-center">
                     <div>
                         <img className='xui-img-30 xui-d-block xui-mx-auto' src={Logo} alt='logo' />
-                        <span className="xui-d-block xui-font-sz-70 xui-text-uppercase xui-font-w-700 xui-mt-half">Business</span>
+                        <span className="xui-d-block xui-font-sz-70 xui-text-uppercase xui-font-w-700 xui-mt-half">Partner</span>
                     </div>
                 </div>
                 <Outlet />
