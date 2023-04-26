@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const getApiPricing = async function () {
+const getPremiumPackages = async function () {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/api/pricing`,
+			`${config.baseAPIurl}/partner/premium/packages`,
 			{
 
 			},
@@ -15,10 +15,10 @@ const getApiPricing = async function () {
 	}
 };
 
-const getPlatformProfilePhotoProof = async function (payload) {
+const getPartnerProfilePhotoProof = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/proofs/platform/profile/photo`,
+			`${config.baseAPIurl}/proofs/partner/profile/photo`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -27,10 +27,22 @@ const getPlatformProfilePhotoProof = async function (payload) {
 	}
 };
 
-const getPlatformComplianceDocumentsProof = async function (payload) {
+const getPartnerProfileCoverProof = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/proofs/platform/compliance/documents`,
+			`${config.baseAPIurl}/proofs/partner/cover/photo`,
+			{ ...payload }
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+const getPartnerComplianceDocumentsProof = async function (payload) {
+	try {
+		const response = await axios.post(
+			`${config.baseAPIurl}/proofs/partner/compliance/documents`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -42,7 +54,26 @@ const getPlatformComplianceDocumentsProof = async function (payload) {
 const updateProfilePhoto = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/profile/photo`,
+			`${config.baseAPIurl}/partner/profile/photo`,
+			{
+				...payload
+			},
+			{
+				headers: {
+					'passcoder-access-token': token
+				}
+			}
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+const updateProfileCover = async function (token, payload) {
+	try {
+		const response = await axios.put(
+			`${config.baseAPIurl}/partner/profile/cover`,
 			{
 				...payload
 			},
@@ -61,7 +92,7 @@ const updateProfilePhoto = async function (token, payload) {
 const updateName = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/name`,
+			`${config.baseAPIurl}/partner/name`,
 			{
 				...payload
 			},
@@ -80,7 +111,26 @@ const updateName = async function (token, payload) {
 const updateEmail = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/email`,
+			`${config.baseAPIurl}/partner/email`,
+			{
+				...payload
+			},
+			{
+				headers: {
+					'passcoder-access-token': token
+				}
+			}
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+const updatePointThreshold = async function (token, payload) {
+	try {
+		const response = await axios.put(
+			`${config.baseAPIurl}/partner/point/threshold`,
 			{
 				...payload
 			},
@@ -99,7 +149,7 @@ const updateEmail = async function (token, payload) {
 const updateDescription = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/description`,
+			`${config.baseAPIurl}/partner/description`,
 			{
 				...payload
 			},
@@ -118,45 +168,7 @@ const updateDescription = async function (token, payload) {
 const updateMasterToken = async function (token) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/update/token`,
-			{
-
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
-				}
-			}
-		);
-		return { err: false, data: response.data };
-	} catch (error) {
-		return { err: true, error };
-	}
-};
-
-const updateLiveApiKey = async function (token) {
-	try {
-		const response = await axios.put(
-			`${config.baseAPIurl}/platform/update/live/api/key`,
-			{
-
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
-				}
-			}
-		);
-		return { err: false, data: response.data };
-	} catch (error) {
-		return { err: true, error };
-	}
-};
-
-const updateTestApiKey = async function (token) {
-	try {
-		const response = await axios.put(
-			`${config.baseAPIurl}/platform/update/test/api/key`,
+			`${config.baseAPIurl}/partner/update/token`,
 			{
 
 			},
@@ -175,7 +187,7 @@ const updateTestApiKey = async function (token) {
 const updateComplianceDetails = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/compliance/details`,
+			`${config.baseAPIurl}/partner/compliance/details`,
 			{
 				...payload
 			},
@@ -194,7 +206,7 @@ const updateComplianceDetails = async function (token, payload) {
 const updateComplianceCertificate = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/compliance/certificate`,
+			`${config.baseAPIurl}/partner/compliance/certificate`,
 			{
 				...payload
 			},
@@ -213,7 +225,7 @@ const updateComplianceCertificate = async function (token, payload) {
 const updateComplianceDocument = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/compliance/document`,
+			`${config.baseAPIurl}/partner/compliance/document`,
 			{
 				...payload
 			},
@@ -232,7 +244,7 @@ const updateComplianceDocument = async function (token, payload) {
 const updateComplianceDocuments = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/platform/compliance/documents`,
+			`${config.baseAPIurl}/partner/compliance/documents`,
 			{
 				...payload
 			},
@@ -249,7 +261,7 @@ const updateComplianceDocuments = async function (token, payload) {
 };
 
 export { 
-	getApiPricing, updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateComplianceDocuments, 
-	updateDescription, updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey, 
-	getPlatformProfilePhotoProof, getPlatformComplianceDocumentsProof
+	getPremiumPackages, updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateComplianceDocuments, 
+	updateDescription, updateEmail, updateMasterToken, updateName, updateProfilePhoto, updateProfileCover, updatePointThreshold, 
+	getPartnerProfilePhotoProof, getPartnerComplianceDocumentsProof, getPartnerProfileCoverProof, 
 };

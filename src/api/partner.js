@@ -4,7 +4,7 @@ import { config } from '../config';
 const getAccessDetails = async function (stripped) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/access/details`,
+			`${config.baseAPIurl}/partner/access/details`,
 			{
 				stripped
 			}
@@ -15,10 +15,10 @@ const getAccessDetails = async function (stripped) {
 	}
 };
 
-const getPlatform = async function (token) {
+const getPartner = async function (token) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform`,
+			`${config.baseAPIurl}/partner`,
 			{
 
 			},
@@ -34,29 +34,10 @@ const getPlatform = async function (token) {
 	}
 };
 
-const getPlatformMetrics = async function (token) {
+const getPartnerMetrics = async function (token) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/metrics`,
-			{
-
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
-				}
-			}
-		);
-		return { err: false, data: response.data };
-	} catch (error) {
-		return { err: true, error, response_code: error.response.status };
-	}
-};
-
-const getPlatformBalance = async function (token) {
-	try {
-		const response = await axios.post(
-			`${config.baseAPIurl}/platform/balance`,
+			`${config.baseAPIurl}/partner/metrics`,
 			{
 
 			},
@@ -75,7 +56,7 @@ const getPlatformBalance = async function (token) {
 const getCompanyBankAccount = async function () {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/company/bank/account`,
+			`${config.baseAPIurl}/partner/company/bank/account`,
 		);
 		return { err: false, data: response.data };
 	} catch (error) {
@@ -83,4 +64,24 @@ const getCompanyBankAccount = async function () {
 	}
 };
 
-export { getAccessDetails, getPlatform, getPlatformBalance, getPlatformMetrics, getCompanyBankAccount };
+const premiumUpgrade = async function (token, payload) {
+	try {
+		const response = await axios.post(
+			`${config.baseAPIurl}/partner/premium/upgrade`,
+			{
+				...payload
+			},
+			{
+				headers: {
+					'passcoder-access-key': config.internalKey,
+					'passcoder-access-token': token
+				}
+			}
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+export { getAccessDetails, getPartner, getPartnerMetrics, getCompanyBankAccount, premiumUpgrade };

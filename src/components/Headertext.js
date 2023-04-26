@@ -8,10 +8,14 @@ export default function Headertext(){
 
     if (loc.pathname === `/${stripped}/dashboard`){
         return "Dashboard";
-    } else if (loc.pathname === `/${stripped}/api-history`){
-        return "API History";
-    } else if (loc.pathname === `/${stripped}/wallet`){
-        return "Wallet Account";
+    } else if (loc.pathname === `/${stripped}/offers`){
+        return "Offers";
+    } else if (loc.pathname === `/${stripped}/loyalties`) {
+        return "Loyalties";
+    } else if (loc.pathname === `/${stripped}/announcements`) {
+        return "Announcements";
+    } else if (loc.pathname === `/${stripped}/transactions`){
+        return "Transactions";
     } else if (loc.pathname === `/${stripped}/teams`) {
         return "Teams";
     } else if (loc.pathname === `/${stripped}/settings`){

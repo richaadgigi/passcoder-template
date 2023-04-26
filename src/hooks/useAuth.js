@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useCookie from './useCookie';
-import { businessSignup, loginViaEmail, loginViaToken, resendVerificationEmail, resetMasterToken, verifyEmail, verifyEmailOtp } from "../api/auth";
+import { partnerSignup, loginViaEmail, loginViaToken, resendVerificationEmail, resetMasterToken, verifyEmail, verifyEmailOtp } from "../api/auth";
 import { config } from "../config";
 
-const useBusinessSignUp = () => {
+const usePartnerSignUp = () => {
+
+	const changeLGA = config.changeLGA;
+	const [cities, setCities] = useState([]);
 
 	const [loading, setLoading] = useState(false);
 	const [loadingResend, setLoadingResend] = useState(false);
@@ -14,13 +17,14 @@ const useBusinessSignUp = () => {
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
 	const [description, setDescription] = useState("");
-	const [hospitality, setHospitality] = useState(false);
+	const [city, setCity] = useState("");
+	const [state, setState] = useState("");
 	const [country, setCountry] = useState(null);
 	const [terms_and_conditions, setTermsAndConditions] = useState(false);
 
 	// error & success prompts
-	const [errorBusinessSignup, setErrorBusinessSignup] = useState(null);
-	const [successBusinessSignup, setSuccessBusinessSignup] = useState(null);
+	const [errorPartnerSignup, setErrorPartnerSignup] = useState(null);
+	const [successPartnerSignup, setSuccessPartnerSignup] = useState(null);
 	const [errorVerificationEmail, setErrorVerificationEmail] = useState(null);
 	const [successVerificationEmail, setSuccessVerificationEmail] = useState(null);
 
@@ -28,10 +32,11 @@ const useBusinessSignUp = () => {
 	const validEmail = new RegExp(config.EMAIL_REGEX);
 	
 	// handling all onChange states
-	const handleName = (e) => { e.preventDefault(); setErrorBusinessSignup(null); setSuccessBusinessSignup(null); setName(e.target.value) };
+	const handleName = (e) => { e.preventDefault(); setErrorPartnerSignup(null); setSuccessPartnerSignup(null); setName(e.target.value) };
 	const handleEmail = (e) => { e.preventDefault(); setEmail(e.target.value) };
 	const handleDescription = (e) => { e.preventDefault(); setDescription(e.target.value) };
-	const handleHospitality = (e) => { e.preventDefault(); setHospitality(!hospitality); };
+	const handleCity = (e) => { e.preventDefault(); setCity(e.target.value) };
+	const handleState = (e) => { e.preventDefault(); setState(e.target.value); setCities(changeLGA(e.target.value)) };
 	const handleCountry = (e) => { e.preventDefault(); setCountry(e.target.value) };
 	const handleTermsAndConditions = (e) => { e.preventDefault(); setTermsAndConditions(!terms_and_conditions); };
 
@@ -40,81 +45,92 @@ const useBusinessSignUp = () => {
 
 		if (!loading) {
 			if (name.length < 2) {
-				setErrorBusinessSignup(null);
-				setSuccessBusinessSignup(null);
-				setErrorBusinessSignup("Name is required | Min character - 2");
+				setErrorPartnerSignup(null);
+				setSuccessPartnerSignup(null);
+				setErrorPartnerSignup("Name is required | Min character - 2");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (name.length > 50) {
-				setErrorBusinessSignup("Invalid Name | Max character - 50");
+				setErrorPartnerSignup("Invalid Name | Max character - 50");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (email.length === 0) {
-				setErrorBusinessSignup("Email is required");
+				setErrorPartnerSignup("Email is required");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (!validEmail.test(email)) {
-				setErrorBusinessSignup("Invalid email");
+				setErrorPartnerSignup("Invalid email");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (description.length < 3) {
-				setErrorBusinessSignup("Description is required | Min character - 3");
+				setErrorPartnerSignup("Description is required | Min character - 3");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (description.length > 500) {
-				setErrorBusinessSignup("Invalid Description | Max character - 500");
+				setErrorPartnerSignup("Invalid Description | Max character - 500");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (!country) {
-				setErrorBusinessSignup("Country is required");
+				setErrorPartnerSignup("Country is required");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
+				}, 2500)
+			} else if (!state) {
+				setErrorPartnerSignup("State is required");
+				setTimeout(function () {
+					setErrorPartnerSignup(null);
+				}, 2500)
+			} else if (!city) {
+				setErrorPartnerSignup("City is required");
+				setTimeout(function () {
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else if (!terms_and_conditions) {
-				setErrorBusinessSignup("Accept terms and conditions");
+				setErrorPartnerSignup("Accept terms and conditions");
 				setTimeout(function () {
-					setErrorBusinessSignup(null);
+					setErrorPartnerSignup(null);
 				}, 2500)
 			} else {
 				setLoading(true);
 	
-				const businessSignupRes = businessSignup({
+				const partnerSignupRes = partnerSignup({
 					name,
 					email,
 					description,
-					hospitality,
-					country
+					country,
+					state,
+					city
 				})
 	
-				businessSignupRes.then(res => {
+				partnerSignupRes.then(res => {
 					setLoading(false);
 					if (res.err) {
 						if (!res.error.response.data.success) {
 							const error = `${res.error.response.data.message} - ${res.error.response.data.data[0].msg}`;
-							setErrorBusinessSignup(error);
+							setErrorPartnerSignup(error);
 							setTimeout(function () {
-								setErrorBusinessSignup(null);
+								setErrorPartnerSignup(null);
 							}, 2000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
-							setErrorBusinessSignup(error);
+							setErrorPartnerSignup(error);
 							setTimeout(function () {
-								setErrorBusinessSignup(null);
+								setErrorPartnerSignup(null);
 							}, 2000)
 						}
 					} else {
-						setErrorBusinessSignup(null);
-						setSuccessBusinessSignup(`Sign up successful ...`);
+						setErrorPartnerSignup(null);
+						setSuccessPartnerSignup(`Sign up successful ...`);
 	
 						setTimeout(function () {
 							setShowVerificationEmail(true);
-							setSuccessBusinessSignup(null);
+							setSuccessPartnerSignup(null);
 						}, 2500)
 					}
 				}).catch(err => {
@@ -161,8 +177,8 @@ const useBusinessSignUp = () => {
 	};
 
 	return {
-		email, name, hospitality, description, country, errorBusinessSignup, successBusinessSignup, loading,
-		handleEmail, handleName, handleHospitality, handleDescription, handleCountry, handleSubmit, terms_and_conditions,
+		email, name, state, city, description, country, errorPartnerSignup, successPartnerSignup, loading, cities, 
+		handleEmail, handleName, handleState, handleCity, handleDescription, handleCountry, handleSubmit, terms_and_conditions,
 		handleTermsAndConditions, loadingResend, showVerificationEmail, handleVerificationEmailResend, errorVerificationEmail, 
 		successVerificationEmail
 	};
@@ -505,4 +521,4 @@ const useVerifyEmail = () => {
 	};
 };
 
-export { useBusinessSignUp, useLoginViaEmail, useLoginViaToken, useResetMasterToken, useVerifyEmail };
+export { usePartnerSignUp, useLoginViaEmail, useLoginViaToken, useResetMasterToken, useVerifyEmail };

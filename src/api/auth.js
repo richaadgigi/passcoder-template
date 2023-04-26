@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const businessSignup = async function (payload) {
+const partnerSignup = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/signup`,
+			`${config.baseAPIurl}/auth/partner/signup`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -16,7 +16,7 @@ const businessSignup = async function (payload) {
 const resendVerificationEmail = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/resend/verification/email`,
+			`${config.baseAPIurl}/auth/partner/resend/verification/email`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -28,7 +28,7 @@ const resendVerificationEmail = async function (payload) {
 const loginViaEmail = async function (stripped, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/access/${stripped}`,
+			`${config.baseAPIurl}/auth/partner/access/${stripped}`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -40,7 +40,7 @@ const loginViaEmail = async function (stripped, payload) {
 const verifyEmailOtp = async function (stripped, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/access/${stripped}/verify`,
+			`${config.baseAPIurl}/auth/partner/access/${stripped}/verify`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -52,7 +52,7 @@ const verifyEmailOtp = async function (stripped, payload) {
 const loginViaToken = async function (stripped, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/access/token/${stripped}`,
+			`${config.baseAPIurl}/auth/partner/access/token/${stripped}`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -64,7 +64,7 @@ const loginViaToken = async function (stripped, payload) {
 const resetMasterToken = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/auth/platform/reset/token`,
+			`${config.baseAPIurl}/auth/partner/reset/token`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -76,7 +76,7 @@ const resetMasterToken = async function (payload) {
 const verifyEmail = async function (payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/verify/email`,
+			`${config.baseAPIurl}/partner/verify/email`,
 			{ ...payload }
 		);
 		return { err: false, data: response.data };
@@ -85,4 +85,4 @@ const verifyEmail = async function (payload) {
 	}
 };
 
-export { businessSignup, loginViaEmail, loginViaToken, resendVerificationEmail, resetMasterToken, verifyEmailOtp, verifyEmail };
+export { partnerSignup, loginViaEmail, loginViaToken, resendVerificationEmail, resetMasterToken, verifyEmailOtp, verifyEmail };

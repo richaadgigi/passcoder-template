@@ -10,8 +10,8 @@ export default function ResetToken(){
         email, errorMasterTokenReset, handleEmail, handleSubmit, loading, showTokenResetSuccess, successMasterTokenReset
     } = useResetMasterToken();
     const [params, setParams] = useSearchParams();
-    const business = params.get('business');
-    const sign_in_url = "/access/" + business;
+    const partner = params.get('partner');
+    const sign_in_url = "/access/" + partner;
     return(
         <>
         <div className="xui-max-w-500 xui-w-fluid-100 xui-mt-2 xui-md-mt-none">

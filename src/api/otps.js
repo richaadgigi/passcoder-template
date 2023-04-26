@@ -4,7 +4,7 @@ import { config } from '../config';
 const createOtp = async function (token) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/otp/create`,
+			`${config.baseAPIurl}/partner/otp/create`,
 			{
 				headers: {
 					'passcoder-access-token': token
@@ -20,7 +20,7 @@ const createOtp = async function (token) {
 const verifyOtp = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/otp/verify`,
+			`${config.baseAPIurl}/partner/otp/verify`,
 			{ ...payload },
 			{
 				headers: {

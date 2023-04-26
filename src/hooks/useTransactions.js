@@ -1,7 +1,8 @@
 import { useState } from "react";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
-import { addPlatformDeposit, cancelPlatformDeposit, completePlatformDeposit, deletePlatformTransaction } from "../api/transactions";
+import { addPartnerDeposit, cancelPartnerDeposit, completePartnerDeposit, deletePartnerTransaction } from "../api/transactions";
+import { premiumUpgrade } from "../api/partner";
 
 const useAddDeposit = () => {
 
@@ -48,7 +49,7 @@ const useAddDeposit = () => {
 			} else {
 				setLoading(true);
 	
-				const addDepositRes = addPlatformDeposit(cookie, {
+				const addDepositRes = addPartnerDeposit(cookie, {
 					amount: parseInt(fundingAmount),
 					payment_method: fundingPaymentMethod
 				})
@@ -128,7 +129,7 @@ const useCancelDeposit = () => {
 			} else {
 				setLoadingCancelDeposit(true);
 	
-				const cancelDepositRes = cancelPlatformDeposit(cookie, {
+				const cancelDepositRes = cancelPartnerDeposit(cookie, {
 					unique_id: cancelDepositUniqueId
 				})
 	
@@ -172,4 +173,99 @@ const useCancelDeposit = () => {
 	};
 };
 
-export { useAddDeposit, useCancelDeposit };
+const usePremiumUpgrade = () => {
+
+	const { cookie } = useCookie(config.token, "");
+
+	const [loadingPremiumPackage, setLoadingPremiumPackage] = useState(false);
+	const [removePremiumUpgradeModal, setRemovePremiumUpgradeModal] = useState(null);
+	const [showPremiumUpgradeSuccessModal, setShowPremiumUpgradeSuccessModal] = useState(null);
+	const [premiumPackage, setPremiumPackage] = useState("");
+	const [months, setMonths] = useState(1);
+	const [paymentMethod, setPaymentMethod] = useState("Credit/Debit Card");
+
+	const [errorPremiumUpgrade, setErrorPremiumUpgrade] = useState(null);
+	const [successPremiumUpgrade, setSuccessPremiumUpgrade] = useState(null);
+
+	const handlePremiumPackage = (e) => { e.preventDefault(); setPremiumPackage(e.target.value); };
+	const handleMonths = (e) => { e.preventDefault(); setMonths(e.target.value); };
+	const handlePaymentMethod = (e) => { e.preventDefault(); setPaymentMethod(paymentMethod === "Credit/Debit Card" ? "Transfer" : "Credit/Debit Card"); };
+
+	const handlePremiumUpgradeSubmit = (e) => {
+		e.preventDefault();
+
+		if (!loadingPremiumPackage) {
+			if (!premiumPackage) {
+				setErrorPremiumUpgrade(null);
+				setSuccessPremiumUpgrade(null);
+				setErrorPremiumUpgrade("Package is required");
+				setTimeout(function () {
+					setErrorPremiumUpgrade(null);
+				}, 2500)
+			} else if (months < 1) {
+				setErrorPremiumUpgrade(`Minimum of 1 month`);
+				setTimeout(function () {
+					setErrorPremiumUpgrade(null);
+				}, 2500)
+			} else if (months > 12) {
+				setErrorPremiumUpgrade(`Minimum of 12 months`);
+				setTimeout(function () {
+					setErrorPremiumUpgrade(null);
+				}, 2500)
+			} else if (!paymentMethod) {
+				setErrorPremiumUpgrade("Payment Method is Required");
+				setTimeout(function () {
+					setErrorPremiumUpgrade(null);
+				}, 2500)
+			} else {
+				setLoadingPremiumPackage(true);
+
+				const premiumUpgradeRes = premiumUpgrade(cookie, {
+					package: premiumPackage,
+					months: parseInt(months),
+					payment_method: paymentMethod
+				})
+
+				premiumUpgradeRes.then(res => {
+					setLoadingPremiumPackage(false);
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setErrorPremiumUpgrade(error);
+							setTimeout(function () {
+								setErrorPremiumUpgrade(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setErrorPremiumUpgrade(error);
+							setTimeout(function () {
+								setErrorPremiumUpgrade(null);
+							}, 2000)
+						}
+					} else {
+						setErrorPremiumUpgrade(null);
+						setSuccessPremiumUpgrade(`Upgraded to premium successfully!`);
+
+						setTimeout(function () {
+							setSuccessPremiumUpgrade(null);
+							setRemovePremiumUpgradeModal(true);
+							// setShowPremiumUpgradeSuccessModal(true);
+							setMonths(1);
+						}, 2500)
+					}
+				}).catch(err => {
+					setLoadingPremiumPackage(false);
+				})
+
+			}
+		}
+	};
+
+	return {
+		cookie, loadingPremiumPackage, premiumPackage, months, paymentMethod, errorPremiumUpgrade, successPremiumUpgrade,
+		handlePremiumPackage, handleMonths, handlePaymentMethod, handlePremiumUpgradeSubmit, setRemovePremiumUpgradeModal, 
+		showPremiumUpgradeSuccessModal, removePremiumUpgradeModal, setShowPremiumUpgradeSuccessModal
+	};
+};
+
+export { useAddDeposit, useCancelDeposit, usePremiumUpgrade };

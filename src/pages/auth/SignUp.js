@@ -1,46 +1,96 @@
-import { useBusinessSignUp } from '../../hooks/useAuth';
+import { usePartnerSignUp } from '../../hooks/useAuth';
 import Loading from "../../icons/Loading";
 import SuccessTick from "../../assets/images/success-tick.png";
 import Arrowright from "../../icons/Arrowright";
 
 export default function SignUp(){
 	const {
-		country, description, email, errorBusinessSignup, handleCountry, handleDescription, handleEmail, 
-		handleHospitality, handleName, handleSubmit, handleTermsAndConditions, hospitality, loading, name,
-		successBusinessSignup, terms_and_conditions, loadingResend, showVerificationEmail, errorVerificationEmail, 
-		handleVerificationEmailResend, successVerificationEmail
-	} = useBusinessSignUp();
+		city, country, description, email, errorPartnerSignup, errorVerificationEmail, handleCity, handleCountry, handleDescription, 
+		handleEmail, handleName, handleState, handleSubmit, handleTermsAndConditions, handleVerificationEmailResend, loading, cities, 
+		loadingResend, name, showVerificationEmail, state, successPartnerSignup, successVerificationEmail, terms_and_conditions
+	} = usePartnerSignUp();
+
     return(
         <>
-			<div className="xui-max-w-700 xui-w-fluid-100 xui-mt-2 xui-md-mt-none">
+			<div className="xui-max-w-800 xui-w-fluid-100 xui-mt-2 xui-md-mt-none">
 				{
 					!showVerificationEmail ? 
 					<div className="xui-bg-white xui-bdr-rad-half xui-w-fluid-100 xui-p-1-half xui-pb-3 xui-text-black">
-						<h2 className="xui-font-sz-125 xui-w-fluid-80">Sign up for Passcoder Business</h2>
+						<h2 className="xui-font-sz-125 xui-w-fluid-80">Sign up for Passcoder Partner</h2>
 						<p className="xui-font-sz-80 xui-my-1"><span className="xui-opacity-7">Already have an account?</span> <span className="xui-font-w-bold psc-text xui-text-dc-none">Use your private access url</span></p>
 						<form className="xui-form" layout="2" onSubmit={handleSubmit}>
-							<div className="xui-form-box xui-mt-2">
-								<input className="xui-font-sz-90" type="text" value={name} onChange={handleName} required placeholder="Business Name"></input>
-							</div>
 							<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-2 xui-grid-gap-1">
+								<div className="xui-form-box xui-mt-1">
+									<input className="xui-font-sz-90" type="text" value={name} onChange={handleName} required placeholder="Partner Name"></input>
+								</div>
 								<div className="xui-form-box xui-mt-1">
 									<input className="xui-font-sz-90" type="email" value={email} onChange={handleEmail} required placeholder="Email"></input>
 								</div>
+							</div>
+							<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-3 xui-md-grid-col-3 xui-grid-gap-1">
 								<div className="xui-form-box xui-mt-1">
 									<select onChange={handleCountry} value={country} required>
 										<option selected disabled>Select Country</option>
 										<option value={"Nigeria"}>Nigeria</option>
 									</select>
 								</div>
+								<div className="xui-form-box xui-mt-1">
+									<select onChange={handleState} value={state} required>
+										<option selected disabled>Select State</option>
+										<option value={"Abia"}>Abia</option>
+										<option value={"Adamawa"}>Adamawa</option>
+										<option value={"Akwa Ibom"}>Akwa Ibom</option>
+										<option value={"Anambra"}>Anambra</option>
+										<option value={"Bauchi"}>Bauchi</option>
+										<option value={"Bayelsa"}>Bayelsa</option>
+										<option value={"Benue"}>Benue</option>
+										<option value={"Borno"}>Borno</option>
+										<option value={"Cross River"}>Cross River</option>
+										<option value={"Delta"}>Delta</option>
+										<option value={"Ebonyi"}>Ebonyi</option>
+										<option value={"Edo"}>Edo</option>
+										<option value={"Ekiti"}>Ekiti</option>
+										<option value={"Enugu"}>Enugu</option>
+										<option value={"Abuja"}>Federal Capital Territory</option>
+										<option value={"Gombe"}>Gombe</option>
+										<option value={"Imo"}>Imo</option>
+										<option value={"Jigawa"}>Jigawa</option>
+										<option value={"Kaduna"}>Kaduna</option>
+										<option value={"Kano"}>Kano</option>
+										<option value={"Katsina"}>Katsina</option>
+										<option value={"Kebbi"}>Kebbi</option>
+										<option value={"Kogi"}>Kogi</option>
+										<option value={"Kwara"}>Kwara</option>
+										<option value={"Lagos"}>Lagos</option>
+										<option value={"Nasarawa"}>Nasarawa</option>
+										<option value={"Niger"}>Niger</option>
+										<option value={"Ogun"}>Ogun</option>
+										<option value={"Ondo"}>Ondo</option>
+										<option value={"Osun"}>Osun</option>
+										<option value={"Oyo"}>Oyo</option>
+										<option value={"Plateau"}>Plateau</option>
+										<option value={"Rivers"}>Rivers</option>
+										<option value={"Sokoto"}>Sokoto</option>
+										<option value={"Taraba"}>Taraba</option>
+										<option value={"Yobe"}>Yobe</option>
+										<option value={"Zamfara"}>Zamfara</option>
+									</select>
+								</div>
+								<div className="xui-form-box xui-mt-1">
+									<select onChange={handleCity} value={city} required>
+										<option selected disabled>Select City</option>
+										{
+											cities.map((item, index) => {
+												return (
+													<option key={index} value={item}>{item}</option>
+												)
+											})
+										}
+									</select>
+								</div>
 							</div>
 							<div className="xui-form-box xui-mt-1">
 								<textarea className="xui-font-sz-90" value={description} onChange={handleDescription} required cols={20} rows={20} placeholder="Description"></textarea>
-							</div>
-							<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
-								<div className="xui-d-inline-flex xui-flex-ai-center">
-									<input type="checkbox" onChange={handleHospitality} checked={hospitality} id="hospitality" />
-									<label for="hospitality" className="xui-ml-half" style={{ marginBottom: '0' }}>Hospitality</label>
-								</div>
 							</div>
 							<p className="xui-font-sz-80 xui-my-1 xui-text-center">
 								<div className="xui-d-inline-flex xui-flex-ai-center">
@@ -59,8 +109,8 @@ export default function SignUp(){
 								</button>
 							</div>
 						</form>
-						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorBusinessSignup}</span></p>
-						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successBusinessSignup}</span></p>
+						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorPartnerSignup}</span></p>
+						<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successPartnerSignup}</span></p>
 					</div> : 
 					<div className="xui-bg-white xui-bdr-rad-half xui-w-fluid-100 xui-p-1-half xui-pb-3 xui-text-black">
 						<div className="xui-my-3">

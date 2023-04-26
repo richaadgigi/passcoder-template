@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const getPlatformTransactions = async function (token, page, size) {
+const getPartnerTransactions = async function (token, page, size) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transactions`,
+			`${config.baseAPIurl}/partner/transactions`,
 			{
 				page,
 				size
@@ -21,10 +21,10 @@ const getPlatformTransactions = async function (token, page, size) {
 	}
 };
 
-const getPlatformTransactionsViaType = async function (token, page, size, payload) {
+const getPartnerTransactionsViaType = async function (token, page, size, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transactions/via/type`,
+			`${config.baseAPIurl}/partner/transactions/via/type`,
 			{
 				page,
 				size,
@@ -42,10 +42,10 @@ const getPlatformTransactionsViaType = async function (token, page, size, payloa
 	}
 };
 
-const getPlatformTransactionsViaStatus = async function (token, page, size, payload) {
+const getPartnerTransactionsViaStatus = async function (token, page, size, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transactions/via/transaction/status`,
+			`${config.baseAPIurl}/partner/transactions/via/transaction/status`,
 			{
 				page,
 				size,
@@ -63,10 +63,10 @@ const getPlatformTransactionsViaStatus = async function (token, page, size, payl
 	}
 };
 
-const getPlatformTransaction = async function (token, payload) {
+const getPartnerTransaction = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transaction`,
+			`${config.baseAPIurl}/partner/transaction`,
 			{
 				...payload
 			},
@@ -82,10 +82,10 @@ const getPlatformTransaction = async function (token, payload) {
 	}
 };
 
-const addPlatformDeposit = async function (token, payload) {
+const addPartnerDeposit = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transaction/payment/deposit`,
+			`${config.baseAPIurl}/partner/transaction/payment/deposit`,
 			{
 				...payload
 			},
@@ -102,10 +102,10 @@ const addPlatformDeposit = async function (token, payload) {
 	}
 };
 
-const cancelPlatformDeposit = async function (token, payload) {
+const cancelPartnerDeposit = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transaction/cancel/deposit`,
+			`${config.baseAPIurl}/partner/transaction/cancel/deposit`,
 			{
 				...payload
 			},
@@ -122,10 +122,10 @@ const cancelPlatformDeposit = async function (token, payload) {
 	}
 };
 
-const completePlatformDeposit = async function (token, payload) {
+const completePartnerDeposit = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/platform/transaction/complete/deposit`,
+			`${config.baseAPIurl}/partner/transaction/complete/deposit`,
 			{
 				...payload
 			},
@@ -142,10 +142,10 @@ const completePlatformDeposit = async function (token, payload) {
 	}
 };
 
-const deletePlatformTransaction = async function (token, payload) {
+const deletePartnerTransaction = async function (token, payload) {
 	try {
 		const response = await axios.delete(
-			`${config.baseAPIurl}/platform/transaction`,
+			`${config.baseAPIurl}/partner/transaction`,
 			{
 				data: {
 					token,
@@ -165,6 +165,6 @@ const deletePlatformTransaction = async function (token, payload) {
 };
 
 export { 
-	addPlatformDeposit, cancelPlatformDeposit, completePlatformDeposit, deletePlatformTransaction, getPlatformTransaction, 
-	getPlatformTransactions, getPlatformTransactionsViaStatus, getPlatformTransactionsViaType
+	addPartnerDeposit, cancelPartnerDeposit, completePartnerDeposit, deletePartnerTransaction, getPartnerTransaction, 
+	getPartnerTransactions, getPartnerTransactionsViaStatus, getPartnerTransactionsViaType
 };

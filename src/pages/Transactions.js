@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import SuccessTick from "../assets/images/success-tick.png";
 import Navbar from "../components/Navbar";
 import Content from "../components/Content";
 import Screen from '../components/Screen';
@@ -9,16 +10,25 @@ import Check from "../icons/Check";
 import Filter from "../icons/Filter";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
-import { getPlatformTransactions, getPlatformTransaction, getPlatformTransactionsViaStatus, getPlatformTransactionsViaType } from "../api/transactions";
-import { getPlatformBalance, getCompanyBankAccount } from "../api/platform";
+import { getPartnerTransactions, getPartnerTransaction, getPartnerTransactionsViaStatus, getPartnerTransactionsViaType } from "../api/transactions";
+import { getCompanyBankAccount } from "../api/partner";
 import Loading from "../icons/Loading";
-import { useAddDeposit, useCancelDeposit } from "../hooks/useTransactions";
+import { useAddDeposit, useCancelDeposit, usePremiumUpgrade } from "../hooks/useTransactions";
 import Cancel from "../icons/Cancel";
 import Copy from "../icons/Copy";
+import { useGetPartner } from "../hooks/usePartner";
 
-export default function Wallet(){
+export default function Transactions(){
     const { cookie, forceLogout } = useCookie(config.token, "");
     const [copiedAccountNumber, setCopiedAccountNumber] = useState(false);
+
+    const { partnerDetails } = useGetPartner();
+
+    const { 
+        errorPremiumUpgrade, handleMonths, handlePaymentMethod, handlePremiumPackage, handlePremiumUpgradeSubmit, 
+        loadingPremiumPackage, months, paymentMethod, premiumPackage, successPremiumUpgrade, removePremiumUpgradeModal, 
+        setRemovePremiumUpgradeModal, setShowPremiumUpgradeSuccessModal, showPremiumUpgradeSuccessModal
+    } = usePremiumUpgrade();
 
     const {
         errorAddDeposit, fundingAmount, fundingPaymentMethod, handleFundingAmount, handleFundingPaymentMethod, 
@@ -30,7 +40,6 @@ export default function Wallet(){
         removeCancelDepositModal, setRemoveCancelDepositModal, successCancelDeposit
     } = useCancelDeposit();
 
-    const [platformBalance, setPlatformBalance] = useState(null);
     const [filterType, setFilterType] = useState(null);
     const [companyBankDetails, setCompanyBankDetails] = useState(null);
     const [allTransactions, setAllTransactions] = useState(null);
@@ -57,21 +66,16 @@ export default function Wallet(){
         const response = await getCompanyBankAccount();
         setCompanyBankDetails(response.data);
     };
-    async function getPlatformBalanceAlt() {
-        const response = await getPlatformBalance(cookie);
-        setPlatformBalance(response.data);
-        if (response.response_code >= 400 && response.response_code < 500) forceLogout();
-    };
     async function getAllTransactions(_page, _size) {
         setLoadingAllTransactions(true);
-        const response = await getPlatformTransactions(cookie, (_page || page), (_size || size));
+        const response = await getPartnerTransactions(cookie, (_page || page), (_size || size));
         setAllTransactions(response.data);
         if (response.error) setErrorTransactions(response.error.response.data.message);
         setLoadingAllTransactions(false);
     };
     async function getAllTypeTransactions(type, _page, _size) {
         setLoadingAllTransactions(true);
-        const response = await getPlatformTransactionsViaType(cookie, (_page || page), (_size || size), ({ type: type }));
+        const response = await getPartnerTransactionsViaType(cookie, (_page || page), (_size || size), ({ type: type }));
         setAllTransactions(response.data);
         if (response.error) setErrorTransactions(response.error.response.data.message);
         setLoadingAllTransactions(false);
@@ -81,19 +85,22 @@ export default function Wallet(){
         if (companyBankDetails === null) {
             getCompanyBankAccountAlt();
         }
-        if (platformBalance === null) {
-            getPlatformBalanceAlt();
-        }
         if (allTransactions === null) {
             getAllTransactions();
         }
-    }, [platformBalance, allTransactions, companyBankDetails]);
+    }, [allTransactions, companyBankDetails]);
 
-    if (removeFundingModal) {
-        const modalResponse = document.querySelector("#fundWallet");
+    if (removePremiumUpgradeModal) {
+        const modalResponse = document.querySelector("#upgradePlan");
         modalResponse.setAttribute("display", false);
         getAllTransactions();
-        setRemoveFundingModal(null);
+        setRemovePremiumUpgradeModal(null);
+    }
+    if (showPremiumUpgradeSuccessModal) {
+        const modalResponse = document.querySelector("#upgradePlanSuccess");
+        modalResponse.setAttribute("display", true);
+        getAllTransactions();
+        setShowPremiumUpgradeSuccessModal(null);
     }
     if (removeCancelDepositModal) {
         const modalResponse = document.querySelector("#confirmCancellation");
@@ -120,14 +127,25 @@ export default function Wallet(){
                     <Navbar placeholder="Search something..." makeHidden={true} />
                     <section className="xui-d-flex xui-flex-jc-flex-start xui-lg-flex-jc-flex-end">
                         <div>
-                            <p className="xui-opacity-5 xui-font-sz-80">Current Balance for API Billings</p>
-                            <span className="xui-d-inline-block xui-font-sz-120 xui-mt-half">{!platformBalance ? <Loading width="12" height="12" /> : (platformBalance.success ? "NGN " + platformBalance.data.balance.toLocaleString() : "Error")}</span>
+                            <p className="xui-opacity-5 xui-font-sz-80">Current Premium Plan</p>
+                            {
+                                !partnerDetails ? <Loading width="12" height="12" /> : 
+                                (
+                                    !partnerDetails.success ? "Error" :
+                                    <>
+                                        <span className="xui-d-inline-block xui-font-sz-120 xui-mt-half">{partnerDetails.data.premium.type}</span><br></br>
+                                        <span className="xui-d-inline-block xui-font-sz-90 xui-mt-half">{"Expiring - " + partnerDetails.data.premium.expiring.fulldate}</span><br></br>
+                                        <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Offers left - " + partnerDetails.data.premium.offers.toLocaleString()}</span><br></br>
+                                        <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Announcements left - " + partnerDetails.data.premium.announcements.toLocaleString()}</span>
+                                    </>
+                                )
+                            }
                             <div className="xui-d-flex xui-mt-1 xui-font-sz-80 xui-lg-d-none">
-                                <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="fundWallet">Fund Wallet</button>
+                                <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
                             </div>
                         </div>
                         <div className="xui-ml-2 xui-d-none xui-lg-d-block">
-                            <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="fundWallet">Fund Wallet</button>
+                            <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
                         </div>
                     </section>
                     <section className="xui-d-grid xui-lg-grid-col-1 xui-grid-gap-2 xui-mt-2">
@@ -159,11 +177,11 @@ export default function Wallet(){
                                             </div>
                                         </div>
                                         <div className="xui-mt-2">
-                                            <h4 className="xui-font-sz-85 xui-mb-1 xui-font-w-normal xui-opacity-8">Steps to top up your wallet</h4>
+                                            <h4 className="xui-font-sz-85 xui-mb-1 xui-font-w-normal xui-opacity-8">Steps to upgrade to premium via transfer</h4>
                                             <ol className="xui-font-sz-80 xui-opacity-5 xui-my-half">
-                                                <li>Click on "Fund Wallet" above, input amount and select payment method to "Transfer".</li><br></br>
-                                                <li>Copy the account number & Transfer amount to top up.</li><br></br>
-                                                <li>Send an email to <a href="mailto:support@passcoder.io">support@passcoder.io</a> with your receipt of payment and await confirmation.</li>
+                                                <li>See the packages below, choose the one you want to upgrade to, determine the number of months you want this to be active (12 months max).</li><br></br>
+                                                <li>Copy the account number & Transfer the amount times the number of months you want (i.e. package price x month = total amount).</li><br></br>
+                                                <li>Send an email to <a href="mailto:support@passcoder.io">support@passcoder.io</a> with your receipt of payment, package selected and await confirmation.</li>
                                             </ol>
                                         </div>
                                     </div> :
@@ -203,9 +221,9 @@ export default function Wallet(){
                         <div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
                             <div className="xui-mb-1">
                                 <h1 className='xui-font-sz-110 xui-font-w-normal'>All Transactions</h1>
-                                <p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">View your transaction history & past usage statements</p>
+                                <p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">View your transaction history</p>
                             </div>
-                            <div className="xui-mb-1">
+                            {/* <div className="xui-mb-1">
                                 <div className='xui-d-inline-flex'>
                                     <div className='xui-d-inline-flex xui-flex-ai-center xui-ml-1-half'>
                                         <Filter width="16" height="16" />
@@ -217,10 +235,11 @@ export default function Wallet(){
                                             }
                                             <option value={"Deposit"}>Deposit</option>
                                             <option value={"API Call"}>API Call</option>
+                                            <option value={"Subscription"}>Subscription</option>
                                         </select>
                                     </div>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                         {
                             loadingAllTransactions ?
@@ -328,9 +347,9 @@ export default function Wallet(){
                     </section>
                 </Content>
             </Screen>
-            <section className='xui-modal' xui-modal="fundWallet" id="fundWallet">
+            <section className='xui-modal' xui-modal="upgradePlan" id="upgradePlan">
                 <div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
-                    <div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="fundWallet">
+                    <div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="upgradePlan">
                         <Close width="24" height="24" />
                     </div>
                     <h1>Fund Wallet</h1>
@@ -362,6 +381,22 @@ export default function Wallet(){
                     </form>
                     <p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorAddDeposit}</span></p>
                     <p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successAddDeposit}</span></p>
+                </div>
+            </section>
+            <section className='xui-modal' xui-modal="upgradePlanSuccess" id="upgradePlanSuccess">
+                <div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
+                    <center>
+                        <h1>Premium Upgrade Successful</h1>
+                        <img className="xui-img-40 xui-my-2" src={SuccessTick} alt="" />
+                    </center>
+                    <center>
+                        <div className="xui-d-inline-flex xui-flex-ai-center xui-mt-2">
+                            <button className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85" xui-modal-close="upgradePlanSuccess">
+                                <span className="xui-mr-half">Continue</span>
+                                <Close width="20" height="20" />
+                            </button>
+                        </div>
+                    </center>
                 </div>
             </section>
             <section className='xui-modal' xui-modal="confirmCancellation" id="confirmCancellation">

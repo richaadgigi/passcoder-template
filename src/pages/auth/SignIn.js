@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import Swap from "../../icons/Swap";
 import Arrowright from "../../icons/Arrowright";
 import { useLoginViaEmail, useLoginViaToken } from '../../hooks/useAuth';
-import { getAccessDetails } from "../../api/platform";
+import { getAccessDetails } from "../../api/partner";
 import { useRef } from "react";
 import Loading from "../../icons/Loading";
 
@@ -36,7 +36,7 @@ export default function SignIn(){
     }, [successLogin]);
     const { pathname } = useLocation();
     const stripped = pathname.replace("/access/", "");
-    const reset_master_token_url = "/reset-master-token?business=" + stripped;
+    const reset_master_token_url = "/reset-master-token?partner=" + stripped;
 
     useEffect(() => {
         async function getPlatformAccessDetails() {
@@ -109,8 +109,8 @@ export default function SignIn(){
             <div className="psc-flip-card xui-max-w-500 xui-w-fluid-100 xui-mt-2 xui-md-mt-none">
                 <div className="psc-flip-card-inner xui-w-fluid-100">
                     <div className="psc-flip-card-front xui-bg-white xui-bdr-rad-half xui-w-fluid-100 xui-p-1-half xui-pb-3 xui-text-black">
-                        <h2 className="xui-font-sz-125 xui-w-fluid-80">Welcome back <span className="psc-text">{accessDetails !== null ? accessDetails.data.name : ""}</span></h2>
-                        <p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">Securely sign in to your Passcoder business account</p>
+                        <h2 className="xui-font-sz-125 xui-w-fluid-80">Welcome back <span className="psc-text">{accessDetails !== null ? accessDetails.data.name + ", " + accessDetails.data.city : ""}</span></h2>
+                        <p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">Securely sign in to your Passcoder partner account</p>
                         <p className="xui-font-sz-80 xui-my-2"><span className="xui-opacity-7">Don't have an account?</span> <Link to="/signup" className="xui-font-w-bold psc-text xui-text-dc-none">Sign up</Link></p>
                         <form className="xui-form" layout="2" onSubmit={handleSubmit}>
                             <div className="xui-form-box xui-mt-4">
@@ -144,7 +144,7 @@ export default function SignIn(){
                         </button>
                     </div>
                     <div className="psc-flip-card-back xui-bg-white xui-bdr-rad-half xui-w-fluid-100 xui-p-1-half xui-text-black">
-                        <h2 className="xui-font-sz-125 xui-w-fluid-80">Sign In to <span className="psc-text">{accessDetails !== null ? accessDetails.data.name : ""}</span></h2>
+                        <h2 className="xui-font-sz-125 xui-w-fluid-80">Sign In to <span className="psc-text">{accessDetails !== null ? accessDetails.data.name + ", " + accessDetails.data.city : ""}</span></h2>
                         <p className="xui-font-sz-80 xui-my-1"><span className="xui-opacity-7">Don't have an account?</span> <Link to="/signup" className="xui-font-w-bold psc-text xui-text-dc-none">Sign up</Link></p>
                         <form className="xui-form" layout="2" onSubmit={handleTokenSubmit}>
                             <div className="xui-form-box xui-mt-2">

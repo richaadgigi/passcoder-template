@@ -1,10 +1,10 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const getPartnerTokens = async function (token, page, size) {
+const getPartnerOffers = async function (token, page, size) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/partner/tokens`,
+			`${config.baseAPIurl}/partner/offers`,
 			{
 				page,
 				size
@@ -21,12 +21,12 @@ const getPartnerTokens = async function (token, page, size) {
 	}
 };
 
-const getPartnerToken = async function (token, unique_token) {
+const getPartnerOffer = async function (token, unique_id) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/partner/token`,
+			`${config.baseAPIurl}/partner/offer`,
 			{
-				token: unique_token
+				unique_id
 			},
 			{
 				headers: {
@@ -40,10 +40,10 @@ const getPartnerToken = async function (token, unique_token) {
 	}
 };
 
-const addPartnerToken = async function (token, payload) {
+const addPartnerOffer = async function (token, payload) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/partner/token/add`,
+			`${config.baseAPIurl}/partner/offer/add`,
 			{
 				...payload
 			},
@@ -59,10 +59,10 @@ const addPartnerToken = async function (token, payload) {
 	}
 };
 
-const updateTokenDetails = async function (token, payload) {
+const updateOfferDetails = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/partner/token/update/details`,
+			`${config.baseAPIurl}/partner/offer/update/details`,
 			{
 				...payload
 			},
@@ -78,10 +78,10 @@ const updateTokenDetails = async function (token, payload) {
 	}
 };
 
-const updateToken = async function (token, payload) {
+const updateOfferLimit = async function (token, payload) {
 	try {
 		const response = await axios.put(
-			`${config.baseAPIurl}/partner/token/update/token`,
+			`${config.baseAPIurl}/partner/offer/update/limit`,
 			{
 				...payload
 			},
@@ -97,10 +97,29 @@ const updateToken = async function (token, payload) {
 	}
 };
 
-const deleteToken = async function (token, payload) {
+const updateOfferCriteria = async function (token, payload) {
+	try {
+		const response = await axios.put(
+			`${config.baseAPIurl}/partner/offer/update/criteria`,
+			{
+				...payload
+			},
+			{
+				headers: {
+					'passcoder-access-token': token
+				}
+			}
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+const deleteOffer = async function (token, payload) {
 	try {
 		const response = await axios.delete(
-			`${config.baseAPIurl}/partner/token`,
+			`${config.baseAPIurl}/partner/offer`,
 			{
 				data: {
 					token,
@@ -119,4 +138,4 @@ const deleteToken = async function (token, payload) {
 	}
 };
 
-export { getPartnerToken, addPartnerToken, deleteToken, getPartnerTokens, updateToken, updateTokenDetails };
+export { getPartnerOffer, addPartnerOffer, deleteOffer, getPartnerOffers, updateOfferLimit, updateOfferCriteria, updateOfferDetails };

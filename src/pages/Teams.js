@@ -4,7 +4,7 @@ import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
 import Arrowleft from '../icons/Arrowleft';
-import {  getPlatformTokens } from "../api/tokens";
+import { getPartnerTokens } from "../api/tokens";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { useAddToken, useDeleteToken, useEditToken, useResetToken } from "../hooks/useTokens";
@@ -64,9 +64,9 @@ export default function Teams() {
 
 	async function getAllTokens(_page, _size) {
 		setLoadingAllTokens(true);
-		const response = await getPlatformTokens(cookie, (_page || page), (_size || size));
+		const response = await getPartnerTokens(cookie, (_page || page), (_size || size));
 		setAllTokens(response.data);
-		if (response.response_code >= 400 && response.response_code < 500) forceLogout();
+		if (response.response_code === 403) forceLogout();
 		if (response.error) setErrorAllTokens(response.error.response.data.message);
 		setLoadingAllTokens(false);
 	};

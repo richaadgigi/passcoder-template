@@ -6,22 +6,30 @@ import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { 
 	updateComplianceCertificate, updateComplianceDetails, updateComplianceDocument, updateDescription, 
-	updateEmail, updateLiveApiKey, updateMasterToken, updateName, updateProfilePhoto, updateTestApiKey, 
-	getPlatformProfilePhotoProof, getPlatformComplianceDocumentsProof
+	updateEmail, updateMasterToken, updateName, updateProfilePhoto, updateProfileCover, updatePointThreshold, 
+	getPartnerProfilePhotoProof, getPartnerComplianceDocumentsProof, getPartnerProfileCoverProof, 
 } from "../api/settings";
 
 const useUpdateName = () => {
 
 	const {cookie, removeCookie} = useCookie(config.token, "");
+	const changeLGA = config.changeLGA;
+	const [cities, setCities] = useState([]);
 
 	const [loadingUpdateName, setLoadingUpdateName] = useState(false);
 	const [removeUpdateNameModal, setRemoveUpdateNameModal] = useState(null);
-	const [businessName, setBusinessName] = useState("");
+	const [partnerName, setPartnerName] = useState("");
+	const [partnerCity, setPartnerCity] = useState("");
+	const [partnerState, setPartnerState] = useState("");
+	const [partnerCountry, setPartnerCountry] = useState(null);
 
 	const [errorUpdateName, setErrorUpdateName] = useState(null);
 	const [successUpdateName, setSuccessUpdateName] = useState(null);
 
-	const handleBusinessName = (e) => { e.preventDefault(); setBusinessName(e.target.value); };
+	const handlePartnerName = (e) => { e.preventDefault(); setPartnerName(e.target.value); };
+	const handlePartnerCity = (e) => { e.preventDefault(); setPartnerCity(e.target.value) };
+	const handlePartnerState = (e) => { e.preventDefault(); setPartnerState(e.target.value); setCities(changeLGA(e.target.value)) };
+	const handlePartnerCountry = (e) => { e.preventDefault(); setPartnerCountry(e.target.value) };
 
 	const navigate = useNavigate();
 	
@@ -41,20 +49,35 @@ const useUpdateName = () => {
 		e.preventDefault();
 
 		if (!loadingUpdateName) {
-			if (businessName.length === 0) {
+			if (partnerName.length === 0) {
 				setErrorUpdateName(null);
 				setSuccessUpdateName(null);
 				setErrorUpdateName("Name is required");
 				setTimeout(function () {
 					setErrorUpdateName(null);
 				}, 2500)
-			} else if (businessName.length < 3) {
+			} else if (partnerName.length < 3) {
 				setErrorUpdateName("Min character - 3");
 				setTimeout(function () {
 					setErrorUpdateName(null);
 				}, 2500)
-			} else if (businessName.length > 50) {
+			} else if (partnerName.length > 50) {
 				setErrorUpdateName("Max character - 50");
+				setTimeout(function () {
+					setErrorUpdateName(null);
+				}, 2500)
+			} else if (!partnerCountry) {
+				setErrorUpdateName("Country is required");
+				setTimeout(function () {
+					setErrorUpdateName(null);
+				}, 2500)
+			} else if (!partnerState) {
+				setErrorUpdateName("State is required");
+				setTimeout(function () {
+					setErrorUpdateName(null);
+				}, 2500)
+			} else if (!partnerCity) {
+				setErrorUpdateName("City is required");
 				setTimeout(function () {
 					setErrorUpdateName(null);
 				}, 2500)
@@ -62,7 +85,10 @@ const useUpdateName = () => {
 				setLoadingUpdateName(true);
 
 				const updateNameRes = updateName(cookie, {
-					name: businessName
+					name: partnerName,
+					country: partnerCountry,
+					state: partnerState,
+					city: partnerCity
 				})
 
 				updateNameRes.then(res => {
@@ -83,15 +109,15 @@ const useUpdateName = () => {
 						}
 					} else {
 						setErrorUpdateName(null);
-						setSuccessUpdateName(`Business name edited successfully!`);
+						setSuccessUpdateName(`Partner name edited successfully!`);
 
 						setTimeout(function () {
 							setSuccessUpdateName(null);
 							setRemoveUpdateNameModal(true);
 							removeCookie();
-							navigate(`/access/${strip_text(businessName)}`);
+							navigate(`/access/${strip_text(partnerName + " " + partnerCity + " " + partnerState)}`);
 							window.location.reload(true);
-							setBusinessName("");
+							setPartnerName("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -103,8 +129,9 @@ const useUpdateName = () => {
 	};
 
 	return {
-		cookie, businessName, loadingUpdateName, errorUpdateName, successUpdateName, handleUpdateName, handleBusinessName, setBusinessName, 
-		removeUpdateNameModal, setRemoveUpdateNameModal
+		cookie, partnerName, loadingUpdateName, errorUpdateName, successUpdateName, handleUpdateName, handlePartnerName, setPartnerName, 
+		removeUpdateNameModal, setRemoveUpdateNameModal, handlePartnerCity, handlePartnerState, handlePartnerCountry, cities, partnerCity, 
+		partnerState, partnerCountry, setPartnerCity, setPartnerState, setPartnerCountry, setCities
 	};
 };
 
@@ -115,7 +142,7 @@ const useUpdateEmail = () => {
 	const [loadingUpdateEmail, setLoadingUpdateEmail] = useState(false);
 	const [stripped, setStripped] = useState("");
 	const [removeUpdateEmailModal, setRemoveUpdateEmailModal] = useState(null);
-	const [businessEmail, setBusinessEmail] = useState("");
+	const [partnerEmail, setPartnerEmail] = useState("");
 
 	const [errorUpdateEmail, setErrorUpdateEmail] = useState(null);
 	const [successUpdateEmail, setSuccessUpdateEmail] = useState(null);
@@ -123,7 +150,7 @@ const useUpdateEmail = () => {
 	// validating values that need precision
 	const validEmail = new RegExp(config.EMAIL_REGEX);
 
-	const handleBusinessEmail = (e) => { e.preventDefault(); setBusinessEmail(e.target.value); };
+	const handlePartnerEmail = (e) => { e.preventDefault(); setPartnerEmail(e.target.value); };
 	const handleStripped = (stripped) => { setStripped(stripped); };
 
 	const navigate = useNavigate();
@@ -132,20 +159,20 @@ const useUpdateEmail = () => {
 		e.preventDefault();
 
 		if (!loadingUpdateEmail) {
-			if (businessEmail.length === 0) {
+			if (partnerEmail.length === 0) {
 				setErrorUpdateEmail(null);
 				setSuccessUpdateEmail(null);
 				setErrorUpdateEmail("Email is required");
 				setTimeout(function () {
 					setErrorUpdateEmail(null);
 				}, 2500)
-			} else if (!validEmail.test(businessEmail)) {
+			} else if (!validEmail.test(partnerEmail)) {
 				setErrorUpdateEmail("Invalid email");
 				setTimeout(function () {
 					setErrorUpdateEmail(null);
 				}, 2500)
 			} else if (stripped.length === 0) {
-				setErrorUpdateEmail("Unable to get platform details");
+				setErrorUpdateEmail("Unable to get partner details");
 				setTimeout(function () {
 					setErrorUpdateEmail(null);
 				}, 2500)
@@ -153,7 +180,7 @@ const useUpdateEmail = () => {
 				setLoadingUpdateEmail(true);
 
 				const updateEmailRes = updateEmail(cookie, {
-					email: businessEmail
+					email: partnerEmail
 				})
 
 				updateEmailRes.then(res => {
@@ -161,7 +188,8 @@ const useUpdateEmail = () => {
 					if (res.err) {
 						if (!res.error.response.data.success) {
 							const error = `${res.error.response.data.message}`;
-							setErrorUpdateEmail(error);
+							const error_2 = `${res.error.response.data.data[0].msg}`;
+							setErrorUpdateEmail(error_2 || error);
 							setTimeout(function () {
 								setErrorUpdateEmail(null);
 							}, 2000)
@@ -174,7 +202,7 @@ const useUpdateEmail = () => {
 						}
 					} else {
 						setErrorUpdateEmail(null);
-						setSuccessUpdateEmail(`Business email edited successfully!`);
+						setSuccessUpdateEmail(`Partner email edited successfully!`);
 
 						setTimeout(function () {
 							setSuccessUpdateEmail(null);
@@ -182,7 +210,7 @@ const useUpdateEmail = () => {
 							removeCookie();
 							navigate(`/access/${stripped}`);
 							window.location.reload(true);
-							setBusinessEmail("");
+							setPartnerEmail("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -194,7 +222,7 @@ const useUpdateEmail = () => {
 	};
 
 	return {
-		cookie, businessEmail, loadingUpdateEmail, errorUpdateEmail, successUpdateEmail, handleUpdateEmail, handleBusinessEmail, setBusinessEmail, 
+		cookie, partnerEmail, loadingUpdateEmail, errorUpdateEmail, successUpdateEmail, handleUpdateEmail, handlePartnerEmail, setPartnerEmail, 
 		removeUpdateEmailModal, setRemoveUpdateEmailModal, handleStripped
 	};
 };
@@ -204,30 +232,30 @@ const useUpdateDescription = () => {
 	const {cookie} = useCookie(config.token, "");
 
 	const [loadingUpdateDescription, setLoadingUpdateDescription] = useState(false);
-	const [businessDescription, setBusinessDescription] = useState("");
+	const [partnerDescription, setPartnerDescription] = useState("");
 
 	const [errorUpdateDescription, setErrorUpdateDescription] = useState(null);
 	const [successUpdateDescription, setSuccessUpdateDescription] = useState(null);
 
-	const handleBusinessDescription = (e) => { e.preventDefault(); setBusinessDescription(e.target.value); };
+	const handlePartnerDescription = (e) => { e.preventDefault(); setPartnerDescription(e.target.value); };
 
 	const handleUpdateDescription = (e) => {
 		e.preventDefault();
 
 		if (!loadingUpdateDescription) {
-			if (businessDescription.length === 0) {
+			if (partnerDescription.length === 0) {
 				setErrorUpdateDescription(null);
 				setSuccessUpdateDescription(null);
 				setErrorUpdateDescription("Description is required");
 				setTimeout(function () {
 					setErrorUpdateDescription(null);
 				}, 2500)
-			} else if (businessDescription.length < 3) {
+			} else if (partnerDescription.length < 3) {
 				setErrorUpdateDescription("Min character - 3");
 				setTimeout(function () {
 					setErrorUpdateDescription(null);
 				}, 2500)
-			} else if (businessDescription.length > 500) {
+			} else if (partnerDescription.length > 500) {
 				setErrorUpdateDescription("Max character - 500");
 				setTimeout(function () {
 					setErrorUpdateDescription(null);
@@ -236,7 +264,7 @@ const useUpdateDescription = () => {
 				setLoadingUpdateDescription(true);
 
 				const updateDescriptionRes = updateDescription(cookie, {
-					description: businessDescription
+					description: partnerDescription
 				})
 
 				updateDescriptionRes.then(res => {
@@ -257,11 +285,11 @@ const useUpdateDescription = () => {
 						}
 					} else {
 						setErrorUpdateDescription(null);
-						setSuccessUpdateDescription(`Business description edited successfully!`);
+						setSuccessUpdateDescription(`Partner description edited successfully!`);
 
 						setTimeout(function () {
 							setSuccessUpdateDescription(null);
-							setBusinessDescription("");
+							setPartnerDescription("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -273,7 +301,75 @@ const useUpdateDescription = () => {
 	};
 
 	return {
-		cookie, businessDescription, loadingUpdateDescription, errorUpdateDescription, successUpdateDescription, handleUpdateDescription, handleBusinessDescription, setBusinessDescription,
+		cookie, partnerDescription, loadingUpdateDescription, errorUpdateDescription, successUpdateDescription, handleUpdateDescription, handlePartnerDescription, setPartnerDescription,
+	};
+};
+
+const useUpdatePointThreshold = () => {
+
+	const { cookie } = useCookie(config.token, "");
+
+	const [loadingUpdatePointThreshold, setLoadingUpdatePointThreshold] = useState(false);
+	const [pointThreshold, setPointThreshold] = useState(null);
+
+	const [errorUpdatePointThreshold, setErrorUpdatePointThreshold] = useState(null);
+	const [successUpdatePointThreshold, setSuccessUpdatePointThreshold] = useState(null);
+
+	const handlePointThreshold = (e) => { e.preventDefault(); setPointThreshold(e.target.value); };
+
+	const handleUpdatePointThreshold = (e) => {
+		e.preventDefault();
+
+		if (!loadingUpdatePointThreshold) {
+			if (pointThreshold < 1) {
+				setErrorUpdatePointThreshold(null);
+				setSuccessUpdatePointThreshold(null);
+				setErrorUpdatePointThreshold("Point Threshold is required");
+				setTimeout(function () {
+					setErrorUpdatePointThreshold(null);
+				}, 2500)
+			} else {
+				setLoadingUpdatePointThreshold(true);
+
+				const updatePointThresholdRes = updatePointThreshold(cookie, {
+					point_threshold: pointThreshold
+				})
+
+				updatePointThresholdRes.then(res => {
+					setLoadingUpdatePointThreshold(false);
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setErrorUpdatePointThreshold(error);
+							setTimeout(function () {
+								setErrorUpdatePointThreshold(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setErrorUpdatePointThreshold(error);
+							setTimeout(function () {
+								setErrorUpdatePointThreshold(null);
+							}, 2000)
+						}
+					} else {
+						setErrorUpdatePointThreshold(null);
+						setSuccessUpdatePointThreshold(`Point Threshold updated successfully!`);
+
+						setTimeout(function () {
+							setSuccessUpdatePointThreshold(null);
+							setPointThreshold(null);
+						}, 2500)
+					}
+				}).catch(err => {
+					setLoadingUpdatePointThreshold(false);
+				})
+
+			}
+		}
+	};
+
+	return {
+		cookie, pointThreshold, loadingUpdatePointThreshold, errorUpdatePointThreshold, successUpdatePointThreshold, handleUpdatePointThreshold, handlePointThreshold, setPointThreshold,
 	};
 };
 
@@ -397,12 +493,7 @@ const useUpdateComplianceDetails = () => {
 				setTimeout(function () {
 					setErrorUpdateComplianceDetails(null);
 				}, 2500)
-			} else if (!companyWebsiteUrl) {
-				setErrorUpdateComplianceDetails("Website Url is required");
-				setTimeout(function () {
-					setErrorUpdateComplianceDetails(null);
-				}, 2500)
-			} else if (!validate_url(companyWebsiteUrl)) {
+			} else if (companyWebsiteUrl && !validate_url(companyWebsiteUrl)) {
 				setErrorUpdateComplianceDetails("Invalid Website Url");
 				setTimeout(function () {
 					setErrorUpdateComplianceDetails(null);
@@ -416,7 +507,7 @@ const useUpdateComplianceDetails = () => {
 					company_rc_number: companyRcNumber,
 					company_type: companyType,
 					company_address: companyAddress,
-					website_url: companyWebsiteUrl,
+					website_url: companyWebsiteUrl === null ? undefined : companyWebsiteUrl,
 				})
 
 				updateComplianceDetailsRes.then(res => {
@@ -526,122 +617,14 @@ const useResetMasterToken = () => {
 	};
 };
 
-const useResetLiveApiKey = () => {
-
-	const {cookie} = useCookie(config.token, "");
-
-	const [loadingResetLiveApiKey, setLoadingResetLiveApiKey] = useState(false);
-	const [removeResetLiveApiKeyModal, setRemoveResetLiveApiKeyModal] = useState(null);
-
-	const [errorResetLiveApiKey, setErrorResetLiveApiKey] = useState(null);
-	const [successResetLiveApiKey, setSuccessResetLiveApiKey] = useState(null);
-
-	const handleResetLiveApiKey = () => {
-
-		if (!loadingResetLiveApiKey) {
-			setLoadingResetLiveApiKey(true);
-
-			const resetLiveApiKeyRes = updateLiveApiKey(cookie)
-
-			resetLiveApiKeyRes.then(res => {
-				setLoadingResetLiveApiKey(false);
-				if (res.err) {
-					if (!res.error.response.data.success) {
-						const error = `${res.error.response.data.message}`;
-						setErrorResetLiveApiKey(error);
-						setTimeout(function () {
-							setErrorResetLiveApiKey(null);
-						}, 2000)
-					} else {
-						const error = `${res.error.code} - ${res.error.message}`;
-						setErrorResetLiveApiKey(error);
-						setTimeout(function () {
-							setErrorResetLiveApiKey(null);
-						}, 2000)
-					}
-				} else {
-					setErrorResetLiveApiKey(null);
-					setSuccessResetLiveApiKey(`Live API key reset successful!`);
-
-					setTimeout(function () {
-						setSuccessResetLiveApiKey(null);
-						setRemoveResetLiveApiKeyModal(true);
-					}, 2500)
-				}
-			}).catch(err => {
-				setLoadingResetLiveApiKey(false);
-			})
-		}
-	};
-
-	return {
-		cookie, loadingResetLiveApiKey, removeResetLiveApiKeyModal, errorResetLiveApiKey, successResetLiveApiKey,
-		handleResetLiveApiKey, setRemoveResetLiveApiKeyModal,
-	};
-};
-
-const useResetTestApiKey = () => {
-
-	const {cookie} = useCookie(config.token, "");
-
-	const [loadingResetTestApiKey, setLoadingResetTestApiKey] = useState(false);
-	const [removeResetTestApiKeyModal, setRemoveResetTestApiKeyModal] = useState(null);
-
-	const [errorResetTestApiKey, setErrorResetTestApiKey] = useState(null);
-	const [successResetTestApiKey, setSuccessResetTestApiKey] = useState(null);
-
-	const handleResetTestApiKey = () => {
-
-		if (!loadingResetTestApiKey) {
-			setLoadingResetTestApiKey(true);
-
-			const resetTestApiKeyRes = updateTestApiKey(cookie)
-
-			resetTestApiKeyRes.then(res => {
-				setLoadingResetTestApiKey(false);
-				if (res.err) {
-					if (!res.error.response.data.success) {
-						const error = `${res.error.response.data.message}`;
-						setErrorResetTestApiKey(error);
-						setTimeout(function () {
-							setErrorResetTestApiKey(null);
-						}, 2000)
-					} else {
-						const error = `${res.error.code} - ${res.error.message}`;
-						setErrorResetTestApiKey(error);
-						setTimeout(function () {
-							setErrorResetTestApiKey(null);
-						}, 2000)
-					}
-				} else {
-					setErrorResetTestApiKey(null);
-					setSuccessResetTestApiKey(`Test API key reset successful!`);
-
-					setTimeout(function () {
-						setSuccessResetTestApiKey(null);
-						setRemoveResetTestApiKeyModal(true);
-					}, 2500)
-				}
-			}).catch(err => {
-				setLoadingResetTestApiKey(false);
-			})
-		}
-	};
-
-	return {
-		cookie, loadingResetTestApiKey, removeResetTestApiKeyModal, errorResetTestApiKey, successResetTestApiKey,
-		handleResetTestApiKey, setRemoveResetTestApiKeyModal,
-	};
-};
-
-const useUploadPlatformProfilePhoto = () => {
+const useUploadPartnerProfilePhoto = () => {
 
 	const storage = getStorage(app);
 
 	const {cookie} = useCookie(config.token, "");
 
 	const [loadingProfilePhoto, setLoadingProfilePhoto] = useState(false);
-	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [partnerUniqueId, setPartnerUniqueId] = useState("");
 	const [selectedProfilePhoto, setSelectedProfilePhoto] = useState("");
 	const [uploadingProfilePhotoPercentage, setUploadingProfilePhotoPercentage] = useState(0);
 
@@ -655,10 +638,10 @@ const useUploadPlatformProfilePhoto = () => {
 		e.preventDefault();
 
 		if (!loadingProfilePhoto) {
-			if (platformUniqueId.length === 0) {
+			if (partnerUniqueId.length === 0) {
 				setErrorProfilePhoto(null);
 				setSuccessProfilePhoto(null);
-				setErrorProfilePhoto("Platform ID is required");
+				setErrorProfilePhoto("Partner ID is required");
 				setTimeout(function () {
 					setErrorProfilePhoto(null);
 				}, 2000)
@@ -675,7 +658,7 @@ const useUploadPlatformProfilePhoto = () => {
 			} else {
 				setLoadingProfilePhoto(true);
 	
-				const profilePhotoProofRes = getPlatformProfilePhotoProof({ platform_unique_id: platformUniqueId })
+				const profilePhotoProofRes = getPartnerProfilePhotoProof({ partner_unique_id: partnerUniqueId })
 	
 				profilePhotoProofRes.then(res => {
 					if (res.err) {
@@ -701,7 +684,7 @@ const useUploadPlatformProfilePhoto = () => {
 						let lastDot = selectedProfilePhoto.name.lastIndexOf('.');
 						let ext = selectedProfilePhoto.name.substring(lastDot + 1);
 
-						const imagePath = "/platforms/" + profile_image_rename + "." + ext;
+						const imagePath = "/partners/" + profile_image_rename + "." + ext;
 
 						const storageRef = ref(storage, imagePath);
 						const uploadTask = uploadBytesResumable(storageRef, selectedProfilePhoto);
@@ -722,12 +705,12 @@ const useUploadPlatformProfilePhoto = () => {
 							() => {
 								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
 									
-									const updatePlatformProfileImageRes = updateProfilePhoto(cookie, {
+									const updatePartnerProfileImageRes = updateProfilePhoto(cookie, {
 										photo: downloadURL,
 										photo_file_ext: imagePath
 									})
 
-									updatePlatformProfileImageRes.then(res => {
+									updatePartnerProfileImageRes.then(res => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
@@ -775,19 +758,165 @@ const useUploadPlatformProfilePhoto = () => {
 	};
 
 	return {
-		cookie, loadingProfilePhoto, errorProfilePhoto, successProfilePhoto, handleUploadProfilePhoto, platformUniqueId, setSelectedProfilePhoto, 
-		setPlatformUniqueId, uploadingProfilePhotoPercentage, selectedProfilePhoto,
+		cookie, loadingProfilePhoto, errorProfilePhoto, successProfilePhoto, handleUploadProfilePhoto, partnerUniqueId, setSelectedProfilePhoto, 
+		setPartnerUniqueId, uploadingProfilePhotoPercentage, selectedProfilePhoto,
 	};
 };
 
-const useUploadPlatformComplianceDocument = () => {
+const useUploadPartnerProfileCover = () => {
+
+	const storage = getStorage(app);
+
+	const { cookie } = useCookie(config.token, "");
+
+	const [loadingProfileCover, setLoadingProfileCover] = useState(false);
+	const [partnerUniqueId, setPartnerUniqueId] = useState("");
+	const [selectedProfileCover, setSelectedProfileCover] = useState("");
+	const [uploadingProfileCoverPercentage, setUploadingProfileCoverPercentage] = useState(0);
+
+	const [errorProfileCover, setErrorProfileCover] = useState(null);
+	const [successProfileCover, setSuccessProfileCover] = useState(null);
+
+	const allowed_extensions = ["image/png", "image/PNG", "image/jpg", "image/JPG", "image/jpeg", "image/JPEG", "image/webp", "image/WEBP"];
+	const maximum_file_size = 5 * 1024 * 1024;
+
+	const handleUploadProfileCover = (e) => {
+		e.preventDefault();
+
+		if (!loadingProfileCover) {
+			if (partnerUniqueId.length === 0) {
+				setErrorProfileCover(null);
+				setSuccessProfileCover(null);
+				setErrorProfileCover("Partner ID is required");
+				setTimeout(function () {
+					setErrorProfileCover(null);
+				}, 2000)
+			} else if (!allowed_extensions.includes(selectedProfileCover.type)) {
+				setErrorProfileCover("Invalid image format (.png, .jpg, .jpeg & .webp)");
+				setTimeout(function () {
+					setErrorProfileCover(null);
+				}, 2000)
+			} else if (selectedProfileCover.size > maximum_file_size) {
+				setErrorProfileCover("File too large (max 5mb)");
+				setTimeout(function () {
+					setErrorProfileCover(null);
+				}, 2000)
+			} else {
+				setLoadingProfileCover(true);
+
+				const profileCoverProofRes = getPartnerProfileCoverProof({ partner_unique_id: partnerUniqueId })
+
+				profileCoverProofRes.then(res => {
+					if (res.err) {
+						if (!res.error.response.data.success) {
+							const error = `${res.error.response.data.message}`;
+							setUploadingProfileCoverPercentage(0);
+							setLoadingProfileCover(false);
+							setErrorProfileCover(error);
+							setTimeout(function () {
+								setErrorProfileCover(null);
+							}, 2000)
+						} else {
+							const error = `${res.error.code} - ${res.error.message}`;
+							setUploadingProfileCoverPercentage(0);
+							setLoadingProfileCover(false);
+							setErrorProfileCover(error);
+							setTimeout(function () {
+								setErrorProfileCover(null);
+							}, 2000)
+						}
+					} else {
+						const profile_cover_rename = res.data.data[0].photo;
+						let lastDot = selectedProfileCover.name.lastIndexOf('.');
+						let ext = selectedProfileCover.name.substring(lastDot + 1);
+
+						const imagePath = "/partners/" + profile_cover_rename + "." + ext;
+
+						const storageRef = ref(storage, imagePath);
+						const uploadTask = uploadBytesResumable(storageRef, selectedProfileCover);
+
+						uploadTask.on('state_changed',
+							(snapshot) => {
+								const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+								setUploadingProfileCoverPercentage(progress);
+							},
+							(error) => {
+								setUploadingProfileCoverPercentage(0);
+								setLoadingProfileCover(false);
+								setErrorProfileCover("An error occured while uploading");
+								setTimeout(function () {
+									setErrorProfileCover(null);
+								}, 3000)
+							},
+							() => {
+								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
+
+									const updatePartnerProfileImageRes = updateProfileCover(cookie, {
+										cover: downloadURL,
+										cover_file_ext: imagePath
+									})
+
+									updatePartnerProfileImageRes.then(res => {
+										if (res.err) {
+											if (!res.error.response.data.success) {
+												const error = `${res.error.response.data.message}`;
+												setUploadingProfileCoverPercentage(0);
+												setLoadingProfileCover(false);
+												setErrorProfileCover(error);
+												setTimeout(function () {
+													setErrorProfileCover(null);
+												}, 2000)
+											} else {
+												const error = `${res.error.code} - ${res.error.message}`;
+												setUploadingProfileCoverPercentage(0);
+												setLoadingProfileCover(false);
+												setErrorProfileCover(error);
+												setTimeout(function () {
+													setErrorProfileCover(null);
+												}, 2000)
+											}
+										} else {
+											setErrorProfileCover(null);
+											setUploadingProfileCoverPercentage(0);
+											setSuccessProfileCover(`Profile cover uploaded successfully!`);
+
+											setTimeout(function () {
+												setLoadingProfileCover(false);
+												setSuccessProfileCover(null);
+												window.location.reload(true);
+											}, 3000)
+										}
+									}).catch(err => {
+										setUploadingProfileCoverPercentage(0);
+										setLoadingProfileCover(false);
+									})
+								});
+
+							}
+						)
+					}
+				}).catch(err => {
+					setUploadingProfileCoverPercentage(0);
+					setLoadingProfileCover(false);
+				})
+			}
+		}
+	};
+
+	return {
+		cookie, loadingProfileCover, errorProfileCover, successProfileCover, handleUploadProfileCover, partnerUniqueId, setSelectedProfileCover,
+		setPartnerUniqueId, uploadingProfileCoverPercentage, selectedProfileCover,
+	};
+};
+
+const useUploadPartnerComplianceDocument = () => {
 
 	const storage = getStorage(app);
 
 	const {cookie} = useCookie(config.token, "");
 
 	const [loadingComplianceDocument, setLoadingComplianceDocument] = useState(false);
-	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [partnerUniqueId, setPartnerUniqueId] = useState("");
 	const [selectedComplianceDocument, setSelectedComplianceDocument] = useState("");
 	const [uploadingComplianceDocumentPercentage, setUploadingComplianceDocumentPercentage] = useState(0);
 
@@ -801,10 +930,10 @@ const useUploadPlatformComplianceDocument = () => {
 		e.preventDefault();
 
 		if (!loadingComplianceDocument) {
-			if (platformUniqueId.length === 0) {
+			if (partnerUniqueId.length === 0) {
 				setErrorComplianceDocument(null);
 				setSuccessComplianceDocument(null);
-				setErrorComplianceDocument("Platform ID is required");
+				setErrorComplianceDocument("Partner ID is required");
 				setTimeout(function () {
 					setErrorComplianceDocument(null);
 				}, 2000)
@@ -821,7 +950,7 @@ const useUploadPlatformComplianceDocument = () => {
 			} else {
 				setLoadingComplianceDocument(true);
 
-				const complianceDocumentProofRes = getPlatformComplianceDocumentsProof({ platform_unique_id: platformUniqueId })
+				const complianceDocumentProofRes = getPartnerComplianceDocumentsProof({ partner_unique_id: partnerUniqueId })
 
 				complianceDocumentProofRes.then(res => {
 					if (res.err) {
@@ -843,11 +972,11 @@ const useUploadPlatformComplianceDocument = () => {
 							}, 2000)
 						}
 					} else {
-						const platform_file_rename = res.data.data[1].registration_document;
+						const partner_file_rename = res.data.data[1].registration_document;
 						let lastDot = selectedComplianceDocument.name.lastIndexOf('.');
 						let ext = selectedComplianceDocument.name.substring(lastDot + 1);
 
-						const filePath = "/platforms/" + platform_file_rename + "." + ext;
+						const filePath = "/partners/" + partner_file_rename + "." + ext;
 
 						const storageRef = ref(storage, filePath);
 						const uploadTask = uploadBytesResumable(storageRef, selectedComplianceDocument);
@@ -868,12 +997,12 @@ const useUploadPlatformComplianceDocument = () => {
 							() => {
 								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
 
-									const updatePlatformRegistrationDocumentRes = updateComplianceDocument(cookie, {
+									const updatePartnerRegistrationDocumentRes = updateComplianceDocument(cookie, {
 										registration_document: downloadURL,
 										registration_document_file_ext: filePath
 									})
 
-									updatePlatformRegistrationDocumentRes.then(res => {
+									updatePartnerRegistrationDocumentRes.then(res => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
@@ -921,19 +1050,19 @@ const useUploadPlatformComplianceDocument = () => {
 	};
 
 	return {
-		cookie, loadingComplianceDocument, errorComplianceDocument, successComplianceDocument, handleUploadComplianceDocument, platformUniqueId, setSelectedComplianceDocument,
-		setPlatformUniqueId, uploadingComplianceDocumentPercentage, selectedComplianceDocument,
+		cookie, loadingComplianceDocument, errorComplianceDocument, successComplianceDocument, handleUploadComplianceDocument, partnerUniqueId, setSelectedComplianceDocument,
+		setPartnerUniqueId, uploadingComplianceDocumentPercentage, selectedComplianceDocument,
 	};
 };
 
-const useUploadPlatformComplianceCertificate = () => {
+const useUploadPartnerComplianceCertificate = () => {
 
 	const storage = getStorage(app);
 
 	const {cookie} = useCookie(config.token, "");
 
 	const [loadingComplianceCertificate, setLoadingComplianceCertificate] = useState(false);
-	const [platformUniqueId, setPlatformUniqueId] = useState("");
+	const [partnerUniqueId, setPartnerUniqueId] = useState("");
 	const [selectedComplianceCertificate, setSelectedComplianceCertificate] = useState("");
 	const [uploadingComplianceCertificatePercentage, setUploadingComplianceCertificatePercentage] = useState(0);
 
@@ -947,10 +1076,10 @@ const useUploadPlatformComplianceCertificate = () => {
 		e.preventDefault();
 
 		if (!loadingComplianceCertificate) {
-			if (platformUniqueId.length === 0) {
+			if (partnerUniqueId.length === 0) {
 				setErrorComplianceCertificate(null);
 				setSuccessComplianceCertificate(null);
-				setErrorComplianceCertificate("Platform ID is required");
+				setErrorComplianceCertificate("Partner ID is required");
 				setTimeout(function () {
 					setErrorComplianceCertificate(null);
 				}, 2000)
@@ -967,7 +1096,7 @@ const useUploadPlatformComplianceCertificate = () => {
 			} else {
 				setLoadingComplianceCertificate(true);
 
-				const complianceCertificateProofRes = getPlatformComplianceDocumentsProof({ platform_unique_id: platformUniqueId })
+				const complianceCertificateProofRes = getPartnerComplianceDocumentsProof({ partner_unique_id: partnerUniqueId })
 
 				complianceCertificateProofRes.then(res => {
 					if (res.err) {
@@ -989,11 +1118,11 @@ const useUploadPlatformComplianceCertificate = () => {
 							}, 2000)
 						}
 					} else {
-						const platform_file_rename = res.data.data[0].registration_certificate;
+						const partner_file_rename = res.data.data[0].registration_certificate;
 						let lastDot = selectedComplianceCertificate.name.lastIndexOf('.');
 						let ext = selectedComplianceCertificate.name.substring(lastDot + 1);
 
-						const filePath = "/platforms/" + platform_file_rename + "." + ext;
+						const filePath = "/partners/" + partner_file_rename + "." + ext;
 
 						const storageRef = ref(storage, filePath);
 						const uploadTask = uploadBytesResumable(storageRef, selectedComplianceCertificate);
@@ -1014,12 +1143,12 @@ const useUploadPlatformComplianceCertificate = () => {
 							() => {
 								getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
 
-									const updatePlatformRegistrationCertificateRes = updateComplianceCertificate(cookie, {
+									const updatePartnerRegistrationCertificateRes = updateComplianceCertificate(cookie, {
 										registration_certificate: downloadURL,
 										registration_certificate_file_ext: filePath
 									})
 
-									updatePlatformRegistrationCertificateRes.then(res => {
+									updatePartnerRegistrationCertificateRes.then(res => {
 										if (res.err) {
 											if (!res.error.response.data.success) {
 												const error = `${res.error.response.data.message}`;
@@ -1067,12 +1196,12 @@ const useUploadPlatformComplianceCertificate = () => {
 	};
 
 	return {
-		cookie, loadingComplianceCertificate, errorComplianceCertificate, successComplianceCertificate, handleUploadComplianceCertificate, platformUniqueId, setSelectedComplianceCertificate,
-		setPlatformUniqueId, uploadingComplianceCertificatePercentage, selectedComplianceCertificate,
+		cookie, loadingComplianceCertificate, errorComplianceCertificate, successComplianceCertificate, handleUploadComplianceCertificate, partnerUniqueId, setSelectedComplianceCertificate,
+		setPartnerUniqueId, uploadingComplianceCertificatePercentage, selectedComplianceCertificate,
 	};
 };
 
 export { 
-	useUpdateName, useUpdateEmail, useUpdateDescription, useUpdateComplianceDetails, useResetMasterToken, useResetLiveApiKey, useResetTestApiKey, 
-	useUploadPlatformProfilePhoto, useUploadPlatformComplianceDocument, useUploadPlatformComplianceCertificate
+	useUpdateName, useUpdateEmail, useUpdateDescription, useUpdateComplianceDetails, useResetMasterToken, useUpdatePointThreshold,  
+	useUploadPartnerProfilePhoto, useUploadPartnerComplianceDocument, useUploadPartnerComplianceCertificate, useUploadPartnerProfileCover
 };

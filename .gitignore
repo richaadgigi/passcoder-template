@@ -12,6 +12,7 @@
 /build
 
 hidden.json
+hidden-partners.json
 
 # misc
 .DS_Store

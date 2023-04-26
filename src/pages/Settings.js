@@ -4,8 +4,8 @@ import Screen from '../components/Screen';
 import { useState } from "react";
 import AccountProfile from "./settings-tabs/AccountProfile";
 import CompanyProfile from "./settings-tabs/CompanyProfile";
-import ApiPricing from "./settings-tabs/ApiPricing";
-import ApiKeys from "./settings-tabs/ApiKeys";
+import PremiumPackages from "./settings-tabs/PremiumPackages";
+import MasterToken from "./settings-tabs/MasterToken";
 
 export default function Settings(){
     const [tab, setTab] = useState("accountProfile");
@@ -21,18 +21,18 @@ export default function Settings(){
                     <div onClick={() => setTab("companyProfile")} className={"xui-cursor-pointer xui-py-1 xui-px-half es-tab-card " + (tab === "companyProfile" ? "active" : "")}>
                         <span>Company Profile</span>
                     </div>
-                    <div onClick={() => setTab("apiPricing")} className={"xui-cursor-pointer xui-py-1 xui-px-half es-tab-card " + (tab === "apiPricing" ? "active" : "")}>
-                        <span>API Pricing</span>
+                    <div onClick={() => setTab("premiumPackages")} className={"xui-cursor-pointer xui-py-1 xui-px-half es-tab-card " + (tab === "premiumPackages" ? "active" : "")}>
+                        <span>Premium Packages</span>
                     </div>
-                    <div onClick={() => setTab("apiKeys")} className={"xui-cursor-pointer xui-py-1 xui-px-half es-tab-card " + (tab === "apiKeys" ? "active" : "")}>
-                        <span>API Keys</span>
+                    <div onClick={() => setTab("masterToken")} className={"xui-cursor-pointer xui-py-1 xui-px-half es-tab-card " + (tab === "masterToken" ? "active" : "")}>
+                        <span>Master Token</span>
                     </div>
                 </section>
                 <section className="xui-py-2">
                     {tab === "accountProfile" && <AccountProfile />}
                     {tab === "companyProfile" && <CompanyProfile />}
-                    {tab === "apiPricing" && <ApiPricing />}
-                    {tab === "apiKeys" && <ApiKeys />}
+                    {tab === "premiumPackages" && <PremiumPackages />}
+                    {tab === "masterToken" && <MasterToken />}
                 </section>
             </Content>
         </Screen>

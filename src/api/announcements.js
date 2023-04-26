@@ -1,12 +1,13 @@
 import axios from 'axios';
 import { config } from '../config';
 
-const getAppUsers = async function (token) {
+const getPartnerAnnouncements = async function (token, page, size) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/partner/app/users`,
+			`${config.baseAPIurl}/partner/announcements`,
 			{
-
+				page,
+				size
 			},
 			{
 				headers: {
@@ -20,10 +21,29 @@ const getAppUsers = async function (token) {
 	}
 };
 
-const issueLoyaltyPoint = async function (token, payload) {
+const getPartnerAnnouncement = async function (token, unique_id) {
 	try {
 		const response = await axios.post(
-			`${config.baseAPIurl}/partner/user/issue/loyalty/point`,
+			`${config.baseAPIurl}/partner/announcement`,
+			{
+				unique_id
+			},
+			{
+				headers: {
+					'passcoder-access-token': token
+				}
+			}
+		);
+		return { err: false, data: response.data };
+	} catch (error) {
+		return { err: true, error };
+	}
+};
+
+const addPartnerAnnouncement = async function (token, payload) {
+	try {
+		const response = await axios.post(
+			`${config.baseAPIurl}/partner/announcement/add`,
 			{
 				...payload
 			},
@@ -39,42 +59,4 @@ const issueLoyaltyPoint = async function (token, payload) {
 	}
 };
 
-const checkoutLoyaltyPoint = async function (token, payload) {
-	try {
-		const response = await axios.post(
-			`${config.baseAPIurl}/partner/user/checkout/loyalty/point`,
-			{
-				...payload
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
-				}
-			}
-		);
-		return { err: false, data: response.data };
-	} catch (error) {
-		return { err: true, error };
-	}
-};
-
-const addAnnouncementList = async function (token, payload) {
-	try {
-		const response = await axios.post(
-			`${config.baseAPIurl}/partner/announcement/list/add/user`,
-			{
-				...payload
-			},
-			{
-				headers: {
-					'passcoder-access-token': token
-				}
-			}
-		);
-		return { err: false, data: response.data };
-	} catch (error) {
-		return { err: true, error };
-	}
-};
-
-export { getAppUsers, issueLoyaltyPoint, checkoutLoyaltyPoint, addAnnouncementList };
+export { getPartnerAnnouncement, addPartnerAnnouncement, getPartnerAnnouncements };

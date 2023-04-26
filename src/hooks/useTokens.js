@@ -1,7 +1,7 @@
 import { useState } from "react";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
-import { addPlatformToken, deleteToken, updateToken, updateTokenDetails } from "../api/tokens";
+import { addPartnerToken, deleteToken, updateToken, updateTokenDetails } from "../api/tokens";
 
 const useAddToken = () => {
 
@@ -59,7 +59,7 @@ const useAddToken = () => {
 			} else {
 				setLoading(true);
 
-				const addTokenRes = addPlatformToken(cookie, {
+				const addTokenRes = addPartnerToken(cookie, {
 					alias,
 					valid,
 					expiration: expiration === null ? undefined : return_expiration(expiration)
