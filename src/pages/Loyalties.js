@@ -7,18 +7,28 @@ import Arrowleft from '../icons/Arrowleft';
 import Boxes from '../assets/images/boxes.png';
 import FlowerPlant from '../assets/images/flower-plant.png';
 import { getAppUsers } from "../api/users";
+import { getPartnerOffers, getPartnerOffer } from "../api/offers";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { useAnnouncementList, useCheckoutLoyaltyPoint, useIssueLoyaltyPoint } from "../hooks/useLoyalties";
+import { useOfferAuthenticateUser } from "../hooks/useRequests";
+import { useAddOffer } from "../hooks/useOffers";
 import Loading from "../icons/Loading";
 import Close from "../icons/Close";
 import Plus from "../icons/Plus";
 import Minus from "../icons/Minus";
 import Check from "../icons/Check";
 import Star from "../icons/Star";
+import CheckCircle from "../icons/CheckCircle";
 
 export default function Loyalties() {
 	const { cookie, forceLogout } = useCookie(config.token, "");
+
+	const {
+		description, discount, end, errorAddOffer, handleDescription, handleDiscount, handleEnd, handleName, handleOfferLimit,
+		handlePoints, handleSingle, handleStar, handleStart, handleSubmit, loading, name, offerLimit, points, removeAddOfferModal,
+		setRemoveAddOfferModal, single, star, start, successAddOffer
+	} = useAddOffer();
 
 	const {
 		errorAnnouncementList, handlePID: AnnouncementHandlePID, handleSubmitAnnouncementList, loadingAnnouncementList, pid: AnnouncementPID, 
@@ -27,17 +37,29 @@ export default function Loyalties() {
 
 	const {
 		errorCheckoutLoyaltyPoint, handlePID: CheckoutHandlePID, handlePoints: CheckoutHandlePoints, handleSubmitCheckoutLoyaltyPoint, setRemoveCheckoutLoyaltyPointModal, 
-		loadingCheckoutLoyaltyPoint, pid: CheckoutPID, points: CheckoutPoints, removeCheckoutLoyaltyPointModal, successCheckoutLoyaltyPoint, setPID: SetCheckoutPID
+		loadingCheckoutLoyaltyPoint, pid: CheckoutPID, points: CheckoutPoints, removeCheckoutLoyaltyPointModal, successCheckoutLoyaltyPoint, setPID: SetCheckoutPID, 
+		setMaskedPID: SetCheckoutMaskedPID, maskedPID: CheckoutMaskedPID, setOldPoints: SetCheckoutOldPoints, oldPoints: CheckoutOldPoints
 	} = useCheckoutLoyaltyPoint();
 
 	const {
 		errorIssueLoyaltyPoint, handlePID: IssueHandlePID, handlePoints: IssueHandlePoints, handleSubmitIssueLoyaltyPoint, setRemoveIssueLoyaltyPointModal,
-		loadingIssueLoyaltyPoint, pid: IssuePID, points: IssuePoints, removeIssueLoyaltyPointModal, successIssueLoyaltyPoint, setPID: SetIssuePID
+		loadingIssueLoyaltyPoint, pid: IssuePID, points: IssuePoints, removeIssueLoyaltyPointModal, successIssueLoyaltyPoint, setPID: SetIssuePID, 
+		setMaskedPID: SetIssueMaskedPID, maskedPID: IssueMaskedPID, setOldPoints: SetIssueOldPoints, oldPoints: IssueOldPoints
 	} = useIssueLoyaltyPoint();
+
+	const {
+		errorOfferAuthenticateUser, handleOfferUniqueId, handlePID: OfferAuthenticateUserHandlePID, handleSubmitOfferAuthenticateUser, loadingOfferAuthenticateUser,
+		offerUniqueId, pid: OfferAuthenticateUserPID, showOfferAuthenticateUserModal, setOfferUniqueId, setShowOfferAuthenticateUserModal, successOfferAuthenticateUser,
+		authenticatedUserDetails, setAuthenticatedUserDetails
+	} = useOfferAuthenticateUser();
 
 	const [appUsers, setAppUsers] = useState(null);
 	const [errorAppUsers, setErrorAppUsers] = useState(null);
 	const [loadingAppUsers, setLoadingAppUsers] = useState(false);
+
+	const [allOffers, setAllOffers] = useState(null);
+	const [errorAllOffers, setErrorAllOffers] = useState(null);
+	const [loadingAllOffers, setLoadingAllOffers] = useState(false);
 
 	const [size, setSize] = useState(20);
 	const [page, setPage] = useState(1);
@@ -63,11 +85,23 @@ export default function Loyalties() {
 		setLoadingAppUsers(false);
 	};
 
+	async function getAllOffers(_page, _size) {
+		setLoadingAllOffers(true);
+		const response = await getPartnerOffers(cookie, (_page || page), (_size || size));
+		setAllOffers(response.data);
+		if (response.response_code === 403) forceLogout();
+		if (response.error) setErrorAllOffers(response.error.response.data.message);
+		setLoadingAllOffers(false);
+	};
+
 	useEffect(() => {
 		if (appUsers === null) {
 			_getAppUsers();
 		}
-	}, [appUsers]);
+		if (allOffers === null) {
+			getAllOffers(1, 20);
+		}
+	}, [appUsers, allOffers]);
 
 	if (removeIssueLoyaltyPointModal) {
 		const modalResponse = document.querySelector("#issueLoyaltyPoint");
@@ -83,6 +117,23 @@ export default function Loyalties() {
 	}
 
 	if (successAnnouncementList) _getAppUsers();
+
+	if (removeAddOfferModal) {
+		const modalResponse = document.querySelector("#addOffer");
+		modalResponse.setAttribute("display", false);
+		setRemoveAddOfferModal(null);
+	}
+
+	if (successOfferAuthenticateUser) {
+		const modalResponse = document.querySelector("#offerUserAuthenticated");
+		modalResponse.setAttribute("display", true);
+	}
+
+	async function continueSuccessOfferAuthenticateUser() {
+		const modalResponse = document.querySelector("#offerUserAuthenticated");
+		modalResponse.setAttribute("display", false);
+		setAuthenticatedUserDetails(null);
+	}
 	return (
 		<>
 			<Screen aside="true" navbar="false">
@@ -208,14 +259,18 @@ export default function Loyalties() {
 																<div className="xui-d-flex xui-grid-gap-1">
 																	<button title="Issue Points"
 																		onClick={() => {
-																			SetIssuePID(data.unmasked);
+																			SetIssuePID(data.user_data.unmasked);
+																			SetIssueMaskedPID(data.user_data.pid);
+																			SetIssueOldPoints(data.points);
 																		}}
 																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-50" xui-modal-open="issueLoyaltyPoint">
 																		<Plus width="20" height="20" />
 																	</button>
 																	<button title="Checkout Points"
 																		onClick={() => {
-																			SetCheckoutPID(data.unmasked);
+																			SetCheckoutPID(data.user_data.unmasked);
+																			SetCheckoutMaskedPID(data.user_data.pid);
+																			SetCheckoutOldPoints(data.points);
 																		}}
 																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-red xui-bdr-rad-half xui-font-sz-50" xui-modal-open="checkoutLoyaltyPoint">
 																		<Minus width="20" height="20" />
@@ -269,29 +324,219 @@ export default function Loyalties() {
 					</section>
 				</Content>
 				<div className="aside psc-bg-light-blue xui-py-2 xui-px-1-half">
-					<p className='xui-opacity-5 xui-font-sz-90 xui-line-height-1-half xui-w-fluid-80'>Issue loyalty points directly to your new and existing Passcoder users.</p>
-					<div className='xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-grid-gap-1 xui-mt-1-half'>
-						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Loyalty</button>
-						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Check out</button>
+					<div className='xui-mb-3'>
+						<div className='xui-d-flex xui-flex-ai-baseline xui-flex-jc-flex-end'>
+							<div className='xui-pr-1 '>
+								<img className='xui-img-100' src={FlowerPlant} alt='flower plant' />
+							</div>
+						</div>
+						<div className='psc-bg-light-blue-ii xui-px-1 xui-pt-5 xui-pb-1 xui-mt--4'>
+							<form className="xui-form" layout="2" onSubmit={handleSubmitOfferAuthenticateUser}>
+								<h1 className='xui-font-sz-110 xui-mt-half'>Verify User for Offer</h1>
+								<div className="xui-mt-2">
+									<label>Offers</label>
+									<select value={offerUniqueId} onChange={handleOfferUniqueId} className="xui-bdr-black" required>
+										<option selected disabled>Select Offer</option>
+										{
+											allOffers ? (
+												allOffers.data.rows.map((item, index) => {
+													return (
+														<option key={index} value={item.unique_id}>{item.name}</option>
+													)
+												})
+											) : ""
+										}
+									</select>
+								</div>
+								<div className="xui-mt-2">
+									<label>Passcoder ID</label>
+									<input type="text" className="xui-bdr-black" minLength={6} maxLength={6} value={OfferAuthenticateUserPID} onChange={OfferAuthenticateUserHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+								</div>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-black"><span className="xui-font-w-bold psc-text-red">{loadingOfferAuthenticateUser ? "Awaiting authentication" : ""}</span></p>
+								<button disabled={loadingOfferAuthenticateUser} className={`xui-btn-block ${loadingOfferAuthenticateUser ? "psc-btn-blue xui-mt-1" : "psc-btn-blue-alt xui-mt-2"} xui-bdr-rad-half xui-text-center xui-font-sz-85`}>
+									<center>
+										{
+											loadingOfferAuthenticateUser ?
+												<Loading width="12" height="12" />
+												: "Verify User"
+										}
+									</center>
+								</button>
+							</form>
+							<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorOfferAuthenticateUser}</span></p>
+							<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successOfferAuthenticateUser}</span></p>
+						</div>
 					</div>
 					<div className='xui-mt-5'>
 						<div className='xui-d-flex xui-flex-ai-baseline xui-flex-jc-space-between'>
 							<div className='xui-pl-1'>
 								<img className='xui-img-100' src={Boxes} alt='boxes' />
 							</div>
-							<div className='xui-pr-1'>
-								<img className='xui-img-100' src={FlowerPlant} alt='flower plant' />
-							</div>
 						</div>
 						<div className='psc-bg-light-blue-ii xui-px-1 xui-pt-5 xui-pb-1 xui-mt--4'>
 							<h4 className='xui-font-sz-90 xui-mt-half'>Earn more with offers</h4>
 							<p className='xui-opacity-4 xui-font-sz-85 xui-line-height-1-half xui-mt-half xui-w-fluid-90'>Premium partners can earn more and attract more customers with amazing offers. Create yours now.</p>
-							<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85 xui-mt-2'>Create an offer</button>
+							<button xui-modal-open="addOffer" className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85 xui-mt-2'>Create an offer</button>
 						</div>
 					</div>
 				</div>
 			</Screen>
-			{/* <section className='xui-modal' xui-modal="addOffer" id="addOffer">
+			<section className='xui-modal' xui-modal="issueLoyaltyPoint" id="issueLoyaltyPoint">
+				<div className='xui-modal-content xui-max-h-500 xui-max-w-500 xui-overflow-auto xui-pos-relative'>
+					<div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="issueLoyaltyPoint">
+						<Close width="24" height="24" />
+					</div>
+					<h1>Issue Loyalty Point (+)</h1>
+					<form className="xui-form" layout="2" onSubmit={handleSubmitIssueLoyaltyPoint}>
+						<div className="xui-form-box xui-mt-2">
+							<label>Passcoder ID</label>
+							<input type="text" readOnly value={IssueMaskedPID} onChange={IssueHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+						</div>
+						<div className="xui-form-box xui-mt-2">
+							<label>Points</label>
+							<input type={"number"} min={1} value={IssuePoints} onChange={IssueHandlePoints} placeholder="Points" required ></input>
+						</div>
+						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+							<button type="submit" className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+								<span className="xui-mr-half">Continue</span>
+								{
+									loadingIssueLoyaltyPoint ?
+										<Loading width="12" height="12" />
+										: <Arrowright width="12" height="12" />
+								}
+							</button>
+						</div>
+					</form>
+					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorIssueLoyaltyPoint}</span></p>
+					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successIssueLoyaltyPoint}</span></p>
+				</div>
+			</section>
+			<section className='xui-modal' xui-modal="checkoutLoyaltyPoint" id="checkoutLoyaltyPoint">
+				<div className='xui-modal-content xui-max-h-500 xui-max-w-500 xui-overflow-auto xui-pos-relative'>
+					<div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="checkoutLoyaltyPoint">
+						<Close width="24" height="24" />
+					</div>
+					<h1>Checkout Loyalty Point (-)</h1>
+					<form className="xui-form" layout="2" onSubmit={handleSubmitCheckoutLoyaltyPoint}>
+						<div className="xui-form-box xui-mt-2">
+							<label>Passcoder ID</label>
+							<input type="text" readOnly value={CheckoutMaskedPID} onChange={CheckoutHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+						</div>
+						<div className="xui-form-box xui-mt-2">
+							<label>Points</label>
+							<input type={"number"} min={1} max={CheckoutOldPoints} value={CheckoutPoints} onChange={CheckoutHandlePoints} placeholder="Points" required ></input>
+						</div>
+						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+							<button type="submit" className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+								<span className="xui-mr-half">Continue</span>
+								{
+									loadingCheckoutLoyaltyPoint ?
+										<Loading width="12" height="12" />
+										: <Arrowright width="12" height="12" />
+								}
+							</button>
+						</div>
+					</form>
+					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorCheckoutLoyaltyPoint}</span></p>
+					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successCheckoutLoyaltyPoint}</span></p>
+				</div>
+			</section>	
+			<section className='xui-modal' xui-modal="offerUserAuthenticated" id="offerUserAuthenticated">
+				<div className='xui-modal-content xui-max-h-700 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
+					<h1>Offer Authentication</h1>
+					<p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">Visible details of the user below</p>
+					{
+						authenticatedUserDetails ? 
+						<>
+							<center className="xui-m-2-half">
+								<div className="xui-w-200 xui-h-200 xui-bdr-s-ridge xui-bdr-w-1 xui-bdr-black xui-bdr-rad-2 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
+									<img className="xui-img-200" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
+								</div>
+							</center>
+							<center>
+								<p className="xui-opacity-4 xui-font-sz-150 xui-m-half">{authenticatedUserDetails.name}</p>
+								<b className="xui-opacity-4 xui-font-sz-100 xui-m-half">PID - {authenticatedUserDetails.pid}</b>
+								<center>
+									<div className="xui-d-inline-flex xui-flex-ai-center">
+										<span>
+											{
+												authenticatedUserDetails.star === 0 ?
+													<div className='xui-m-half'>
+														<p>No star</p>
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 1 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 2 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 3 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 4 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 5 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+										</span>
+									</div>
+								</center>
+								<div className="xui-d-inline-flex xui-flex-ai-center">
+									<span><CheckCircle width="20" height="20" /></span>
+									<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Authenticated {authenticatedUserDetails.verification_count > 1 ? authenticatedUserDetails.verification_count.toLocaleString() + " times." : "once, just now."}</p>
+								</div>
+							</center>
+							<div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly ">
+								<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Total Points: <b>{authenticatedUserDetails.user_points.toLocaleString()}</b></p>
+								<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Points with you: <b>{authenticatedUserDetails.user_partner_points.toLocaleString()}</b></p>
+							</div>
+							<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+								<button onClick={continueSuccessOfferAuthenticateUser} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+									<span className="xui-mr-half">Complete</span>
+									<Arrowright width="12" height="12" />
+								</button>
+							</div>
+						</> : 
+						<center>
+							<Loading width="12" height="12" />
+						</center>
+					}
+				</div>
+			</section>
+			<section className='xui-modal' xui-modal="addOffer" id="addOffer">
 				<div className='xui-modal-content xui-max-h-600 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
 					<div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="addOffer">
 						<Close width="24" height="24" />
@@ -309,11 +554,11 @@ export default function Loyalties() {
 							</div>
 							<div className="xui-mt-1">
 								<label>Points</label>
-								<input type={"number"} value={points} onChange={handlePoints} placeholder="Minimum points" required ></input>
+								<input type={"number"} min={1} value={points} onChange={handlePoints} placeholder="Minimum points" required ></input>
 							</div>
 							<div className="xui-mt-1">
 								<label>Star</label>
-								<input type={"number"} value={star} onChange={handleStar} placeholder="Minimum star" required ></input>
+								<input type={"number"} min={1} value={star} onChange={handleStar} placeholder="Minimum star" required ></input>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-mt-2">
@@ -357,7 +602,7 @@ export default function Loyalties() {
 					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorAddOffer}</span></p>
 					<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successAddOffer}</span></p>
 				</div>
-			</section> */}
+			</section>
 		</>
 	);
 }

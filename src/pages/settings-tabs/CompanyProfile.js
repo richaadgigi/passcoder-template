@@ -145,7 +145,7 @@ export default function MerchantProfile(){
                     <div className="xui-form-box xui-w-fluid-100 xui-mt-3">
                         <label>Registration Document</label>
                         <label htmlFor="registrationDocument">
-                            <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
+                            <div className="xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                 {
                                     selectedComplianceDocument ?
                                         <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceDocument.name}</span> :
@@ -210,7 +210,7 @@ export default function MerchantProfile(){
                     <div className="xui-form-box xui-w-fluid-100 xui-mt-3">
                         <label>Registration Certificate</label>
                         <label htmlFor="registrationCertificate">
-                            <div className="xui-opacity-6 xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
+                            <div className="xui-w-fluid-100 xui-h-250 xui-bdr-s-dashed xui-bdr-w-1 xui-bdr-black xui-bdr-rad-1 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
                                 {
                                     selectedComplianceCertificate ?
                                         <span className="xui-font-sz-120 xui-text-center xui-mt-1 xui-mx-auto xui-w-fluid-80" style={{ wordBreak: "break-word" }}>{selectedComplianceCertificate.name}</span> :

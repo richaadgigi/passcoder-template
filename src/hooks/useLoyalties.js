@@ -10,12 +10,14 @@ const useIssueLoyaltyPoint = () => {
 	const [loadingIssueLoyaltyPoint, setLoadingIssueLoyaltyPoint] = useState(false);
 	const [removeIssueLoyaltyPointModal, setRemoveIssueLoyaltyPointModal] = useState(null);
 	const [pid, setPID] = useState("");
+	const [maskedPID, setMaskedPID] = useState("");
+	const [oldPoints, setOldPoints] = useState(null);
 	const [points, setPoints] = useState(null);
 
 	const [errorIssueLoyaltyPoint, setErrorIssueLoyaltyPoint] = useState(null);
 	const [successIssueLoyaltyPoint, setSuccessIssueLoyaltyPoint] = useState(null);
 
-	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value); };
+	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value.toLocaleUpperCase()); };
 	const handlePoints = (e) => { e.preventDefault(); setPoints(e.target.value); };
 
 	const handleSubmitIssueLoyaltyPoint = (e) => {
@@ -48,7 +50,7 @@ const useIssueLoyaltyPoint = () => {
 				setLoadingIssueLoyaltyPoint(true);
 
 				const issueLoyaltyPointRes = issueLoyaltyPoint(cookie, {
-					pid,
+					pid: pid.toLocaleUpperCase(),
 					points: parseInt(points)
 				})
 
@@ -75,7 +77,7 @@ const useIssueLoyaltyPoint = () => {
 						setTimeout(function () {
 							setSuccessIssueLoyaltyPoint(null);
 							setRemoveIssueLoyaltyPointModal(true);
-							setPID(""); setPoints(null);
+							setPID(""); setPoints(0); setMaskedPID("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -88,7 +90,8 @@ const useIssueLoyaltyPoint = () => {
 
 	return {
 		cookie, loadingIssueLoyaltyPoint, removeIssueLoyaltyPointModal, pid, points, errorIssueLoyaltyPoint, successIssueLoyaltyPoint,
-		handlePID, handlePoints, handleSubmitIssueLoyaltyPoint, setRemoveIssueLoyaltyPointModal, setPID
+		handlePID, handlePoints, handleSubmitIssueLoyaltyPoint, setRemoveIssueLoyaltyPointModal, setPID, maskedPID, setMaskedPID, 
+		oldPoints, setOldPoints
 	};
 };
 
@@ -99,12 +102,14 @@ const useCheckoutLoyaltyPoint = () => {
 	const [loadingCheckoutLoyaltyPoint, setLoadingCheckoutLoyaltyPoint] = useState(false);
 	const [removeCheckoutLoyaltyPointModal, setRemoveCheckoutLoyaltyPointModal] = useState(null);
 	const [pid, setPID] = useState("");
+	const [maskedPID, setMaskedPID] = useState("");
+	const [oldPoints, setOldPoints] = useState(null);
 	const [points, setPoints] = useState(null);
 
 	const [errorCheckoutLoyaltyPoint, setErrorCheckoutLoyaltyPoint] = useState(null);
 	const [successCheckoutLoyaltyPoint, setSuccessCheckoutLoyaltyPoint] = useState(null);
 
-	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value); };
+	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value.toLocaleUpperCase()); };
 	const handlePoints = (e) => { e.preventDefault(); setPoints(e.target.value); };
 
 	const handleSubmitCheckoutLoyaltyPoint = (e) => {
@@ -133,11 +138,16 @@ const useCheckoutLoyaltyPoint = () => {
 				setTimeout(function () {
 					setErrorCheckoutLoyaltyPoint(null);
 				}, 2500)
+			} else if (oldPoints && oldPoints < points) {
+				setErrorCheckoutLoyaltyPoint("Maximum points reached");
+				setTimeout(function () {
+					setErrorCheckoutLoyaltyPoint(null);
+				}, 2500)
 			} else {
 				setLoadingCheckoutLoyaltyPoint(true);
 
 				const checkoutLoyaltyPointRes = checkoutLoyaltyPoint(cookie, {
-					pid,
+					pid: pid.toLocaleUpperCase(),
 					points: parseInt(points)
 				})
 
@@ -164,7 +174,7 @@ const useCheckoutLoyaltyPoint = () => {
 						setTimeout(function () {
 							setSuccessCheckoutLoyaltyPoint(null);
 							setRemoveCheckoutLoyaltyPointModal(true);
-							setPID(""); setPoints(null);
+							setPID(""); setPoints(0); setMaskedPID("");
 						}, 2500)
 					}
 				}).catch(err => {
@@ -177,7 +187,8 @@ const useCheckoutLoyaltyPoint = () => {
 
 	return {
 		cookie, loadingCheckoutLoyaltyPoint, removeCheckoutLoyaltyPointModal, pid, points, errorCheckoutLoyaltyPoint, successCheckoutLoyaltyPoint,
-		handlePID, handlePoints, handleSubmitCheckoutLoyaltyPoint, setRemoveCheckoutLoyaltyPointModal, setPID
+		handlePID, handlePoints, handleSubmitCheckoutLoyaltyPoint, setRemoveCheckoutLoyaltyPointModal, setPID, maskedPID, setMaskedPID, 
+		oldPoints, setOldPoints
 	};
 };
 

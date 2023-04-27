@@ -10,33 +10,59 @@ import { getPartnerOffers, getPartnerOffer } from "../api/offers";
 import useCookie from "../hooks/useCookie";
 import { config } from "../config";
 import { useAddOffer, useDeleteOffer, useEditOffer } from "../hooks/useOffers";
+import { useCheckoutLoyaltyPoint, useIssueLoyaltyPoint } from "../hooks/useLoyalties";
+import { useOfferAuthenticateUser } from "../hooks/useRequests";
 import Loading from "../icons/Loading";
 import Close from "../icons/Close";
 import Edit from "../icons/Edit";
+import Plus from "../icons/Plus";
+import Minus from "../icons/Minus";
 import Delete from "../icons/Delete";
 import Check from "../icons/Check";
+import Star from "../icons/Star";
+import CheckCircle from "../icons/CheckCircle";
 
-export default function Teams() {
+export default function Offers() {
 	const { cookie, forceLogout } = useCookie(config.token, "");
+
+	const [showIssuePointsCard, setShowIssuePointsCard] = useState(false);
+	const [showCheckoutPointsCard, setShowCheckoutPointsCard] = useState(false);
+
+	const {
+		errorCheckoutLoyaltyPoint, handlePID: CheckoutHandlePID, handlePoints: CheckoutHandlePoints, handleSubmitCheckoutLoyaltyPoint,
+		loadingCheckoutLoyaltyPoint, pid: CheckoutPID, points: CheckoutPoints, successCheckoutLoyaltyPoint
+	} = useCheckoutLoyaltyPoint();
+
+	const {
+		errorIssueLoyaltyPoint, handlePID: IssueHandlePID, handlePoints: IssueHandlePoints, handleSubmitIssueLoyaltyPoint,
+		loadingIssueLoyaltyPoint, pid: IssuePID, points: IssuePoints, successIssueLoyaltyPoint
+	} = useIssueLoyaltyPoint();
+
 	const {
 		description, discount, end, errorAddOffer, handleDescription, handleDiscount, handleEnd, handleName, handleOfferLimit,
-		handlePoints, handleSingle, handleStar, handleStart, handleSubmit, loading, name, offerLimit, points, removeAddOfferModal, 
+		handlePoints, handleSingle, handleStar, handleStart, handleSubmit, loading, name, offerLimit, points, removeAddOfferModal,
 		setRemoveAddOfferModal, single, star, start, successAddOffer
 	} = useAddOffer();
 
 	const {
 		errorDeleteOffer, handleDeleteOffer, loadingDeleteOffer, removeDeleteOfferModal, setDeleteOfferUniqueId, setRemoveDeleteOfferModal, successDeleteOffer
 	} = useDeleteOffer();
-
+	
 	const {
-		descriptionEdit, discountEdit, editOfferUniqueId, endEdit, errorEditOffer, handleDescriptionEdit, handleDiscountEdit, 
-		handleEditOfferCriteria, handleEditOfferDetails, handleEditOfferLimit, handleEndEdit, handleNameEdit, handleOfferLimitEdit, 
-		handlePointsEdit, handleSingleEdit, handleStarEdit, handleStartEdit, loadingEditOffer, nameEdit, offerLimitEdit, pointsEdit, 
-		removeEditOfferModal, setDescriptionEdit, setDiscountEdit, setEditOfferUniqueId, setEndEdit, setNameEdit, setOfferLimitEdit, 
-		setPointsEdit, setRemoveEditOfferModal, setSingleEdit, setStarEdit, setStartEdit, singleEdit, starEdit, startEdit, successEditOffer, 
+		descriptionEdit, discountEdit, editOfferUniqueId, endEdit, errorEditOffer, handleDescriptionEdit, handleDiscountEdit,
+		handleEditOfferCriteria, handleEditOfferDetails, handleEditOfferLimit, handleEndEdit, handleNameEdit, handleOfferLimitEdit,
+		handlePointsEdit, handleSingleEdit, handleStarEdit, handleStartEdit, loadingEditOffer, nameEdit, offerLimitEdit, pointsEdit,
+		removeEditOfferModal, setDescriptionEdit, setDiscountEdit, setEditOfferUniqueId, setEndEdit, setNameEdit, setOfferLimitEdit,
+		setPointsEdit, setRemoveEditOfferModal, setSingleEdit, setStarEdit, setStartEdit, singleEdit, starEdit, startEdit, successEditOffer,
 		editOfferDetails, getPartnerOfferDetails, showEditOfferCriteriaStatus, showEditOfferDetailsStatus, showEditOfferLimitStatus
 	} = useEditOffer();
-
+	
+	const {
+		errorOfferAuthenticateUser, handleOfferUniqueId, handlePID: OfferAuthenticateUserHandlePID, handleSubmitOfferAuthenticateUser, loadingOfferAuthenticateUser,
+		offerUniqueId, pid: OfferAuthenticateUserPID, showOfferAuthenticateUserModal, setOfferUniqueId, setShowOfferAuthenticateUserModal, successOfferAuthenticateUser, 
+		authenticatedUserDetails, setAuthenticatedUserDetails
+	} = useOfferAuthenticateUser();
+	
 	const return_date_reverse = (date) => {
 		let _date = date.split(" ");
 		return _date[0] + "T" + _date[1];
@@ -84,6 +110,17 @@ export default function Teams() {
 			getAllOffers();
 		}
 	}, [allOffers]);
+
+	if (successOfferAuthenticateUser) {
+		const modalResponse = document.querySelector("#offerUserAuthenticated");
+		modalResponse.setAttribute("display", true);
+	}
+
+	async function continueSuccessOfferAuthenticateUser() {
+		const modalResponse = document.querySelector("#offerUserAuthenticated");
+		modalResponse.setAttribute("display", false);
+		setAuthenticatedUserDetails(null);
+	}
 
 	if (removeAddOfferModal) {
 		const modalResponse = document.querySelector("#addOffer");
@@ -179,20 +216,20 @@ export default function Teams() {
 															</td>
 															<td className=''>
 																<div className="xui-d-flex xui-grid-gap-1">
-																	<button title="Edit Offer" 
-																		onClick={() => { 
-																			setEditOfferUniqueId(data.unique_id); 
-																			setDescriptionEdit(""); 
+																	<button title="Edit Offer"
+																		onClick={() => {
+																			setEditOfferUniqueId(data.unique_id);
+																			setDescriptionEdit("");
 																			setDiscountEdit(data.discount);
-																			setEndEdit(data.end === null ? "" : return_date_reverse(data.end)); 
-																			setNameEdit(data.name); 
+																			setEndEdit(data.end === null ? "" : return_date_reverse(data.end));
+																			setNameEdit(data.name);
 																			setOfferLimitEdit(data.offer_limit);
 																			setPointsEdit(data.points);
-																			setSingleEdit(data.single); 
-																			setStarEdit(data.star); 
+																			setSingleEdit(data.single);
+																			setStarEdit(data.star);
 																			setStartEdit(data.start === null ? "" : return_date_reverse(data.start));
 																			getPartnerOfferDetails(data.unique_id);
-																		}} 
+																		}}
 																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-50" xui-modal-open="editOffer">
 																		<Edit width="20" height="20" />
 																	</button>
@@ -246,26 +283,109 @@ export default function Teams() {
 								)
 						}
 					</section>
+					<center className="xui-mt-4 xui-lg-d-none">
+						<span className='xui-opacity-4 xui-font-sz-100 xui-font-w-700 xui-open-sidebar'>Click to open right sidebar</span>
+					</center>
 				</Content>
 				<div className="aside psc-bg-light-blue xui-py-2 xui-px-1-half">
 					<p className='xui-opacity-5 xui-font-sz-90 xui-line-height-1-half xui-w-fluid-80'>Issue loyalty points directly to your new and existing Passcoder users.</p>
 					<div className='xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-grid-gap-1 xui-mt-1-half'>
-						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Loyalty</button>
-						<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Check out</button>
+						<button onClick={() => { setShowIssuePointsCard(!showIssuePointsCard); setShowCheckoutPointsCard(false); }} className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Issue</button>
+						<button onClick={() => { setShowCheckoutPointsCard(!showCheckoutPointsCard); setShowIssuePointsCard(false); }} className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85'>Checkout</button>
 					</div>
-					<div className='xui-mt-5'>
-						<div className='xui-d-flex xui-flex-ai-baseline xui-flex-jc-space-between'>
-							<div className='xui-pl-1'>
-								<img className='xui-img-100' src={Boxes} alt='boxes' />
-							</div>
-							<div className='xui-pr-1'>
+					{
+						showIssuePointsCard ?
+							<div className='psc-bg-light-blue-ii xui-mt-1 xui-px-1 xui-pt-1 xui-pb-1 xui-bdr-rad-half'>
+								<form className="xui-form" layout="2" onSubmit={handleSubmitIssueLoyaltyPoint}>
+									<div className="xui-mt-1">
+										<label>Passcoder ID</label>
+										<input type="text" className="xui-bdr-black" minLength={6} maxLength={6} value={IssuePID} onChange={IssueHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+									</div>
+									<div className="xui-mt-2">
+										<label>Issue Points</label>
+										<input type={"number"} className="xui-bdr-black" min={1} value={IssuePoints} onChange={IssueHandlePoints} placeholder="Points" required ></input>
+									</div>
+									<div className="xui-mt-1 xui-d-flex xui-flex-jc-flex-end">
+										<button type="submit" className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-green xui-bdr-rad-half xui-font-sz-85">
+											{
+												loadingIssueLoyaltyPoint ?
+													<Loading width="12" height="12" />
+													: <Plus width="20" height="20" />
+											}
+										</button>
+									</div>
+								</form>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorIssueLoyaltyPoint}</span></p>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successIssueLoyaltyPoint}</span></p>
+							</div> : ""
+					}
+					{
+						showCheckoutPointsCard ?
+							<div className='psc-bg-light-blue-ii xui-mt-1 xui-px-1 xui-pt-1 xui-pb-1 xui-bdr-rad-half'>
+								<form className="xui-form" layout="2" onSubmit={handleSubmitCheckoutLoyaltyPoint}>
+									<div className="xui-mt-1">
+										<label>Passcoder ID</label>
+										<input type="text" className="xui-bdr-black" minLength={6} maxLength={6} value={CheckoutPID} onChange={CheckoutHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+									</div>
+									<div className="xui-mt-2">
+										<label>Checkout Points</label>
+										<input type={"number"} className="xui-bdr-black" min={1} value={CheckoutPoints} onChange={CheckoutHandlePoints} placeholder="Points" required ></input>
+									</div>
+									<div className="xui-mt-1 xui-d-flex xui-flex-jc-flex-end">
+										<button type="submit" className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-red xui-bdr-rad-half xui-font-sz-85">
+											{
+												loadingCheckoutLoyaltyPoint ?
+													<Loading width="12" height="12" />
+													: <Minus width="20" height="20" />
+											}
+										</button>
+									</div>
+								</form>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorCheckoutLoyaltyPoint}</span></p>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successCheckoutLoyaltyPoint}</span></p>
+							</div> : ""
+					}
+					<div className='xui-mt-5 xui-mb-3'>
+						<div className='xui-d-flex xui-flex-ai-baseline xui-flex-jc-flex-end'>
+							<div className='xui-pr-1 '>
 								<img className='xui-img-100' src={FlowerPlant} alt='flower plant' />
 							</div>
 						</div>
 						<div className='psc-bg-light-blue-ii xui-px-1 xui-pt-5 xui-pb-1 xui-mt--4'>
-							<h4 className='xui-font-sz-90 xui-mt-half'>Earn more with offers</h4>
-							<p className='xui-opacity-4 xui-font-sz-85 xui-line-height-1-half xui-mt-half xui-w-fluid-90'>Premium partners can earn more and attract more customers with amazing offers. Create yours now.</p>
-							<button className='xui-btn-block psc-btn-blue-alt xui-bdr-rad-half xui-font-sz-85 xui-mt-2'>Create an offer</button>
+							<form className="xui-form" layout="2" onSubmit={handleSubmitOfferAuthenticateUser}>
+								<h1 className='xui-font-sz-110 xui-mt-half'>Verify User for Offer</h1>
+								<div className="xui-mt-2">
+									<label>Offers</label>
+									<select value={offerUniqueId} onChange={handleOfferUniqueId} className="xui-bdr-black" required>
+										<option selected disabled>Select Offer</option>
+										{
+											allOffers ? (
+												allOffers.data.rows.map((item, index) => {
+													return (
+														<option key={index} value={item.unique_id}>{item.name}</option>
+													)
+												})
+											) : ""
+										}
+									</select>
+								</div>
+								<div className="xui-mt-2">
+									<label>Passcoder ID</label>
+									<input type="text" className="xui-bdr-black" minLength={6} maxLength={6} value={OfferAuthenticateUserPID} onChange={OfferAuthenticateUserHandlePID} placeholder="Enter user Passcoder ID" required ></input>
+								</div>
+								<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-black"><span className="xui-font-w-bold psc-text-red">{loadingOfferAuthenticateUser ? "Awaiting authentication" : ""}</span></p>
+								<button disabled={loadingOfferAuthenticateUser} className={`xui-btn-block ${loadingOfferAuthenticateUser ? "psc-btn-blue xui-mt-1" : "psc-btn-blue-alt xui-mt-2"} xui-bdr-rad-half xui-text-center xui-font-sz-85`}>
+									<center>
+										{
+											loadingOfferAuthenticateUser ?
+												<Loading width="12" height="12" />
+												: "Verify User"
+										}
+									</center>
+								</button>
+							</form>
+							<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorOfferAuthenticateUser}</span></p>
+							<p className="xui-font-sz-90 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successOfferAuthenticateUser}</span></p>
 						</div>
 					</div>
 				</div>
@@ -288,17 +408,17 @@ export default function Teams() {
 							</div>
 							<div className="xui-mt-1">
 								<label>Points</label>
-								<input type={"number"} value={points} onChange={handlePoints} placeholder="Minimum points" required ></input>
+								<input type={"number"} min={1} value={points} onChange={handlePoints} placeholder="Minimum points" required ></input>
 							</div>
 							<div className="xui-mt-1">
 								<label>Star</label>
-								<input type={"number"} value={star} onChange={handleStar} placeholder="Minimum star" required ></input>
+								<input type={"number"} min={1} value={star} onChange={handleStar} placeholder="Minimum star" required ></input>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-mt-2">
 							<div className="xui-d-inline-flex xui-flex-ai-center">
 								<input type="checkbox" onChange={handleSingle} checked={single} id="single" />
-								<label for="single" className="xui-ml-half" style={{ marginBottom: '0' }}>Single</label>
+								<label htmlFor="single" className="xui-ml-half" style={{ marginBottom: '0' }}>Single</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-mt-2">
@@ -365,7 +485,7 @@ export default function Teams() {
 						<div className="xui-form-box xui-d-flex xui-mt-2">
 							<div className="xui-d-inline-flex xui-flex-ai-center">
 								<input type="checkbox" onChange={handleSingleEdit} checked={singleEdit} id="single" />
-								<label for="single" className="xui-ml-half" style={{ marginBottom: '0' }}>Single</label>
+								<label htmlFor="single" className="xui-ml-half" style={{ marginBottom: '0' }}>Single</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-mt-2">
@@ -373,11 +493,11 @@ export default function Teams() {
 							<textarea type={"text"} value={descriptionEdit} onChange={handleDescriptionEdit} required></textarea>
 						</div>
 						{
-							showEditOfferDetailsStatus ? 
-							<>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
-							</> : ""
+							showEditOfferDetailsStatus ?
+								<>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+								</> : ""
 						}
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
 							<button disabled={showEditOfferCriteriaStatus || showEditOfferLimitStatus} onClick={handleEditOfferDetails} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
@@ -399,11 +519,11 @@ export default function Teams() {
 							<input type={"number"} value={offerLimitEdit} onChange={handleOfferLimitEdit} placeholder="Enter limit" ></input>
 						</div>
 						{
-							showEditOfferLimitStatus ? 
-							<>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
-							</> : ""
+							showEditOfferLimitStatus ?
+								<>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+								</> : ""
 						}
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
 							<button disabled={showEditOfferCriteriaStatus || showEditOfferDetailsStatus} onClick={handleEditOfferLimit} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
@@ -423,19 +543,19 @@ export default function Teams() {
 						<div className="xui-d-grid xui-grid-col-1 xui-lg-grid-col-2 xui-md-grid-col-2 xui-grid-gap-1 xui-mt-1">
 							<div className="xui-form-box">
 								<label>Points</label>
-								<input type={"number"} value={pointsEdit} onChange={handlePointsEdit} placeholder="Minimum points" required ></input>
+								<input type={"number"} min={1} value={pointsEdit} onChange={handlePointsEdit} placeholder="Minimum points" required ></input>
 							</div>
 							<div className="xui-form-box">
 								<label>Star</label>
-								<input type={"number"} value={starEdit} onChange={handleStarEdit} placeholder="Minimum star" required ></input>
+								<input type={"number"} min={1} value={starEdit} onChange={handleStarEdit} placeholder="Minimum star" required ></input>
 							</div>
 						</div>
 						{
-							showEditOfferCriteriaStatus ? 
-							<>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
-								<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
-							</> : ""
+							showEditOfferCriteriaStatus ?
+								<>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorEditOffer}</span></p>
+									<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successEditOffer}</span></p>
+								</> : ""
 						}
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
 							<button disabled={showEditOfferDetailsStatus || showEditOfferLimitStatus} onClick={handleEditOfferCriteria} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
@@ -476,6 +596,101 @@ export default function Teams() {
 							</button>
 						</div>
 					</div>
+				</div>
+			</section>
+			<section className='xui-modal' xui-modal="offerUserAuthenticated" id="offerUserAuthenticated">
+				<div className='xui-modal-content xui-max-h-700 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
+					<h1>Offer Authentication</h1>
+					<p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">Visible details of the user below</p>
+					{
+						authenticatedUserDetails ? 
+						<>
+							<center className="xui-m-2-half">
+								<div className="xui-w-200 xui-h-200 xui-bdr-s-ridge xui-bdr-w-1 xui-bdr-black xui-bdr-rad-2 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
+									<img className="xui-img-200" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
+								</div>
+							</center>
+							<center>
+								<p className="xui-opacity-4 xui-font-sz-150 xui-m-half">{authenticatedUserDetails.name}</p>
+								<b className="xui-opacity-4 xui-font-sz-100 xui-m-half">PID - {authenticatedUserDetails.pid}</b>
+								<center>
+									<div className="xui-d-inline-flex xui-flex-ai-center">
+										<span>
+											{
+												authenticatedUserDetails.star === 0 ?
+													<div className='xui-m-half'>
+														<p>No star</p>
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 1 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 2 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 3 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 4 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+											{
+												authenticatedUserDetails.star === 5 ?
+													<div className='xui-m-half'>
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+														<Star width="18" height="18" />
+													</div>
+													: ""
+											}
+										</span>
+									</div>
+								</center>
+								<div className="xui-d-inline-flex xui-flex-ai-center">
+									<span><CheckCircle width="20" height="20" /></span>
+									<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Authenticated {authenticatedUserDetails.verification_count > 1 ? authenticatedUserDetails.verification_count.toLocaleString() + " times." : "once, just now."}</p>
+								</div>
+							</center>
+							<div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly ">
+								<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Total Points: <b>{authenticatedUserDetails.user_points.toLocaleString()}</b></p>
+								<p className="xui-opacity-4 xui-font-sz-90 xui-m-half">Points with you: <b>{authenticatedUserDetails.user_partner_points.toLocaleString()}</b></p>
+							</div>
+							<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+								<button onClick={continueSuccessOfferAuthenticateUser} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+									<span className="xui-mr-half">Complete</span>
+									<Arrowright width="12" height="12" />
+								</button>
+							</div>
+						</> : 
+						<center>
+							<Loading width="12" height="12" />
+						</center>
+					}
 				</div>
 			</section>
 		</>

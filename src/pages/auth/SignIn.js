@@ -6,18 +6,24 @@ import { useLoginViaEmail, useLoginViaToken } from '../../hooks/useAuth';
 import { getAccessDetails } from "../../api/partner";
 import { useRef } from "react";
 import Loading from "../../icons/Loading";
+import EyeOpen from "../../icons/EyeOpen";
+import EyeClose from "../../icons/EyeClose";
 
 export default function SignIn(){
     const { 
         errorLogin, errorOtp, handleEmail, handleOtpSubmit, handleRememberMe, handleOtpResend, successOtp,
         handleStripped, handleSubmit, loading, successLogin, remember_me, showOtp, setShowOtp, loadingResend
     } = useLoginViaEmail();
+
     const { 
         errorTokenLogin, handleRememberMe: tokenHandleRememberMe, handleRole, handleStripped: tokenHandleStripped, 
         handleToken, handleTokenSubmit, loading: tokenLoading, remember_me: tokenRememberMe, successTokenLogin
     } = useLoginViaToken();
+
     const [accessDetails, setAccessDetails] = useState(null);
     const [otpError, setOtpError] = useState(false);
+    const [showToken, setShowToken] = useState(false);
+
     const [flipped, setFlipped] = useState(false);
     const flipCard = document.querySelector(".psc-flip-card");
     const flip = () => {
@@ -38,13 +44,13 @@ export default function SignIn(){
     const stripped = pathname.replace("/access/", "");
     const reset_master_token_url = "/reset-master-token?partner=" + stripped;
 
+    async function getPartnerAccessDetails() {
+        const response = await getAccessDetails(stripped);
+        setAccessDetails(response.data)
+    }
     useEffect(() => {
-        async function getPlatformAccessDetails() {
-            const response = await getAccessDetails(stripped);
-            setAccessDetails(response.data)
-        }
         if (accessDetails === null) {
-            getPlatformAccessDetails();
+            getPartnerAccessDetails();
             handleStripped(stripped);
             tokenHandleStripped(stripped);
         }
@@ -154,8 +160,9 @@ export default function SignIn(){
                                     <option value={"USER"}>User</option>
                                 </select>
                             </div>
-                            <div className="xui-form-box">
-                                <input className="xui-font-sz-90" type="password" onChange={handleToken} required placeholder="Token"></input>
+                            <div className="xui-mb-2 xui-d-inline-flex xui-flex-ai-center xui-w-fluid-100">
+                                <input className="xui-font-sz-90" type={showToken ? "text" : "password"} onChange={handleToken} required placeholder="Token"></input> 
+                                <span className="xui-cursor-pointer" onClick={() => setShowToken(!showToken)}>{showToken ? <EyeOpen width="20" height="20" /> : <EyeClose width="20" height="20" />}</span>
                             </div>
                             <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-between">
                                 <div className="xui-d-inline-flex xui-flex-ai-center">

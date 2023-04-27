@@ -243,7 +243,7 @@ export default function Teams() {
 						<div className="xui-form-box xui-d-flex xui-mt-half">
 							<div className="xui-d-inline-flex xui-flex-ai-center">
 								<input type="checkbox" onChange={handleValid} checked={valid} id="valid" />
-								<label for="valid" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
+								<label htmlFor="valid" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
@@ -279,7 +279,7 @@ export default function Teams() {
 						<div className="xui-form-box xui-d-flex xui-mt-half">
 							<div className="xui-d-inline-flex xui-flex-ai-center">
 								<input type="checkbox" onChange={handleValidEdit} checked={validEdit} id="validEdit" />
-								<label for="validEdit" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
+								<label htmlFor="validEdit" className="xui-ml-half" style={{ marginBottom: '0' }}>Valid</label>
 							</div>
 						</div>
 						<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
