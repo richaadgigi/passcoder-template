@@ -174,6 +174,7 @@ export default function Offers() {
 														<th className='xui-min-w-100'>Type</th>
 														<th className='xui-min-w-100'>Points</th>
 														<th className='xui-min-w-100'>Star</th>
+														<th className='xui-min-w-150'>Limit</th>
 														<th className='xui-min-w-300'>Duration</th>
 														<th className='xui-min-w-300'>Date</th>
 														<th className='xui-min-w-150'>Actions</th>
@@ -203,6 +204,19 @@ export default function Offers() {
 															</td>
 															<td className='xui-opacity-5 xui-font-w-bold'>
 																<span>{data.star}</span>
+															</td>
+															<td className='xui-opacity-5'>
+																{
+																	data.offer_limit === true ? 
+																		<span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Unlimited</span> :
+																		(
+																			data.offer_limit_remaining === 0 ? 
+																				<span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Exhausted</span> : 
+																				<>
+																					<span>{data.offer_limit_remaining}</span> out of <span className="xui-font-w-bold">{data.offer_limit}</span>
+																				</>
+																		)
+																}
 															</td>
 															<td className='xui-opacity-5 xui-font-w-bold'>
 																{
@@ -283,7 +297,7 @@ export default function Offers() {
 								)
 						}
 					</section>
-					<center className="xui-mt-4 xui-lg-d-none">
+					<center className="xui-mt-4 xui-lg-d-none xui-md-d-none">
 						<span className='xui-opacity-4 xui-font-sz-100 xui-font-w-700 xui-open-sidebar'>Click to open right sidebar</span>
 					</center>
 				</Content>
@@ -605,9 +619,9 @@ export default function Offers() {
 					{
 						authenticatedUserDetails ? 
 						<>
-							<center className="xui-m-2-half">
-								<div className="xui-w-200 xui-h-200 xui-bdr-s-ridge xui-bdr-w-1 xui-bdr-black xui-bdr-rad-2 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
-									<img className="xui-img-200" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
+							<center className="xui-m-1-half">
+								<div className="xui-w-200 xui-h-200">
+									<img className="xui-img-200 xui-bdr-rad-circle" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
 								</div>
 							</center>
 							<center>

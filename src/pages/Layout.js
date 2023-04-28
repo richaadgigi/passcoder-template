@@ -110,7 +110,7 @@ export default function Layout(){
                                 <span>Loyalties</span>
                             </div>
                         </Link>
-                        <Link to={`/${stripped}/announcements`} className={"xui-text-inherit link-box xui-font-sz-90 xui-opacity-6 menu-side " + (loc.pathname === `/${stripped}/announcement` ? 'active' : '')}>
+                        <Link to={`/${stripped}/announcements`} className={"xui-text-inherit link-box xui-font-sz-90 xui-opacity-6 menu-side " + (loc.pathname === `/${stripped}/announcements` ? 'active' : '')}>
                             <div className="icon">
                                 <Alarm width="24" height="24" />
                             </div>

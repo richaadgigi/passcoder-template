@@ -263,7 +263,7 @@ export default function Loyalties() {
 																			SetIssueMaskedPID(data.user_data.pid);
 																			SetIssueOldPoints(data.points);
 																		}}
-																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-50" xui-modal-open="issueLoyaltyPoint">
+																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-green xui-bdr-rad-half xui-font-sz-50" xui-modal-open="issueLoyaltyPoint">
 																		<Plus width="20" height="20" />
 																	</button>
 																	<button title="Checkout Points"
@@ -322,6 +322,9 @@ export default function Loyalties() {
 								)
 						}
 					</section>
+					<center className="xui-mt-4 xui-lg-d-none xui-md-d-none">
+						<span className='xui-opacity-4 xui-font-sz-100 xui-font-w-700 xui-open-sidebar'>Click to open right sidebar</span>
+					</center>
 				</Content>
 				<div className="aside psc-bg-light-blue xui-py-2 xui-px-1-half">
 					<div className='xui-mb-3'>
@@ -448,9 +451,9 @@ export default function Loyalties() {
 					{
 						authenticatedUserDetails ? 
 						<>
-							<center className="xui-m-2-half">
-								<div className="xui-w-200 xui-h-200 xui-bdr-s-ridge xui-bdr-w-1 xui-bdr-black xui-bdr-rad-2 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
-									<img className="xui-img-200" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
+							<center className="xui-m-1-half">
+								<div className="xui-w-200 xui-h-200">
+									<img className="xui-img-200 xui-bdr-rad-circle" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
 								</div>
 							</center>
 							<center>

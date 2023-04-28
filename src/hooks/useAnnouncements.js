@@ -39,7 +39,7 @@ const usePartnerAnnouncement = () => {
 				setTimeout(function () {
 					setErrorPartnerAnnouncement(null);
 				}, 2500)
-			} else if (description.length > 1500) {
+			} else if (description.length > 65535) {
 				setErrorPartnerAnnouncement("Invalid Description | Max length reached");
 				setTimeout(function () {
 					setErrorPartnerAnnouncement(null);

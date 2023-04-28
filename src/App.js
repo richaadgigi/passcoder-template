@@ -6,6 +6,7 @@ import Access from "./pages/Access";
 import Dashboard from "./pages/Dashboard";
 import Offers from "./pages/Offers";
 import Loyalties from "./pages/Loyalties";
+import Announcements from "./pages/Announcements";
 import Transactions from "./pages/Transactions";
 import Teams from "./pages/Teams";
 import Settings from "./pages/Settings";
@@ -35,6 +36,11 @@ export default function App(){
             !cookie || cookie === '' || cookie === '[object Object]' ?
               (<Navigate replace to={"/signup"} />) :
               (<Loyalties />)
+          } />
+          <Route path="announcements" element={
+            !cookie || cookie === '' || cookie === '[object Object]' ?
+              (<Navigate replace to={"/signup"} />) :
+              (<Announcements />)
           } />
           <Route path="transactions" element={
             !cookie || cookie === '' || cookie === '[object Object]' ?

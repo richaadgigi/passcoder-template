@@ -40,6 +40,15 @@ export default function Transactions(){
         removeCancelDepositModal, setRemoveCancelDepositModal, successCancelDeposit
     } = useCancelDeposit();
 
+    const validateExpiration = (expiration) => {
+        const d = new Date(expiration);
+        const today = new Date();
+        today.toLocaleString('en-US', { timeZone: 'Africa/Lagos' });
+        if (d === "Invalid Date") return false;
+        if (today.getTime() > d.getTime()) return false;
+        return true;
+    };
+
     const [filterType, setFilterType] = useState(null);
     const [companyBankDetails, setCompanyBankDetails] = useState(null);
     const [allTransactions, setAllTransactions] = useState(null);
@@ -126,27 +135,43 @@ export default function Transactions(){
                 <Content>
                     <Navbar placeholder="Search something..." makeHidden={true} />
                     <section className="xui-d-flex xui-flex-jc-flex-start xui-lg-flex-jc-flex-end">
-                        <div>
-                            <p className="xui-opacity-5 xui-font-sz-80">Current Premium Plan</p>
-                            {
-                                !partnerDetails ? <Loading width="12" height="12" /> : 
+                        {
+                            !partnerDetails ? <Loading width="12" height="12" /> :
                                 (
-                                    !partnerDetails.success ? "Error" :
                                     <>
-                                        <span className="xui-d-inline-block xui-font-sz-120 xui-mt-half">{partnerDetails.data.premium.type}</span><br></br>
-                                        <span className="xui-d-inline-block xui-font-sz-90 xui-mt-half">{"Expiring - " + partnerDetails.data.premium.expiring.fulldate}</span><br></br>
-                                        <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Offers left - " + partnerDetails.data.premium.offers.toLocaleString()}</span><br></br>
-                                        <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Announcements left - " + partnerDetails.data.premium.announcements.toLocaleString()}</span>
+                                        <div>
+                                            <p className="xui-opacity-5 xui-font-sz-80">Current Premium Plan</p>
+                                            { !partnerDetails.success ? "Error" :
+                                                <>
+                                                    <span className="xui-d-inline-block xui-font-sz-120 xui-mt-half">{partnerDetails.data.premium.type}</span><br></br>
+                                                    <span className="xui-d-inline-block xui-font-sz-90 xui-mt-half">{"Expiring - " + partnerDetails.data.premium.expiring.fulldate}</span><br></br>
+                                                    <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Offers left - " + (partnerDetails.data.premium.offers === true ? "Unlimited" : partnerDetails.data.premium.offers.toLocaleString())}</span><br></br>
+                                                    <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Announcements left - " + (partnerDetails.data.premium.announcements === true ? "Unlimited" : partnerDetails.data.premium.announcements.toLocaleString())}</span><br></br>
+                                                    <span className="xui-d-inline-block xui-font-sz-80 xui-mt-half">{"Issued Points left - " + (partnerDetails.data.premium.customer_issued_points === true ? "Unlimited" : partnerDetails.data.premium.customer_issued_points.toLocaleString())}</span>
+                                                    {
+                                                        validateExpiration(partnerDetails.data.premium.expiring.date + " " + partnerDetails.data.premium.expiring.time) ? 
+                                                            <div className="xui-d-flex xui-mt-1 xui-font-sz-80 xui-lg-d-none">
+                                                                <button disabled className="xui-font-sz-80 xui-btn psc-btn-green">Active</button>
+                                                            </div> : 
+                                                            <div className="xui-d-flex xui-mt-1 xui-font-sz-80 xui-lg-d-none">
+                                                                <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
+                                                            </div>
+                                                    }
+                                                </> 
+                                            }  
+                                        </div>
+                                        {
+                                            validateExpiration(partnerDetails.data.premium.expiring.date + " " + partnerDetails.data.premium.expiring.time) ?
+                                                <div className="xui-ml-2 xui-d-none xui-lg-d-block">
+                                                    <button disabled className="xui-font-sz-80 xui-btn psc-btn-green">Active</button>
+                                                </div> :
+                                                <div className="xui-ml-2 xui-d-none xui-lg-d-block">
+                                                    <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
+                                                </div>
+                                        }
                                     </>
                                 )
-                            }
-                            <div className="xui-d-flex xui-mt-1 xui-font-sz-80 xui-lg-d-none">
-                                <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
-                            </div>
-                        </div>
-                        <div className="xui-ml-2 xui-d-none xui-lg-d-block">
-                            <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
-                        </div>
+                        }
                     </section>
                     <section className="xui-d-grid xui-lg-grid-col-1 xui-grid-gap-2 xui-mt-2">
                         {

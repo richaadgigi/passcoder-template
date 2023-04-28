@@ -375,11 +375,11 @@ export default function Dashboard(){
 					{
 						authenticatedUserDetails ? 
 						<>
-							<center className="xui-m-2-half">
-								<div className="xui-w-200 xui-h-200 xui-bdr-s-ridge xui-bdr-w-1 xui-bdr-black xui-bdr-rad-2 xui-mt-1 xui-d-flex xui-flex-dir-column xui-flex-ai-center xui-flex-jc-center xui-cursor-pointer">
-									<img className="xui-img-200" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
-								</div>
-							</center>
+                            <center className="xui-m-1-half">
+                                <div className="xui-w-200 xui-h-200">
+                                    <img className="xui-img-200 xui-bdr-rad-circle" src={authenticatedUserDetails.photo} alt={authenticatedUserDetails.name + " Selfie Image"} />
+                                </div>
+                            </center>
 							<center>
 								<p className="xui-opacity-4 xui-font-sz-150 xui-m-half">{authenticatedUserDetails.name}</p>
 								<b className="xui-opacity-4 xui-font-sz-100 xui-m-half">PID - {authenticatedUserDetails.pid}</b>

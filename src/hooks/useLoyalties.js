@@ -62,13 +62,13 @@ const useIssueLoyaltyPoint = () => {
 							setErrorIssueLoyaltyPoint(error);
 							setTimeout(function () {
 								setErrorIssueLoyaltyPoint(null);
-							}, 2000)
+							}, 3000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorIssueLoyaltyPoint(error);
 							setTimeout(function () {
 								setErrorIssueLoyaltyPoint(null);
-							}, 2000)
+							}, 3000)
 						}
 					} else {
 						setErrorIssueLoyaltyPoint(null);
@@ -159,13 +159,13 @@ const useCheckoutLoyaltyPoint = () => {
 							setErrorCheckoutLoyaltyPoint(error);
 							setTimeout(function () {
 								setErrorCheckoutLoyaltyPoint(null);
-							}, 2000)
+							}, 3000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorCheckoutLoyaltyPoint(error);
 							setTimeout(function () {
 								setErrorCheckoutLoyaltyPoint(null);
-							}, 2000)
+							}, 3000)
 						}
 					} else {
 						setErrorCheckoutLoyaltyPoint(null);
@@ -203,7 +203,7 @@ const useAnnouncementList = () => {
 	const [errorAnnouncementList, setErrorAnnouncementList] = useState(null);
 	const [successAnnouncementList, setSuccessAnnouncementList] = useState(null);
 
-	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value); };
+	const handlePID = (e) => { e.preventDefault(); setPID(e.target.value.toLocaleUpperCase()); };
 
 	const handleSubmitAnnouncementList = (e) => {
 		e.preventDefault();
@@ -236,17 +236,17 @@ const useAnnouncementList = () => {
 							setErrorAnnouncementList(error);
 							setTimeout(function () {
 								setErrorAnnouncementList(null);
-							}, 2000)
+							}, 3000)
 						} else {
 							const error = `${res.error.code} - ${res.error.message}`;
 							setErrorAnnouncementList(error);
 							setTimeout(function () {
 								setErrorAnnouncementList(null);
-							}, 2000)
+							}, 3000)
 						}
 					} else {
 						setErrorAnnouncementList(null);
-						setSuccessAnnouncementList(`Points checked out successfully!`);
+						setSuccessAnnouncementList(res.data.message);
 
 						setTimeout(function () {
 							setSuccessAnnouncementList(null);
