@@ -204,7 +204,7 @@ export default function Transactions(){
                                         <div className="xui-mt-2">
                                             <h4 className="xui-font-sz-85 xui-mb-1 xui-font-w-normal xui-opacity-8">Steps to upgrade to premium via transfer</h4>
                                             <ol className="xui-font-sz-80 xui-opacity-5 xui-my-half">
-                                                <li>See the packages below, choose the one you want to upgrade to, determine the number of months you want this to be active (12 months max).</li><br></br>
+                                                <li>See the packages in your settings, choose the one you want to upgrade to, determine the number of months you want this to be active (12 months max).</li><br></br>
                                                 <li>Copy the account number & Transfer the amount times the number of months you want (i.e. package price x month = total amount).</li><br></br>
                                                 <li>Send an email to <a href="mailto:support@passcoder.io">support@passcoder.io</a> with your receipt of payment, package selected and await confirmation.</li>
                                             </ol>
@@ -385,7 +385,7 @@ export default function Transactions(){
                         </div>
                         <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly">
                             <div className="xui-d-inline-flex xui-flex-ai-center">
-                                <input required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Credit/Debit Card"} id="credit_card" />
+                                <input disabled required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Credit/Debit Card"} id="credit_card" />
                                 <label for="credit_card" className="xui-ml-half" style={{ marginBottom: '0' }}>Card</label>
                             </div>
                             <div className="xui-d-inline-flex xui-flex-ai-center">

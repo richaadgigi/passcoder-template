@@ -116,14 +116,15 @@ export default function AddAnnouncement() {
 									onInit={(evt, editor) => editorRef.current = editor}
 									initialValue={description}
 									init={{
-									height: 500,
+									height: 700,
+									font_size_input_default_unit: "pt",
 									menubar: false,
 									plugins: [
 										'advlist', 'anchor', 'autolink', 'help', 'image', 'link', 'lists',
 										'searchreplace', 'table', 'wordcount'
 									],
 									toolbar: [
-										'undo redo | styles | bold italic forecolor | bullist numlist outdent indent | link image | alignleft aligncenter alignright alignjustify | removeformat',
+										'undo redo | styles | bold italic forecolor fontsizeinput | bullist numlist outdent indent | link image | alignleft aligncenter alignright alignjustify | removeformat',
 									],
 									toolbar_mode: 'floating',
 									content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
