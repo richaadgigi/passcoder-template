@@ -341,7 +341,7 @@ export default function Wallet(){
                         </div>
                         <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly">
                             <div className="xui-d-inline-flex xui-flex-ai-center">
-                                <input required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Credit/Debit Card"} id="credit_card" />
+                                <input disabled required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Credit/Debit Card"} id="credit_card" />
                                 <label for="credit_card" className="xui-ml-half" style={{ marginBottom: '0' }}>Card</label>
                             </div>
                             <div className="xui-d-inline-flex xui-flex-ai-center">
