@@ -16,7 +16,7 @@ const usePartnerAnnouncement = () => {
 	const [successPartnerAnnouncement, setSuccessPartnerAnnouncement] = useState(null);
 
 	const handleTitle = (e) => { e.preventDefault(); setTitle(e.target.value); };
-	const handleDescription = (e) => { e.preventDefault(); setDescription(e.target.value) };
+	const handleDescription = (contents) => { setDescription(contents); };
 
 	const handleSubmitPartnerAnnouncement = (e) => {
 		e.preventDefault();

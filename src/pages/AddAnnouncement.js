@@ -1,31 +1,47 @@
-import { Link, useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import Navbar from '../components/Navbar';
 import Screen from '../components/Screen';
 import Content from '../components/Content';
 import Arrowright from '../icons/Arrowright';
-import Arrowleft from '../icons/Arrowleft';
 import Boxes from '../assets/images/boxes.png';
 import FlowerPlant from '../assets/images/flower-plant.png';
-import { getPartnerAnnouncement, getPartnerAnnouncements } from "../api/announcements";
-import { getPartnerOffers, getPartnerOffer } from "../api/offers";
-import useCookie from "../hooks/useCookie";
-import { config } from "../config";
+import BundledEditor from '../BundledEditor';
+import { getPartnerOffers } from "../api/offers";
+import { usePartnerAnnouncement } from "../hooks/useAnnouncements";
 import { useAnnouncementList } from "../hooks/useLoyalties";
 import { useOfferAuthenticateUser } from "../hooks/useRequests";
+import useCookie from "../hooks/useCookie";
+import { config } from "../config";
 import Loading from "../icons/Loading";
 import Close from "../icons/Close";
-import EyeOpenAlt from "../icons/EyeOpenAlt";
+import Check from "../icons/Check";
 import Star from "../icons/Star";
 import CheckCircle from "../icons/CheckCircle";
 
-export default function Announcements() {
+export default function AddAnnouncement() {
+
 	const loc = useLocation();
 	const { pathname } = useLocation();
 	const _stripped = pathname.replace("/", "");
 	const stripped = _stripped.split("/")[0];
 
+	const navigate = useNavigate();
+
 	const { cookie, forceLogout } = useCookie(config.token, "");
+
+	const editorRef = useRef(null);
+
+	const {
+		description, errorPartnerAnnouncement, handleDescription, handleSubmitPartnerAnnouncement, handleTitle, loadingPartnerAnnouncement, title, 
+		removePartnerAnnouncementModal, setRemovePartnerAnnouncementModal, successPartnerAnnouncement
+	} = usePartnerAnnouncement();
+	
+	const setDescriptionContents = () => {
+		if (editorRef.current) {
+			handleDescription(editorRef.current.getContent());
+		} 
+	};
 
 	const {
 		errorAnnouncementList, handlePID: AnnouncementHandlePID, handleSubmitAnnouncementList, loadingAnnouncementList, pid: AnnouncementPID,
@@ -40,54 +56,13 @@ export default function Announcements() {
 		authenticatedUserDetails, setAuthenticatedUserDetails
 	} = useOfferAuthenticateUser();
 
-	const [allAnnouncements, setAllAnnouncements] = useState(null);
-	const [errorAllAnnouncements, setErrorAllAnnouncements] = useState(null);
-	const [loadingAllAnnouncements, setLoadingAllAnnouncements] = useState(false);
-
-	const [viewAnnouncement, setViewAnnouncement] = useState(null);
-	const [errorViewAnnouncement, setErrorViewAnnouncement] = useState(null);
-	const [loadingViewAnnouncement, setLoadingViewAnnouncement] = useState(false);
-
 	const [allOffers, setAllOffers] = useState(null);
 	const [errorAllOffers, setErrorAllOffers] = useState(null);
 	const [loadingAllOffers, setLoadingAllOffers] = useState(false);
 
-	const [size, setSize] = useState(20);
-	const [page, setPage] = useState(1);
-
-	const handleSize = (e) => { e.preventDefault(); setSize(e.target.value); setPage(1); getAllAnnouncements(page, e.target.value); };
-
-	async function previousAnnouncements() {
-		if (page !== 1) setPage(page - 1);
-		if (page !== 1) getAllAnnouncements(page - 1, size);
-	};
-
-	async function nextAnnouncements() {
-		if (page < allAnnouncements.data.pages) setPage(page + 1);
-		if (page < allAnnouncements.data.pages) getAllAnnouncements(page + 1, size);
-	};
-
-	async function getAllAnnouncements(_page, _size) {
-		setLoadingAllAnnouncements(true);
-		const response = await getPartnerAnnouncements(cookie, (_page || page), (_size || size));
-		setAllAnnouncements(response.data);
-		if (response.response_code === 403) forceLogout();
-		if (response.error) setErrorAllAnnouncements(response.error.response.data.message);
-		setLoadingAllAnnouncements(false);
-	};
-
-	async function getAnnouncement(unique_id) {
-		setLoadingViewAnnouncement(true);
-		const response = await getPartnerAnnouncement(cookie, unique_id);
-		setViewAnnouncement(response.data);
-		if (response.response_code === 403) forceLogout();
-		if (response.error) setErrorViewAnnouncement(response.error.response.data.message);
-		setLoadingViewAnnouncement(false);
-	};
-
 	async function getAllOffers(_page, _size) {
 		setLoadingAllOffers(true);
-		const response = await getPartnerOffers(cookie, (_page || page), (_size || size));
+		const response = await getPartnerOffers(cookie, _page, _size);
 		setAllOffers(response.data);
 		if (response.response_code === 403) forceLogout();
 		if (response.error) setErrorAllOffers(response.error.response.data.message);
@@ -95,13 +70,10 @@ export default function Announcements() {
 	};
 
 	useEffect(() => {
-		if (allAnnouncements === null) {
-			getAllAnnouncements();
-		}
 		if (allOffers === null) {
 			getAllOffers(1, 20);
 		}
-	}, [allAnnouncements, allOffers]);
+	}, [allOffers]);
 
 	if (successOfferAuthenticateUser) {
 		const modalResponse = document.querySelector("#offerUserAuthenticated");
@@ -114,6 +86,13 @@ export default function Announcements() {
 		setAuthenticatedUserDetails(null);
 	}
 
+	if (removePartnerAnnouncementModal) {
+		setRemovePartnerAnnouncementModal(null);
+		setTimeout(function () {
+            navigate(`/${stripped}/announcements`);
+        }, 1500)
+	}
+
 	return (
 		<>
 			<Screen aside="true" navbar="false">
@@ -122,128 +101,76 @@ export default function Announcements() {
 					<section className=''>
 						<div className='xui-d-flex xui-flex-ai-center xui-flex-jc-space-between xui-py-1 psc-section-header'>
 							<div className="xui-mb-1">
-								<h1 className='xui-font-sz-110 xui-font-w-normal'>All Broadcasted Announcements</h1>
-								<p className="xui-opacity-5 xui-font-sz-90 xui-mt-half">Curate updates / announcements and send to all your linked users, see statistics and more.</p>
-							</div>
-							<div className="xui-mb-1">
-								<div className='xui-d-inline-flex'>
-									<Link to={`/${stripped}/announcement/add`} className="xui-text-dc-none xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-80">
-										<span>New Announcement</span>
-									</Link>
-								</div>
+								<h1 className='xui-font-sz-110 xui-font-w-normal'>New Broadcast Announcement</h1>
+								<p className="xui-opacity-5 xui-font-sz-90 xui-mt-half"></p>
 							</div>
 						</div>
-						{
-							loadingAllAnnouncements ?
-								<center className='xui-font-sz-110 xui-py-3'><Loading width="12" height="12" /></center> :
-								(
-									allAnnouncements && allAnnouncements.success ?
-										<div className='xui-table-responsive'>
-											<table className='xui-table xui-font-sz-90'>
-												<thead>
-													<tr className='xui-text-left xui-opacity-6'>
-														<th className='xui-min-w-20'>S/N</th>
-														<th className='xui-min-w-200'>Title</th>
-														<th className='xui-min-w-100'>Users</th>
-														<th className='xui-min-w-100'>Views</th>
-														<th className='xui-min-w-100'>Status</th>
-														<th className='xui-min-w-300'>Date</th>
-														<th className='xui-min-w-50'>Actions</th>
-													</tr>
-												</thead>
-												<tbody>
-													{allAnnouncements.data.rows.map((data, i) => (
-														<tr className='' key={i}>
-															<td className='xui-opacity-5'>
-																<div className='xui-d-inline-flex xui-flex-ai-center'>
-																	{i + 1}
-																</div>
-															</td>
-															<td className='xui-opacity-5'>
-																<div className='xui-d-inline-flex xui-flex-ai-center'>
-																	<p>{data.title}</p>
-																</div>
-															</td>
-															<td className='xui-opacity-5 xui-font-w-bold'>
-																<span>{data.pids.toLocaleString()}</span>
-															</td>
-															<td className='xui-opacity-5 xui-font-w-bold'>
-																<span>{data.views.toLocaleString()}</span>
-															</td>
-															<td className='xui-opacity-5 xui-font-w-bold'>
-																<>
-																	{
-																		data.status === 1 ? 
-																			<span className='xui-badge xui-badge-success xui-font-sz-80 xui-bdr-rad-half'>Success</span> : ""
-																	}
-																	{
-																		data.status === 0 ?
-																			<span className='xui-badge xui-badge-danger xui-font-sz-80 xui-bdr-rad-half'>Error</span> : ""
-																	}
-																	{
-																		data.status === 2 || data.status === 3 ?
-																			<span className='xui-badge xui-badge-warning xui-font-sz-80 xui-bdr-rad-half'>Pending</span> : ""
-																	}
-																</>
-															</td>
-															<td className='xui-opacity-5'>
-																<span>{data.updatedAt.date} at {data.updatedAt.time}</span>
-															</td>
-															<td className=''>
-																<div className="xui-d-flex xui-grid-gap-1">
-																	<button title="View Announcement"
-																		onClick={() => {
-																			getAnnouncement(data.unique_id);
-																		}}
-																		className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-50" xui-modal-open="viewAnnouncement">
-																		<EyeOpenAlt width="20" height="20" />
-																	</button>
-																</div>
-															</td>
-														</tr>
-													))}
-												</tbody>
-											</table>
-										</div> :
-										<div className="xui-d-grid xui-lg-grid-col-1 xui-grid-gap-2 xui-mt-2">
-											<div className="xui-bdr-w-1 xui-bdr-s-solid xui-bdr-fade xui-py-2 xui-px-1">
-												<center className="xui-text-red">
-													<Close width="100" height="100" />
-													<h3 className="xui-font-sz-120 xui-font-w-normal xui-mt-half">{errorAllAnnouncements}</h3>
-												</center>
+						<form className="xui-form" layout="2" onSubmit={(e) => e.preventDefault()}>
+							<div className="xui-form-box xui-mt-2">
+								<label className="">Title</label>
+								<input type="text" value={title} onChange={handleTitle} placeholder="Enter title of announcement" required ></input>
+							</div>
+							<div className="xui-form-box xui-mt-2">
+								<label className="">Description</label>
+								<BundledEditor
+									onInit={(evt, editor) => editorRef.current = editor}
+									initialValue={description}
+									init={{
+									height: 500,
+									menubar: false,
+									plugins: [
+										'advlist', 'anchor', 'autolink', 'help', 'image', 'link', 'lists',
+										'searchreplace', 'table', 'wordcount'
+									],
+									toolbar: [
+										'undo redo | styles | bold italic forecolor | bullist numlist outdent indent | link image | alignleft aligncenter alignright alignjustify | removeformat',
+									],
+									toolbar_mode: 'floating',
+									content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+									}}
+								/>
+							</div>
+							{
+								showConfirmAddAnnouncement ? 
+									<div className="xui-m-3">
+										<center>
+											<h4>Confirm Announcement Broadcast</h4>
+											<p className="xui-opacity-5 xui-font-sz-90 xui-m-half">Are you sure you want to cotinue with this action?</p>
+											<p className="xui-opacity-5 xui-font-sz-90">You can't edit or undo this, please check your contents again before sending ...</p>
+										</center>
+										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorPartnerAnnouncement}</span></p>
+										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successPartnerAnnouncement}</span></p>
+										<div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly xui-mt-2">
+											<div className="xui-d-inline-flex xui-flex-ai-center">
+												<button onClick={handleSubmitPartnerAnnouncement} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-green xui-bdr-rad-half xui-font-sz-85">
+													<span className="xui-mr-half">Yes</span>
+													{
+														loadingPartnerAnnouncement ?
+															<Loading width="12" height="12" />
+															: <Check width="20" height="20" />
+													}
+												</button>
+											</div>
+											<div className="xui-d-inline-flex xui-flex-ai-center">
+												<button onClick={() => setShowConfirmAddAnnouncement(false)} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-red xui-bdr-rad-half xui-font-sz-85">
+													<span className="xui-mr-half">No</span>
+													<Close width="20" height="20" />
+												</button>
 											</div>
 										</div>
-								)
-						}
-						{
-							loadingAllAnnouncements ?
-								<Loading width="12" height="12" /> :
-								(
-									allAnnouncements && allAnnouncements.success ?
-										<div className='xui-d-flex xui-flex-jc-flex-end xui-py-1 xui-font-sz-85 xui-opacity-5 xui-mt-1'>
-											<div className='xui-d-inline-flex xui-flex-ai-center'>
-												<span>Rows per page:</span>
-												<select value={size} onChange={handleSize} className='psc-select-rows-per-page xui-ml-half'>
-													<option value={20}>20</option>
-													<option value={50}>50</option>
-													<option value={100}>100</option>
-												</select>
-											</div>
-											<div className='xui-mx-1 xui-lg-mx-2'>
-												<span><span className='xui-font-w-bold'>{page}</span> of {allAnnouncements ? allAnnouncements.data.pages : "..."}</span>
-											</div>
-											<div className='xui-d-inline-flex xui-flex-ai-center xui-mx-1'>
-												<div className='xui-mr-half xui-cursor-pointer' title="Previous" onClick={previousAnnouncements}>
-													<Arrowleft width="18" height="18" />
-												</div>
-												<div className='xui-ml-half xui-cursor-pointer' title="Next" onClick={nextAnnouncements}>
-													<Arrowright width="18" height="18" />
-												</div>
-											</div>
-										</div> :
-										""
-								)
-						}
+									</div> :
+									<div>
+										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorPartnerAnnouncement}</span></p>
+										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successPartnerAnnouncement}</span></p>
+										<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+											<button disabled={title.length < 3 || description.length < 3} onClick={() => { setDescriptionContents(); setShowConfirmAddAnnouncement(true); }} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+												<span className="xui-mr-half">Send Announcement</span>
+											</button>
+										</div>
+									</div>
+									
+							}
+						</form>
 					</section>
 					<center className="xui-mt-4 xui-lg-d-none xui-md-d-none">
 						<span className='xui-opacity-4 xui-font-sz-100 xui-font-w-700 xui-open-sidebar'>Click to open right sidebar</span>
@@ -322,35 +249,6 @@ export default function Announcements() {
 					</div>
 				</div>
 			</Screen>
-			<section className='xui-modal' xui-modal="viewAnnouncement" id="viewAnnouncement">
-				<div className='xui-modal-content xui-max-h-700 xui-max-w-900 xui-overflow-auto xui-pos-relative'>
-					<div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="viewAnnouncement">
-						<Close width="24" height="24" />
-					</div>
-					{
-						loadingViewAnnouncement ? 
-						<center>
-							<Loading width="12" height="12" />
-						</center> :
-						(
-							viewAnnouncement && viewAnnouncement.success ? 
-								<>
-									<h2 className='xui-font-sz-110 xui-mt-half xui-mb-1'><span className='xui-opacity-5 xui-font-w-bold'>Title: </span>{viewAnnouncement.data.title}</h2>
-									<hr></hr>
-									<div className='xui-mt-1 xui-mb-half' dangerouslySetInnerHTML={{ __html: viewAnnouncement.data.description}}></div>
-								</> : 
-								<div className="xui-d-grid xui-lg-grid-col-1 xui-grid-gap-2 xui-mt-2">
-									<div className="xui-bdr-w-1 xui-bdr-s-solid xui-bdr-fade xui-py-2 xui-px-1">
-										<center className="xui-text-red">
-											<Close width="100" height="100" />
-											<h3 className="xui-font-sz-120 xui-font-w-normal xui-mt-half">{errorViewAnnouncement}</h3>
-										</center>
-									</div>
-								</div>
-						)
-					}
-				</div>
-			</section>
 			<section className='xui-modal' xui-modal="offerUserAuthenticated" id="offerUserAuthenticated">
 				<div className='xui-modal-content xui-max-h-700 xui-max-w-800 xui-overflow-auto xui-pos-relative'>
 					<h1>Offer Authentication</h1>

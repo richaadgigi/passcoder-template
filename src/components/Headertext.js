@@ -14,6 +14,8 @@ export default function Headertext(){
         return "Loyalties";
     } else if (loc.pathname === `/${stripped}/announcements`) {
         return "Announcements";
+    } else if (loc.pathname === `/${stripped}/announcement/add`) {
+        return "Add Announcement";
     } else if (loc.pathname === `/${stripped}/transactions`){
         return "Transactions";
     } else if (loc.pathname === `/${stripped}/teams`) {
