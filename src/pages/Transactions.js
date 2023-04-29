@@ -154,7 +154,7 @@ export default function Transactions(){
                                                                 <button disabled className="xui-font-sz-80 xui-btn psc-btn-green">Active</button>
                                                             </div> : 
                                                             <div className="xui-d-flex xui-mt-1 xui-font-sz-80 xui-lg-d-none">
-                                                                <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
+                                                                <button disabled className="xui-font-sz-80 xui-btn psc-btn-red">Upgrade</button>
                                                             </div>
                                                     }
                                                 </> 
@@ -166,7 +166,7 @@ export default function Transactions(){
                                                     <button disabled className="xui-font-sz-80 xui-btn psc-btn-green">Active</button>
                                                 </div> :
                                                 <div className="xui-ml-2 xui-d-none xui-lg-d-block">
-                                                    <button className="xui-font-sz-80 xui-btn psc-btn-blue" xui-modal-open="upgradePlan">Upgrade</button>
+                                                    <button disabled className="xui-font-sz-80 xui-btn psc-btn-red">Upgrade</button>
                                                 </div>
                                         }
                                     </>
@@ -372,6 +372,42 @@ export default function Transactions(){
                     </section>
                 </Content>
             </Screen>
+            <section className='xui-modal' xui-modal="addDeposit" id="addDeposit">
+                <div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
+                    <div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="addDeposit">
+                        <Close width="24" height="24" />
+                    </div>
+                    <h1>Fund Wallet</h1>
+                    <form className="xui-form" onSubmit={handleSubmit}>
+                        <div className="xui-form-box">
+                            <label>Enter amount <span className="xui-font-w-bold">(NGN)</span></label>
+                            <input required onChange={handleFundingAmount} value={fundingAmount} type={"number"} />
+                        </div>
+                        <div className="xui-d-flex xui-flex-ai-center xui-flex-jc-space-evenly">
+                            <div className="xui-d-inline-flex xui-flex-ai-center">
+                                <input disabled required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Credit/Debit Card"} id="credit_card" />
+                                <label for="credit_card" className="xui-ml-half" style={{ marginBottom: '0' }}>Card</label>
+                            </div>
+                            <div className="xui-d-inline-flex xui-flex-ai-center">
+                                <input required type="radio" onChange={handleFundingPaymentMethod} checked={fundingPaymentMethod === "Transfer"} id="transfer" />
+                                <label for="transfer" className="xui-ml-half" style={{ marginBottom: '0' }}>Transfer</label>
+                            </div>
+                        </div>
+                        <div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
+                            <button className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+                                <span className="xui-mr-half">Top Up</span>
+                                {
+                                    loading ?
+                                        <Loading width="12" height="12" />
+                                        : <Arrowright width="12" height="12" />
+                                }
+                            </button>
+                        </div>
+                    </form>
+                    <p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorAddDeposit}</span></p>
+                    <p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successAddDeposit}</span></p>
+                </div>
+            </section>
             <section className='xui-modal' xui-modal="upgradePlan" id="upgradePlan">
                 <div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
                     <div className="xui-w-40 xui-h-40 xui-bdr-rad-circle xui-d-flex xui-flex-ai-center xui-flex-jc-center psc-bg xui-text-white psc-modal-close" xui-modal-close="upgradePlan">
@@ -412,13 +448,13 @@ export default function Transactions(){
                 <div className='xui-modal-content xui-max-h-500 xui-overflow-auto xui-pos-relative'>
                     <center>
                         <h1>Premium Upgrade Successful</h1>
-                        <img className="xui-img-40 xui-my-2" src={SuccessTick} alt="" />
+                        <img className="xui-img-100 xui-my-2" src={SuccessTick} alt="" />
                     </center>
                     <center>
-                        <div className="xui-d-inline-flex xui-flex-ai-center xui-mt-2">
+                        <div className="xui-d-inline-flex xui-flex-ai-center xui-mt-1">
                             <button className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85" xui-modal-close="upgradePlanSuccess">
                                 <span className="xui-mr-half">Continue</span>
-                                <Close width="20" height="20" />
+                                <Arrowright width="20" height="20" />
                             </button>
                         </div>
                     </center>

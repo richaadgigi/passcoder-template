@@ -15,7 +15,7 @@ const useAddDeposit = () => {
 	const [loading, setLoading] = useState(false);
 	const [removeFundingModal, setRemoveFundingModal] = useState(null);
 	const [fundingAmount, setFundingAmount] = useState(null);
-	const [fundingPaymentMethod, setFundingPaymentMethod] = useState("Transfer");
+	const [fundingPaymentMethod, setFundingPaymentMethod] = useState("Credit/Debit Card");
 	const [minFundingAmount, setMinFundingAmount] = useState(general_min_amount);
 	const [maxFundingAmount, setMaxFundingAmount] = useState(credit_card_max_amount);
 
@@ -46,11 +46,6 @@ const useAddDeposit = () => {
 				setTimeout(function () {
 					setErrorAddDeposit(null);
 				}, 2500)
-			} else if (fundingPaymentMethod === "Transfer") {
-				setErrorAddDeposit("Unable to process transaction, follow Transfer funding instruction");
-				setTimeout(function () {
-					setErrorAddDeposit(null);
-				}, 4500)
 			} else {
 				setLoading(true);
 	

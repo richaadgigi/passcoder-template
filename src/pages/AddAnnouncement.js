@@ -164,7 +164,7 @@ export default function AddAnnouncement() {
 										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-red"><span className="xui-font-w-bold psc-text-red">{errorPartnerAnnouncement}</span></p>
 										<p className="xui-font-sz-100 xui-my-1 xui-text-center xui-text-green"><span className="xui-font-w-bold psc-text-red">{successPartnerAnnouncement}</span></p>
 										<div className="xui-form-box xui-d-flex xui-flex-jc-flex-end">
-											<button disabled={title.length < 3 || description.length < 3} onClick={() => { setDescriptionContents(); setShowConfirmAddAnnouncement(true); }} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
+											<button disabled={title.length < 3} onClick={() => { setDescriptionContents(); setShowConfirmAddAnnouncement(true); }} className="xui-d-inline-flex xui-flex-ai-center xui-btn psc-btn-blue xui-bdr-rad-half xui-font-sz-85">
 												<span className="xui-mr-half">Send Announcement</span>
 											</button>
 										</div>

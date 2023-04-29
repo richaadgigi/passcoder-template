@@ -49,6 +49,15 @@ export default function Layout(){
         return string;
     };
 
+    const validateExpiration = (expiration) => {
+        const d = new Date(expiration);
+        const today = new Date();
+        today.toLocaleString('en-US', { timeZone: 'Africa/Lagos' });
+        if (d === "Invalid Date") return false;
+        if (today.getTime() > d.getTime()) return false;
+        return true;
+    };
+
     const return_first_letter_uppercase_alt = (_str) => {
         const str = unstrip_text(_str);
         return str.toLowerCase().replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
@@ -142,7 +151,7 @@ export default function Layout(){
                                 <span>Settings</span>
                             </div>
                         </Link> 
-                        <Link to={`/${stripped}/transactions`} className={"xui-text-inherit link-box xui-font-sz-90 xui-opacity-6" + (partnerDetails ? (partnerDetails.data.premium.status ? 'active' : '') : '')}>
+                        <Link to={`/${stripped}/transactions`} className={"xui-text-inherit link-box xui-font-sz-90 xui-opacity-6" + (partnerDetails ? (validateExpiration(partnerDetails.data.premium.expiring.date + " " + partnerDetails.data.premium.expiring.time) ? 'active' : '') : '')}>
                             <div className="icon">
                                 <Key />
                             </div>
